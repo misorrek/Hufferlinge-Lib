@@ -20,7 +20,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
-import huff.lib.varouis.AlphanumericComparator;
+import huff.lib.various.AlphanumericComparator;
 
 public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 {
