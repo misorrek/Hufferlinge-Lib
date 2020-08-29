@@ -1,8 +1,11 @@
 package huff.lib.helper;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MessageHelper 
 {
@@ -27,41 +30,54 @@ public class MessageHelper
     public static String getWrongInput() { return PREFIX_HUFF + PLAYERNOTFOUND.replace(PLACEHOLDER_TEXT, ""); }
     public static String getWrongInput(String text) { return PREFIX_HUFF + PLAYERNOTFOUND.replace(PLACEHOLDER_TEXT, " " + text); }
     
-    public static String getHighlighted(String content)
+    @NotNull
+    public static String getHighlighted(@NotNull String content)
     {
+    	Validate.notNull((Object) content, "The content cannot be null.");
+    	
     	return " §9" + content + "§7 ";
     }
     
-    public static String getHighlighted(String content, boolean spaceLeft, boolean spaceRight)
+    @NotNull
+    public static String getHighlighted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
-    	return (spaceLeft ? " " : "") + getQuoted(content) + (spaceRight ? " " : "");
+    	return (spaceLeft ? " " : "") + getHighlighted(content) + (spaceRight ? " " : "");
     }
     
-    public static String getQuoted(String content)
+    @NotNull
+    public static String getQuoted(@NotNull String content)
     {
+    	Validate.notNull((Object) content, "The content cannot be null.");
+    	
     	return " §9\"" + content + "\"§7 ";
     }
     
-    public static String getQuoted(String content, boolean spaceLeft, boolean spaceRight)
+    @NotNull
+    public static String getQuoted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
     	return (spaceLeft ? " " : "") + getQuoted(content) + (spaceRight ? " " : "");
     }
     
-    public static void sendConsoleMessage(String mesaage)
+    public static void sendConsoleMessage(@NotNull String message)
     {
-    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('§', PREFIX_HUFF_CONSOLE + mesaage));
+    	Validate.notNull((Object) message, "The message cannot be null.");
+    	
+    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('§', PREFIX_HUFF_CONSOLE + message));
     }
     
-    public static void sendPermssionMessage(String permission, String message) 
+    public static void sendPermssionMessage(@NotNull String permission, @NotNull String message) 
 	{
-    	sendPermssionMessage(permission, message, "");
+    	sendPermssionMessage(permission, message, null);
 	}
     
-    public static void sendPermssionMessage(String permission, String message, String excludedPlayer) 
+    public static void sendPermssionMessage(@NotNull String permission, @NotNull String message, @Nullable String excludedPlayer) 
 	{
+    	Validate.notNull((Object) message, "The permission cannot be null.");
+    	Validate.notNull((Object) message, "The message cannot be null.");
+    	
 		for (Player player : Bukkit.getOnlinePlayers()) 
 		{
-			if ((excludedPlayer.isEmpty() || !player.getName().equals(excludedPlayer)) && PermissionHelper.hasPlayerPermission(player, permission)) 
+			if ((StringHelper.isNullOrEmpty(excludedPlayer) || !player.getName().equals(excludedPlayer)) && PermissionHelper.hasPlayerPermission(player, permission)) 
 			{
 				player.sendMessage(message);
 			}

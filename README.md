@@ -1,3 +1,3 @@
 # Hufferlinge-Lib
 
-The Hufferlinge Libary System is about to start :octocat:
+The Hufferlinge Libary is about to start :octocat:

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
@@ -79,7 +81,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		return false;
 	}
 	
-	private boolean executeCreate(Player player)
+	private boolean executeCreate(@NotNull Player player)
 	{
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
@@ -100,7 +102,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		return true;
 	}
 	
-	private boolean executeShowList(Player player)
+	private boolean executeShowList(@NotNull Player player)
 	{
 		StringBuilder builder = new StringBuilder();
 		
@@ -123,7 +125,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		return true;
 	}
 	
-	private boolean executeLeave(Player player)
+	private boolean executeLeave(@NotNull Player player)
 	{
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
@@ -159,7 +161,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		}
 	}
 	
-	private boolean executeEnter(Player player, String targetName)
+	private boolean executeEnter(@NotNull Player player, @NotNull String targetName)
 	{
 		final UUID currentSupportChat = supportMap.getCurrentSupportChat(player.getUniqueId());
 		
@@ -172,6 +174,8 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 			}
 			catch (Exception e) { }
 		}
+		Validate.notNull((Object) targetName, "The player-target-name cannot be null.");
+		
 		final Player targetPlayer = Bukkit.getPlayer(targetName); 
 		
 		if (targetPlayer == null || !supportMap.containsKey(targetPlayer.getUniqueId()))
@@ -187,8 +191,10 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		return true;	
 	}
 	
-	private boolean executeDelete(Player player, String targetName)
+	private boolean executeDelete(@NotNull Player player, @NotNull String targetName)
 	{
+		Validate.notNull((Object) targetName, "The player-target-name cannot be null.");
+		
 		final Player targetPlayer = Bukkit.getPlayer(targetName); 
 		
 		if (targetPlayer == null || !supportMap.containsKey(targetPlayer.getUniqueId()))
@@ -223,15 +229,16 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		}
 		else if (args.length == 2 && (args[0].equalsIgnoreCase("enter") || args[0].equalsIgnoreCase("delete")) && PermissionHelper.hasPlayerPermissionFeedbacked(player, PERM_SUPPORT))
 		{
-			fillAvailableChatsSuggestion(player, paramSuggestions);
+			fillAvailableChatsSuggestion(paramSuggestions);
 		}
-		
 		paramSuggestions.sort(new AlphanumericComparator());
 		return paramSuggestions;
 	}
 	
-	private void fillFirstSuggestion(Player player, List<String> paramSuggestions)
+	private void fillFirstSuggestion(@NotNull Player player, @NotNull List<String> paramSuggestions)
 	{
+		Validate.notNull((Object) paramSuggestions, "The param-suggestion-list cannot be null.");
+		
 		boolean isPlayerInSupport = supportMap.containsKey(player.getUniqueId());
 		
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
@@ -251,8 +258,10 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		}
 	}
 	
-	private void fillAvailableChatsSuggestion(Player player, List<String> paramSuggestions)
+	private void fillAvailableChatsSuggestion(@NotNull List<String> paramSuggestions)
 	{
+		Validate.notNull((Object) paramSuggestions, "The param-suggestion-list cannot be null.");
+		
 		for (UUID availableChat : supportMap.keySet())
 		{
 			paramSuggestions.add(availableChat.toString());
@@ -307,12 +316,15 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	
 	// U T I L
 	
-	private void sendChannelMessage(UUID targetChat, String msg, boolean sendToUser)
+	private void sendChannelMessage(@NotNull UUID targetChat, @NotNull String message, boolean sendToUser)
 	{
+		Validate.notNull((Object) targetChat, "The target-chat cannot be null.");
+		
 		if (!supportMap.containsKey(targetChat))
 		{
 			return;
-		}		
+		}	
+		Validate.notNull((Object) message, "The chat-message cannot be null.");
 		
 		if (sendToUser) 
 		{
@@ -320,7 +332,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 			
 			if (targetPlayer != null && targetPlayer.isOnline())
 			{
-				targetPlayer.sendMessage(msg);
+				targetPlayer.sendMessage(message);
 			}
 		}	
 		
@@ -330,7 +342,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 			
 			if (helferPlayer != null && helferPlayer.isOnline())
 			{
-				helferPlayer.sendMessage(msg);
+				helferPlayer.sendMessage(message);
 			}
 		}	
 	}
