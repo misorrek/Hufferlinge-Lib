@@ -268,7 +268,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		}
 	}
 	
-	// L I S T E N E R S
+	// L I S T E N E R
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onChat(AsyncPlayerChatEvent event) 
