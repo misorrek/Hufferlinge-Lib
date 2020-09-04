@@ -16,8 +16,7 @@ import org.json.simple.parser.JSONParser;
 
 public class FileHelper
 {
-	@Nullable
-	public YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
+	public static @Nullable YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
 	{
 		Validate.notNull((Object) path, "The yaml-file-path cannot be null.");
 		File configFile = loadFile(path);
@@ -41,8 +40,22 @@ public class FileHelper
 		return configuration;
 	}
 	
-	@Nullable
-	public JSONObject loadJsonObject(@NotNull File jsonFile)
+	public static @Nullable Object readConfigValue(@NotNull YamlConfiguration config, @NotNull String path)
+	{
+		Validate.notNull((Object) config, "The yaml-configuration cannot be null.");
+		Validate.notNull((Object) path, "The config-value-path cannot be null.");
+		
+		Object configValue = config.get(path);
+		
+		if (configValue == null && config.getDefaults() != null)
+		{
+			configValue = config.getDefaults().get(path);
+		}
+		Validate.notNull(configValue, "The config-value at \"" + path + "\" was null.");
+		return configValue;
+	}
+	
+	public static @Nullable JSONObject loadJsonObject(@NotNull File jsonFile)
 	{
 		Validate.notNull((Object) jsonFile, "The json-file cannot be null.");
 		try
@@ -56,8 +69,7 @@ public class FileHelper
 		return null;
 	}
 	
-	@Nullable
-	public File loadFile(@NotNull String path)
+	public static @Nullable File loadFile(@NotNull String path)
 	{
 		Validate.notNull((Object) path, "The file-path cannot be null.");
 		File file = new File(path);
@@ -70,7 +82,7 @@ public class FileHelper
 		return file;
 	}
 	
-	public boolean createFileAndParents(@NotNull File file)
+	public static boolean createFileAndParents(@NotNull File file)
 	{
 		Validate.notNull((Object) file, "The file cannot be null.");
 		
