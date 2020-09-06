@@ -16,6 +16,8 @@ import org.json.simple.parser.JSONParser;
 
 public class FileHelper
 {
+	private FileHelper() { }
+	
 	public static @Nullable YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
 	{
 		Validate.notNull((Object) path, "The yaml-file-path cannot be null.");
@@ -28,15 +30,26 @@ public class FileHelper
 		
 		YamlConfiguration configuration = YamlConfiguration.loadConfiguration(configFile);
 		
-		if (configuration.options().header().isEmpty())
+		if (configuration.options().header() == null || configuration.options().header().isEmpty())
 		{
-			configuration.options().header(StringHelper.isNotNullOrWhitespace(header) ? header : "# Created by Hufferlinge Config Manager");
+			configuration.options().header(StringHelper.isNotNullOrWhitespace(header) ? header : "Created by Hufferlinge Config Manager");
 		}		
 		
 		if (configuration.getDefaults() == null && defaults != null)
 		{
 			configuration.addDefaults(defaults);
 		}	
+		
+		try
+		{
+			configuration.options().copyHeader(true);
+			configuration.options().copyDefaults(true);
+			configuration.save(configFile);
+		} 
+		catch (IOException exception)
+		{
+			Bukkit.getLogger().log(Level.SEVERE, String.format("The config-file \"%s\" could not be saved.", configFile.getAbsolutePath()), exception);
+		}
 		return configuration;
 	}
 	

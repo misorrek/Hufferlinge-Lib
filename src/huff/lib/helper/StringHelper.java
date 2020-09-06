@@ -25,4 +25,13 @@ public class StringHelper
 	{
 		return string != null && !string.trim().isEmpty();
 	}
+	
+	public static boolean isIn(boolean ignoreCase, String value, String... list)
+	{
+		for (String compareValue : list)
+		{
+			if (ignoreCase ? value.equalsIgnoreCase(compareValue) : value.equals(compareValue)) return true;
+		}
+		return false;
+	}
 }

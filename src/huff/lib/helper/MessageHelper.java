@@ -27,35 +27,35 @@ public class MessageHelper
     public static String getPlayerNotFound() { return PREFIX_HUFF + PLAYERNOTFOUND.replace(PLACEHOLDER_PLAYER, " "); }
     public static String getPlayerNotFound(String player) { return PREFIX_HUFF + PLAYERNOTFOUND.replace(PLACEHOLDER_PLAYER, getHighlighted(player)); }
     
-    public static String getWrongInput() { return PREFIX_HUFF + PLAYERNOTFOUND.replace(PLACEHOLDER_TEXT, ""); }
-    public static String getWrongInput(String text) { return PREFIX_HUFF + PLAYERNOTFOUND.replace(PLACEHOLDER_TEXT, " " + text); }
+    public static String getWrongInput() { return PREFIX_HUFF + WRONGINPUT.replace(PLACEHOLDER_TEXT, ""); }
+    public static String getWrongInput(String text) { return PREFIX_HUFF + WRONGINPUT.replace(PLACEHOLDER_TEXT, " " + text); }
     
     @NotNull
     public static String getHighlighted(@NotNull String content)
     {
-    	Validate.notNull((Object) content, "The content cannot be null.");
-    	
-    	return " §9" + content + "§7 ";
+    	return getHighlighted(content, true, true);
     }
     
     @NotNull
     public static String getHighlighted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
-    	return (spaceLeft ? " " : "") + getHighlighted(content) + (spaceRight ? " " : "");
+    	Validate.notNull((Object) content, "The content cannot be null.");
+    	
+    	return (spaceLeft ? " §9" : "§9") + content + (spaceRight ? " §7" : "§7");
     }
     
     @NotNull
     public static String getQuoted(@NotNull String content)
     {
-    	Validate.notNull((Object) content, "The content cannot be null.");
-    	
-    	return " §9\"" + content + "\"§7 ";
+    	return getQuoted(content, true, true);
     }
     
     @NotNull
     public static String getQuoted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
-    	return (spaceLeft ? " " : "") + getQuoted(content) + (spaceRight ? " " : "");
+    	Validate.notNull((Object) content, "The content cannot be null.");
+    	
+    	return (spaceLeft ? " §9\"" : "§9\"") + content + (spaceRight ? "\"§7 " : "\"§7");
     }
     
     public static void sendConsoleMessage(@NotNull String message)

@@ -5,20 +5,20 @@ import java.util.logging.Level;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.server.v1_16_R1.ChatMessageType;
-import net.minecraft.server.v1_16_R1.IChatBaseComponent;
-import net.minecraft.server.v1_16_R1.PacketPlayOutChat;
-import net.minecraft.server.v1_16_R1.PacketPlayOutTitle;
-import net.minecraft.server.v1_16_R1.Vec3D;
-import net.minecraft.server.v1_16_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_16_R1.PacketPlayOutTitle.EnumTitleAction;
+import net.minecraft.server.v1_16_R2.ChatMessageType;
+import net.minecraft.server.v1_16_R2.IChatBaseComponent;
+import net.minecraft.server.v1_16_R2.PacketPlayOutChat;
+import net.minecraft.server.v1_16_R2.PacketPlayOutTitle;
+import net.minecraft.server.v1_16_R2.Vec3D;
+import net.minecraft.server.v1_16_R2.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_16_R2.PacketPlayOutTitle.EnumTitleAction;
 
 public class PackageHelper 
 {
