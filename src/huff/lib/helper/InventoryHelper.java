@@ -1,7 +1,13 @@
 package huff.lib.helper;
 
+import java.util.List;
+
+import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InventoryHelper
 {
@@ -11,27 +17,47 @@ public class InventoryHelper
 	
 	private InventoryHelper() { }
 	
-	public static ItemStack getBackItem()
+	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName)
 	{
-		ItemStack backItem = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-		backItem.getItemMeta().setDisplayName(ITEM_BACK);
-		
-		return backItem;
+		return getItemWithMeta(material, displayName, null);
 	}
 	
-	public static ItemStack getAbortItem()
+	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore)
 	{
-		ItemStack backItem = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-		backItem.getItemMeta().setDisplayName(ITEM_ABORT);
+		Validate.notNull((Object) material, "The material cannot be null.");
 		
-		return backItem;
+		ItemStack resultItem = new ItemStack(material);
+		ItemMeta resultMeta = resultItem.getItemMeta();
+		
+		if (StringHelper.isNotNullOrEmpty(displayName)) resultMeta.setDisplayName(displayName);	
+		if (lore != null) resultMeta.setLore(lore);
+			
+		resultItem.setItemMeta(resultMeta);
+		return resultItem;
 	}
 	
-	public static ItemStack getCloseItem()
+	public static @NotNull ItemStack getBorderItem()
 	{
-		ItemStack closeItem = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-		closeItem.getItemMeta().setDisplayName(ITEM_CLOSE);
-		
-		return closeItem;
+		return getItemWithMeta(Material.BLACK_STAINED_GLASS_PANE, " ");
+	}
+	
+	public static @NotNull ItemStack getFillItem()
+	{
+		return getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, " ");
+	}
+	
+	public static @NotNull ItemStack getBackItem()
+	{		
+		return getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_BACK);
+	}
+	
+	public static @NotNull ItemStack getAbortItem()
+	{
+		return getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_ABORT);
+	}
+	
+	public static @NotNull ItemStack getCloseItem()
+	{
+		return getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_CLOSE);
 	}
 }

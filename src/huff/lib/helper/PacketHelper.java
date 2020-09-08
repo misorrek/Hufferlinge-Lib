@@ -20,11 +20,11 @@ import net.minecraft.server.v1_16_R2.Vec3D;
 import net.minecraft.server.v1_16_R2.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_16_R2.PacketPlayOutTitle.EnumTitleAction;
 
-public class PackageHelper 
+public class PacketHelper 
 {
 	private static final int TICK_SECOND = 20;
 	
-	private PackageHelper() { }
+	private PacketHelper() { }
 	
 	// G E N E R A L
 	

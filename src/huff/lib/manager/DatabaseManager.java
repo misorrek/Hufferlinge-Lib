@@ -64,7 +64,7 @@ public class DatabaseManager
 			} 
 			catch (SQLException execption) 
 			{
-				Bukkit.getLogger().log(Level.SEVERE, "SQL-Verbindung fehlgeschlagen. Daten hinterlegt?", execption);
+				Bukkit.getLogger().log(Level.SEVERE, "SQL-Verbindung fehlgeschlagen. Daten hinterlegt?");
 			}
 		}
 	}
@@ -88,6 +88,10 @@ public class DatabaseManager
 	@NotNull
 	public PreparedStatement prepareStatement(String statement, Object... objects) throws SQLException
 	{
+		if (!isConnected())
+		{
+			throw new SQLException("Keine SQL-Verbindung. Daten hinterlegt?");
+		}		
 		return getConnection().prepareStatement(String.format(statement, objects));
 	}
 }
