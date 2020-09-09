@@ -24,7 +24,8 @@ public class DatabaseManager
 		this.password = databaseProperties.getPassword();
 	}
 	
-	public DatabaseManager(String host, String port, String databasename, String username, String password)
+	public DatabaseManager(@NotNull String host, @NotNull String port, @NotNull String databasename, 
+			               @NotNull String username, @NotNull String password)
 	{
 		this.host = host;
 		this.port = port;
@@ -33,11 +34,11 @@ public class DatabaseManager
 		this.password = password;
 	}
 	
-	private String host;
-	private String port;
-	private String databasename;
-	private String username;
-	private String password;
+	private final String host;
+	private final String port;
+	private final String databasename;
+	private final String username;
+	private final String password;
 	
 	private Connection connection;
 	
@@ -46,8 +47,7 @@ public class DatabaseManager
 		return connection != null;
 	}
 	
-	@Nullable
-	public Connection getConnection()
+	public @Nullable Connection getConnection()
 	{
 		return connection;
 	}
