@@ -1,7 +1,9 @@
 package huff.lib.manager;
 
+import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +34,7 @@ public class RedisManager
 		return jedis;
 	}
 	
-	public void connect()
+	public void connect() // WAS GEMEINT MIT NICHT DAUERHAFTEN CONNECTION?
 	{
 		if (!isConnected())
 		{
@@ -46,6 +48,7 @@ public class RedisManager
 				{
 					jedis.connect();
 				}
+				MessageHelper.sendConsoleMessage("Redis-Ping : " + jedis.ping());
 				MessageHelper.sendConsoleMessage("Redis-Verbindung erfolgreich hergestellt.");
 			} 
 			catch (Exception exception) 
@@ -60,6 +63,88 @@ public class RedisManager
 		if (isConnected())
 		{
 			jedis.disconnect();
+		}
+	}
+	
+	public boolean existKey(@NotNull String key)
+	{
+		Validate.notNull((Object) key, "The key cannot be null.");
+		
+		if (!isConnected())
+		{
+			try 
+			{
+				return jedis.exists(key);
+			} 
+			catch (Exception exception) 
+			{
+				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+			}
+		}	
+		return false;
+	}
+	
+	public boolean addMap(@NotNull String key, Map<String, String> fieldValuePairs) 
+	{
+		if (!isConnected() || !existKey(key))
+		{
+			try 
+			{
+				jedis.hmset(key, fieldValuePairs);
+				return true;
+			} 
+			catch (Exception exception) 
+			{
+				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+			}
+		}
+		return false;
+	}
+	
+	public @Nullable String getFieldValue(@NotNull String key, @NotNull String field)
+	{
+		if (!isConnected() || existKey(key))
+		{
+			try
+			{
+				return jedis.hget(key, field);
+			}
+			catch (Exception exception) 
+			{
+				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+			}
+		}
+		return null;
+	}
+	
+	public @Nullable Map<String, String> getAlllValues(@NotNull String key)
+	{
+		if (!isConnected() || existKey(key))
+		{
+			try
+			{
+				return jedis.hgetAll(key);
+			}
+			catch (Exception exception) 
+			{
+				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+			}
+		}
+		return null;
+	}
+	
+	public void updateFieldValue(@NotNull String key, @NotNull String field, @NotNull String value)
+	{
+		if (!isConnected() || existKey(key))
+		{
+			try
+			{
+				jedis.hset(key, field, value);
+			}
+			catch (Exception exception) 
+			{
+				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+			}
 		}
 	}
 }
