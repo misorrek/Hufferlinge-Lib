@@ -81,10 +81,11 @@ public class PacketHelper
 		Validate.notNull((Object) player, "The title cannot be null.");
 		Validate.notNull((Object) player, "The subtitle cannot be null.");
 		
-		IChatBaseComponent chatTitle = ChatSerializer.a(getJsonMessage(title));
-		IChatBaseComponent chatSubTitle = ChatSerializer.a(getJsonMessage(subtitle));
-		PacketPlayOutTitle packet = new PacketPlayOutTitle(EnumTitleAction.TITLE, chatTitle);
-		PacketPlayOutTitle packet2 = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, chatSubTitle);
+		final IChatBaseComponent chatTitle = ChatSerializer.a(getJsonMessage(title));
+		final IChatBaseComponent chatSubTitle = ChatSerializer.a(getJsonMessage(subtitle));
+		final PacketPlayOutTitle packet = new PacketPlayOutTitle(EnumTitleAction.TITLE, chatTitle);
+		final PacketPlayOutTitle packet2 = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, chatSubTitle);
+		
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet2);
 	}
@@ -105,29 +106,27 @@ public class PacketHelper
 		Validate.notNull((Object) player, "The player cannot be null.");
 		Validate.notNull((Object) player, "The message cannot be null.");
 		
-		IChatBaseComponent cbc = ChatSerializer.a(getJsonMessage(message));
-		PacketPlayOutChat ppoc = new PacketPlayOutChat(cbc, ChatMessageType.GAME_INFO, player.getUniqueId());
+		final IChatBaseComponent cbc = ChatSerializer.a(getJsonMessage(message));
+		final PacketPlayOutChat ppoc = new PacketPlayOutChat(cbc, ChatMessageType.GAME_INFO, player.getUniqueId());
+		
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(ppoc);
 	}
 	
 	// U T I L
 	
-	@NotNull
-	public static Vec3D getLocationToVec3D(@NotNull Location location) 
+	public static @NotNull Vec3D getLocationToVec3D(@NotNull Location location) 
 	{
 		Validate.notNull((Object) location, "The location cannot be null.");
 		
 		return new Vec3D(location.getX(), location.getY(), location.getZ());
 	}
 	
-	@NotNull
 	public static long getSecondsInTicks(int seconds)
 	{
 		return (long) TICK_SECOND * seconds;
 	}
 	
-	@NotNull
-	public static String getJsonMessage(@NotNull String message)
+	public static @NotNull String getJsonMessage(@NotNull String message)
 	{
 		Validate.notNull((Object) message, "The message cannot be null.");
 		
@@ -138,16 +137,16 @@ public class PacketHelper
 	{
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
-		PacketPlayOutTitle packet = new PacketPlayOutTitle(EnumTitleAction.TIMES, null, infade, ticks, outfade);
+		final PacketPlayOutTitle packet = new PacketPlayOutTitle(EnumTitleAction.TIMES, null, infade, ticks, outfade);
+		
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
 	}
-	
-	@Nullable
-	private static Class<?> getNMSClass(@NotNull String className) 
+		
+	private static @Nullable Class<?> getNMSClass(@NotNull String className) 
 	{
 		Validate.notNull((Object) className, "The class-name cannot be null.");
 		
-		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+		final String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
 		try 
 		{

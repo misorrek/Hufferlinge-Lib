@@ -25,10 +25,10 @@ public class AreaChatListener
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent event)
 	{
-		Player player = event.getPlayer();
-		String message = event.getMessage();
-		boolean isGlobalMessgae = message.toLowerCase().startsWith("@all") || message.toLowerCase().startsWith("@global");
-		StringBuilder formatBuilder = new StringBuilder();
+		final Player player = event.getPlayer();
+		final String message = event.getMessage();
+		final boolean isGlobalMessgae = message.toLowerCase().startsWith("@all") || message.toLowerCase().startsWith("@global");
+		final StringBuilder formatBuilder = new StringBuilder();
 		
 		formatBuilder.append("§8☰ ");
 		
@@ -43,7 +43,7 @@ public class AreaChatListener
 		
 		if (luckPerms != null) 
 		{
-		    String primaryPlayerPrefix = PermissionHelper.getPrimaryPlayerPrefix(luckPerms, player);
+		    final String primaryPlayerPrefix = PermissionHelper.getPrimaryPlayerPrefix(luckPerms, player);
 		    
 		    if (primaryPlayerPrefix != null && !primaryPlayerPrefix.isEmpty())
 		    {
@@ -58,8 +58,8 @@ public class AreaChatListener
 		}
 		else
 		{
-			BoundingBox areaChatBox = new BoundingBox(20, 10, 20, -20, -10, -20);
-			String finalMessage = formatBuilder.toString().replace("%1$s", player.getName()).replace("%2$s", message);
+			final BoundingBox areaChatBox = new BoundingBox(20, 10, 20, -20, -10, -20);
+			final String finalMessage = formatBuilder.toString().replace("%1$s", player.getName()).replace("%2$s", message);
 			
 			for (Entity nearbyEntity : player.getWorld().getNearbyEntities(areaChatBox))
 			{

@@ -21,14 +21,13 @@ public class FileHelper
 	public static @Nullable YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
 	{
 		Validate.notNull((Object) path, "The yaml-file-path cannot be null.");
-		File configFile = loadFile(path);
+		final File configFile = loadFile(path);
 		
 		if (configFile == null)
 		{
 			return null;
-		}
-		
-		YamlConfiguration configuration = YamlConfiguration.loadConfiguration(configFile);
+		}		
+		final YamlConfiguration configuration = YamlConfiguration.loadConfiguration(configFile);
 		
 		if (configuration.options().header() == null || configuration.options().header().isEmpty())
 		{
@@ -85,7 +84,7 @@ public class FileHelper
 	public static @Nullable File loadFile(@NotNull String path)
 	{
 		Validate.notNull((Object) path, "The file-path cannot be null.");
-		File file = new File(path);
+		final File file = new File(path);
 		
 		if (!createFileAndParents(file))
 		{
@@ -101,7 +100,7 @@ public class FileHelper
 		
 		if(!file.exists())
 		{
-			File parentFile = file.getParentFile();
+			final File parentFile = file.getParentFile();
 			
 			if (parentFile != null)
 			{

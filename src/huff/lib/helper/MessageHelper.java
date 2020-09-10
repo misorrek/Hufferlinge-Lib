@@ -29,29 +29,25 @@ public class MessageHelper
     
     public static String getWrongInput() { return PREFIX_HUFF + WRONGINPUT.replace(PLACEHOLDER_TEXT, ""); }
     public static String getWrongInput(String text) { return PREFIX_HUFF + WRONGINPUT.replace(PLACEHOLDER_TEXT, " " + text); }
-    
-    @NotNull
-    public static String getHighlighted(@NotNull String content)
+      
+    public static @NotNull String getHighlighted(@NotNull String content)
     {
     	return getHighlighted(content, true, true);
     }
     
-    @NotNull
-    public static String getHighlighted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
+    public static @NotNull String getHighlighted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
     	Validate.notNull((Object) content, "The content cannot be null.");
     	
     	return (spaceLeft ? " §9" : "§9") + content + (spaceRight ? " §7" : "§7");
     }
     
-    @NotNull
-    public static String getQuoted(@NotNull String content)
+    public static @NotNull String getQuoted(@NotNull String content)
     {
     	return getQuoted(content, true, true);
     }
     
-    @NotNull
-    public static String getQuoted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
+    public static @NotNull String getQuoted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
     	Validate.notNull((Object) content, "The content cannot be null.");
     	

@@ -36,26 +36,23 @@ public class PermissionHelper
 	}
 	
 	// L U C K P E R M S
-	
-	@Nullable
-	public static LuckPerms getLuckPerms()
+		
+	public static @Nullable LuckPerms getLuckPerms()
 	{
 		RegisteredServiceProvider<LuckPerms> luckyPermsProvider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
 		 
 		return luckyPermsProvider != null ? luckyPermsProvider.getProvider() : null;
 	}
-	
-	@NotNull
-	public static QueryOptions getPlayerQueryOptions(@NotNull LuckPerms luckPerms, @NotNull Player player)
+		
+	public static @NotNull QueryOptions getPlayerQueryOptions(@NotNull LuckPerms luckPerms, @NotNull Player player)
 	{
 		Validate.notNull((Object) luckPerms, "The luckperms-api cannot be null.");
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
 		return luckPerms.getContextManager().getQueryOptions(player);
 	}
-	
-	@Nullable
-	public static String getPrimaryPlayerPrefix(@NotNull LuckPerms luckPerms, @NotNull Player player)
+		
+	public static @Nullable String getPrimaryPlayerPrefix(@NotNull LuckPerms luckPerms, @NotNull Player player)
 	{
 		Validate.notNull((Object) luckPerms, "The luckperms-api cannot be null.");
 		Validate.notNull((Object) player, "The player cannot be null.");

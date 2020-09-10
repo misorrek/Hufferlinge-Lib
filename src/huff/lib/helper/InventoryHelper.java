@@ -26,8 +26,8 @@ public class InventoryHelper
 	{
 		Validate.notNull((Object) material, "The material cannot be null.");
 		
-		ItemStack resultItem = new ItemStack(material);
-		ItemMeta resultMeta = resultItem.getItemMeta();
+		final ItemStack resultItem = new ItemStack(material);
+		final ItemMeta resultMeta = resultItem.getItemMeta();
 		
 		if (StringHelper.isNotNullOrEmpty(displayName)) resultMeta.setDisplayName(displayName);	
 		if (lore != null) resultMeta.setLore(lore);

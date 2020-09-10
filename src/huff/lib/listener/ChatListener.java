@@ -26,8 +26,8 @@ public class ChatListener implements Listener
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent event)
 	{
-		Player player = event.getPlayer();
-		StringBuilder formatBuilder = new StringBuilder();
+		final Player player = event.getPlayer();
+		final StringBuilder formatBuilder = new StringBuilder();
 		
 		formatBuilder.append("§8☰§7 ");
 		
@@ -38,7 +38,7 @@ public class ChatListener implements Listener
 		
 		if (luckPerms != null) 
 		{
-		    String primaryPlayerPrefix = PermissionHelper.getPrimaryPlayerPrefix(luckPerms, player);
+		    final String primaryPlayerPrefix = PermissionHelper.getPrimaryPlayerPrefix(luckPerms, player);
 		    
 		    if (primaryPlayerPrefix != null && !primaryPlayerPrefix.isEmpty())
 		    {

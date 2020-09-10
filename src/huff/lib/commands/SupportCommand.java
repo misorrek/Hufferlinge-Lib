@@ -29,7 +29,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	private static final String PREFIX_SUPPORT = "§8☰ §eSupport §8☷§7 ";	
 	private static final String PERM_SUPPORT =  PermissionHelper.PERM_ROOT_HUFF + "support";
 	
-	private SupportMap supportMap = new SupportMap();
+	private final SupportMap supportMap = new SupportMap();
 	
 	// C O M M A N D
 	
@@ -41,7 +41,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 			MessageHelper.sendConsoleMessage(MessageHelper.NORUNINCONSOLE);
 			return false;
 		}	
-		Player player = (Player) sender;
+		final Player player = (Player) sender;
 
 		if (args.length == 0)
 		{
@@ -104,7 +104,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	
 	private boolean executeShowList(@NotNull Player player)
 	{
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		
 		builder.append(PREFIX_SUPPORT + "Liste offener Support-Kanäle §8☰");
 		
@@ -215,13 +215,13 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) 
 	{
-		List<String> paramSuggestions = new ArrayList<>();
+		final List<String> paramSuggestions = new ArrayList<>();
 		
 		if (!(sender instanceof Player)) 
 		{
 			return paramSuggestions;
 		}	
-		Player player = (Player) sender;
+		final Player player = (Player) sender;
 	
 		if (args.length == 0)
 		{
@@ -236,10 +236,8 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	}
 	
 	private void fillFirstSuggestion(@NotNull Player player, @NotNull List<String> paramSuggestions)
-	{
-		Validate.notNull((Object) paramSuggestions, "The param-suggestion-list cannot be null.");
-		
-		boolean isPlayerInSupport = supportMap.containsKey(player.getUniqueId());
+	{		
+		final boolean isPlayerInSupport = supportMap.containsKey(player.getUniqueId());
 		
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
@@ -259,9 +257,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	}
 	
 	private void fillAvailableChatsSuggestion(@NotNull List<String> paramSuggestions)
-	{
-		Validate.notNull((Object) paramSuggestions, "The param-suggestion-list cannot be null.");
-		
+	{	
 		for (UUID availableChat : supportMap.keySet())
 		{
 			paramSuggestions.add(availableChat.toString());
@@ -273,8 +269,8 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onChat(AsyncPlayerChatEvent event) 
 	{
-		Player player = event.getPlayer();
-		String msg = event.getMessage();
+		final Player player = event.getPlayer();
+		final String msg = event.getMessage();
 		
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
@@ -295,7 +291,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	@EventHandler
 	public void onLeave(PlayerQuitEvent event)
 	{
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 		
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
@@ -316,7 +312,7 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	
 	// U T I L
 	
-	private void sendChannelMessage(@NotNull UUID targetChat, @NotNull String message, boolean sendToUser)
+	private void sendChannelMessage(@NotNull UUID targetChat, String message, boolean sendToUser)
 	{
 		Validate.notNull((Object) targetChat, "The target-chat cannot be null.");
 		

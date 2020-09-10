@@ -42,11 +42,11 @@ public class TellCommand implements CommandExecutor, TabCompleter
 		
 		if (args.length >= 2)
 		{
-			Player target = Bukkit.getPlayer(args[0]);
+			final Player target = Bukkit.getPlayer(args[0]);
 
 			if (target != null)
 			{
-				StringBuilder builder = new StringBuilder();
+				final StringBuilder builder = new StringBuilder();
 
 				for (int i = 1; i < args.length; i++)
 				{
@@ -74,7 +74,7 @@ public class TellCommand implements CommandExecutor, TabCompleter
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) 
 	{
-		List<String> paramSuggestions = new ArrayList<>();
+		final List<String> paramSuggestions = new ArrayList<>();
 		
 		if (sender instanceof Player && !PermissionHelper.hasPlayerPermissionFeedbacked((Player) sender, PERM_TELL))		
 		{

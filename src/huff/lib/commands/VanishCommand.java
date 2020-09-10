@@ -56,7 +56,7 @@ public class VanishCommand implements CommandExecutor, TabCompleter, Listener
 				
 				if (targetPlayer == null || !targetPlayer.isOnline())
 				{
-					MessageHelper.getPlayerNotFound(targetPlayer.getName());
+					MessageHelper.getPlayerNotFound(args[0]);
 					return false;
 				}
 				
@@ -117,7 +117,7 @@ public class VanishCommand implements CommandExecutor, TabCompleter, Listener
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) 
 	{
-		List<String> paramSuggestions = new ArrayList<>();
+		final List<String> paramSuggestions = new ArrayList<>();
 		
 		if (!(sender instanceof Player) || !PermissionHelper.hasPlayerPermission((Player) sender, PERM_VANISH)) 
 		{
@@ -140,7 +140,7 @@ public class VanishCommand implements CommandExecutor, TabCompleter, Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 		
 		for (UUID uuid : vanishedPlayer) 
 		{
@@ -154,11 +154,11 @@ public class VanishCommand implements CommandExecutor, TabCompleter, Listener
 			} 
 			else 
 			{
-				Player vanishedPlayer = Bukkit.getPlayer(uuid);
+				final Player someVanishedPlayer = Bukkit.getPlayer(uuid);
 				
-				if(vanishedPlayer != null && vanishedPlayer.isOnline()) 
+				if(someVanishedPlayer != null && someVanishedPlayer.isOnline()) 
 				{
-					player.hidePlayer(plugin, vanishedPlayer);
+					player.hidePlayer(plugin, someVanishedPlayer);
 				}	
 			}
 		}
