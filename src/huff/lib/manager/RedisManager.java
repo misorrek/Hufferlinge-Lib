@@ -9,10 +9,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.MessageHelper;
+import huff.lib.interfaces.RedisProperties;
 import redis.clients.jedis.Jedis;
 
 public class RedisManager
 {
+	public RedisManager(@NotNull RedisProperties redisProperties)
+	{
+		this.host = redisProperties.getHost();
+		this.port = redisProperties.getPort();
+	}
+	
 	public RedisManager(@NotNull String host, int port)
 	{	
 		this.host = host;
