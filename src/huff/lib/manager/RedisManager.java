@@ -77,7 +77,7 @@ public class RedisManager
 	{
 		Validate.notNull((Object) key, "The key cannot be null.");
 		
-		if (!isConnected())
+		if (isConnected())
 		{
 			try 
 			{
@@ -93,7 +93,7 @@ public class RedisManager
 	
 	public boolean addMap(@NotNull String key, Map<String, String> fieldValuePairs) 
 	{
-		if (!isConnected() || !existKey(key))
+		if (isConnected() || !existKey(key))
 		{
 			try 
 			{
@@ -110,7 +110,7 @@ public class RedisManager
 	
 	public @Nullable String getFieldValue(@NotNull String key, @NotNull String field)
 	{
-		if (!isConnected() || existKey(key))
+		if (isConnected() || existKey(key))
 		{
 			try
 			{
@@ -126,7 +126,7 @@ public class RedisManager
 	
 	public @Nullable Map<String, String> getAlllValues(@NotNull String key)
 	{
-		if (!isConnected() || existKey(key))
+		if (isConnected() || existKey(key))
 		{
 			try
 			{
@@ -142,7 +142,7 @@ public class RedisManager
 	
 	public void updateFieldValue(@NotNull String key, @NotNull String field, @NotNull String value)
 	{
-		if (!isConnected() || existKey(key))
+		if (isConnected() || existKey(key))
 		{
 			try
 			{

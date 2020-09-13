@@ -60,7 +60,7 @@ public class TellCommand implements CommandExecutor, TabCompleter
 				sender.sendMessage(MessageHelper.getPlayerNotFound(args[0]));
 			} 
 		}
-		sender.sendMessage(MessageHelper.getWrongInput("/" + cmd.getName() + " <Name> <Nachricht>"));
+		sender.sendMessage(MessageHelper.getWrongInput("/" + label + " <Name> <Nachricht>"));
 		return false;
 	}
 	
