@@ -79,4 +79,37 @@ public class MessageHelper
 			}
 		}
 	}
+    
+    public static @NotNull String getTimeLabel(int time)
+    {
+    	if (time <= 1000)
+    	{
+    		return "Sonnenaufgang";
+    	}
+    	else if (time <= 6000)
+    	{
+    		return "Vormittag";
+    	}
+    	else if (time <= 7000)
+    	{
+    		return "Mittag";
+    	}
+    	else if (time <= 11000)
+    	{
+    		return "Nachmittag";
+    	}
+    	else if (time <= 13000)
+    	{
+    		return "Abend";
+    	}
+    	else if (time <= 14000)
+    	{
+    		return "Sonnenuntergang";
+    	}
+    	else if (time <= 24000)
+    	{
+    		return "Nacht";
+    	}
+    	return "";
+    }
 }
