@@ -5,20 +5,11 @@ import java.util.logging.Level;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.server.v1_16_R2.ChatMessageType;
-import net.minecraft.server.v1_16_R2.IChatBaseComponent;
-import net.minecraft.server.v1_16_R2.PacketPlayOutChat;
-import net.minecraft.server.v1_16_R2.PacketPlayOutTitle;
-import net.minecraft.server.v1_16_R2.Vec3D;
-import net.minecraft.server.v1_16_R2.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_16_R2.PacketPlayOutTitle.EnumTitleAction;
 
 public class PacketHelper 
 {
@@ -81,13 +72,13 @@ public class PacketHelper
 		Validate.notNull((Object) player, "The title cannot be null.");
 		Validate.notNull((Object) player, "The subtitle cannot be null.");
 		
-		final IChatBaseComponent chatTitle = ChatSerializer.a(getJsonMessage(title));
-		final IChatBaseComponent chatSubTitle = ChatSerializer.a(getJsonMessage(subtitle));
-		final PacketPlayOutTitle packet = new PacketPlayOutTitle(EnumTitleAction.TITLE, chatTitle);
-		final PacketPlayOutTitle packet2 = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, chatSubTitle);
+		final Object chatTitle = getNMSClass("ChatSerializer").getMethod("a", String.class).invoke(null, getJsonMessage(title));
+		final Object chatSubTitle = getNMSClass("ChatSerializer").getMethod("a", String.class).invoke(null, getJsonMessage(subtitle));
+		final Object packet = getNMSClass("PacketPlayOutTitle").getContructor(Enum.class, chatTitle.class).newInstance(getEnumValue(getNMSClass("PacketPlayOutTitle.EnumTitleAction"), "TITLE"), chatTitle);
+		final Object packet2 = getNMSClass("PacketPlayOutTitle").getContructor(Enum.class, chatTitle.class).newInstance(getEnumValue(getNMSClass("PacketPlayOutTitle.EnumTitleAction"), "SUBTITLE"), chatSubTitle);
 		
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet2);
+		sendPacket(packet);
+		sendPacket(packet2);
 	}
 	
 	public static void sendTitle(@NotNull Player player, @NotNull String title, @NotNull String subtitle, int ticks) 
@@ -106,19 +97,46 @@ public class PacketHelper
 		Validate.notNull((Object) player, "The player cannot be null.");
 		Validate.notNull((Object) player, "The message cannot be null.");
 		
-		final IChatBaseComponent cbc = ChatSerializer.a(getJsonMessage(message));
-		final PacketPlayOutChat ppoc = new PacketPlayOutChat(cbc, ChatMessageType.GAME_INFO, player.getUniqueId());
+		final Object cbc = getNMSClass("ChatSerializer").getMethod("a", String.class).invoke(null, getJsonMessage(message));
+		final Object ppoc = getNMSClass("PacketPlayOutChat").getContructor(cbc.class, Enum.class, UUID.class).newInstance(cbc, getEnumValue(getNMSClass("ChatMessageType"), "GAME_INFO"), player.getUniqueId());
 		
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(ppoc);
+		sendPacket(ppoc);
 	}
 	
+	// I T E M
+
+	public static @NotNull ItemStack addTagToItemStack(@NotNull ItemStack itemStack, @NotNull String key, @NotNull String value)
+	{
+		final Object nmsItemStack = getNMSClass("CraftItemStack").getMethod("asNMSCopy", itemStack.class).invoke(null, itemStack);
+		final Object nmsItemCompound = nmsItemStack.class.getMethod("hasTag").invoke(nmsItemStack) ? nmsItemStack.class.getMethod("getTag").invoke(nmsItemStack) : getNMSClass("NBTTagCompound").getConstructor().newInstance();
+
+		nmsItemCompound.class.getMethod("set", String.class, getNMSClass("NBTTagBytes").class).invoke(nmsItemCompound, key, getNMSClass("NBTTagBytes").getConstructor(Bytes[].class).newInstance(value.getBytes()));
+		nmsItemStack.class.getMethod("setTag", nmsItemCompound.class).invoke(nmsItemStack, nmsItemCompound);
+
+		getNMSClass("CraftItemStack").getMethod("asBukkitCopy", nmsItemStack.class).invoke(null, nmsItemStack);
+	}
+
+	public static @Nullable String getTagFromItemStack(@NotNull ItemStack itemStack, @NotNull String key)
+	{
+		final Object nmsItemStack = getNMSClass("CraftItemStack").getMethod("asNMSCopy", itemStack.class).invoke(null, itemStack);
+	
+		if (!nmsItemStack.class.getMethod("hasTag"))
+		{	
+			return null;		
+		}	
+		final Object nmsItemCompound = nmsItemStack.class.getMethod("getTag").invoke(nmsItemStack);
+		final Bytes[] bytes = nmsItemCompound.class.getMethod("getBytes", String.class).invoke(nmsItemCompound, key);
+
+		return bytes != null ? new String(bytes) : null;
+	}
+
 	// U T I L
 	
-	public static @NotNull Vec3D getLocationToVec3D(@NotNull Location location) 
+	public static @NotNull Object getLocationToVec3D(@NotNull Location location) 
 	{
 		Validate.notNull((Object) location, "The location cannot be null.");
 		
-		return new Vec3D(location.getX(), location.getY(), location.getZ());
+		return getNMSClass("Vec3D").getConstructor(Double.class, Double.class, Double.class).invoke(location.getX(), location.getY(), location.getZ());
 	}
 	
 	public static long getSecondsInTicks(int seconds)
@@ -157,5 +175,30 @@ public class PacketHelper
 			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant get nms-class named \"%s\" in version \"%s\".", className, version), exception);
 			return null;
 		}
+	}
+
+	private static @Nullable <E extends Enum> E getEnumValue(Class<E> enumClass, String value) throws NoSuchFieldException, IllegalAccessException 
+	{
+		E[] values = getEnumValues(enumClass);
+
+		for (int i = 0; i < values.length; i++)
+		{
+			E currentValue = values[i];
+
+			if (currentValue.toString().equals(value))
+			{
+				return currentValue;
+			}
+		}
+	}
+
+	private static @Nullable <E extends Enum> E[] getEnumValues(Class<E> enumClass) throws NoSuchFieldException, IllegalAccessException 
+	{
+		Field f = enumClass.getDeclaredField("$VALUES");
+		System.out.println(f);
+		System.out.println(Modifier.toString(f.getModifiers()));
+		f.setAccessible(true);
+		Object o = f.get(null);
+		return (E[]) o;
 	}
 }
