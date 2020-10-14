@@ -2,8 +2,27 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>hufferlinge</groupId>
   <artifactId>lib</artifactId>
-  <version>1.0</version>
-  <dependencies>
+  <version>1.16.3-R0.1-SNAPSHOT</version>
+  
+  <repositories>
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+    </repository>
+	<repository>
+		<id>codemc-repo</id>
+		<url>https://repo.codemc.org/repository/maven-public/</url>
+		<layout>default</layout>
+	</repository>
+  </repositories>
+  
+  <dependencies>  
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>  
   	<dependency>
 	  <groupId>org.jetbrains</groupId>
 	  <artifactId>annotations</artifactId>
@@ -19,7 +38,13 @@
 	  <artifactId>jedis</artifactId>
 	  <version>3.3.0</version>
 	</dependency>
+	<dependency>
+	  <groupId>de.tr7zw</groupId>
+	  <artifactId>item-nbt-api</artifactId>
+	  <version>2.5.0</version>
+	</dependency>
   </dependencies>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
