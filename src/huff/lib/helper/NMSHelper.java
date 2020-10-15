@@ -39,7 +39,7 @@ public class NMSHelper
 		}
 	}
 	
-	public static @Nullable <T extends Enum<T>> Class<T> getNMSEnum(@NotNull String enumName)
+	private static @Nullable <T extends Enum<T>> Class<T> getNMSEnum(@NotNull String enumName)
 	{
 		final Class<?> enumClass = getNMSClass(enumName);
 		
@@ -210,7 +210,7 @@ public class NMSHelper
 		return (long) TICK_SECOND * seconds;
 	}
 	
-	private static void sendTime(@NotNull Player player, int ticks, int infade, int outfade)
+	public static void sendTime(@NotNull Player player, int ticks, int infade, int outfade)
 	{
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
@@ -253,9 +253,9 @@ public class NMSHelper
 		Validate.notNull((Object) player, "The message cannot be null.");
 		
 		final Object serializedMessage = invokeStaticMethod("ChatSerializer", "a", getJsonMessage(message));
-		final Object ppoc = createInstance("PacketPlayOutChat", serializedMessage, getEnumByName("ChatMessageType", "GAME_INFO"), player.getUniqueId());
+		final Object packet = createInstance("PacketPlayOutChat", serializedMessage, getEnumByName("ChatMessageType", "GAME_INFO"), player.getUniqueId());
 		
-		sendPacket(player, ppoc);
+		sendPacket(player, packet);
 	}
 	
 	// I T E M

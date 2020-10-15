@@ -1,89 +1,134 @@
 package huff.lib.helper;
 
-import java.util.List;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class InventoryHelper
 {
+	public static final int INV_SIZE_1 = 9;
+	public static final int INV_SIZE_2 = 18;
+	public static final int INV_SIZE_3 = 27;
+	public static final int INV_SIZE_4 = 36;
+	public static final int INV_SIZE_5 = 45;
+	public static final int INV_SIZE_6 = 54;
+
+	public static final int ROW_LENGTH = 9;
+	public static final int LAST_ROW = 6;
+	
 	public static final String ITEM_BACK = "§7» §cZurück";
 	public static final String ITEM_ABORT = "§7» §cAbbrechen";
 	public static final String ITEM_CLOSE = "§7» §cSchließen §7«";
 	
 	private InventoryHelper() { }
 	
-	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName)
-	{
-		return getItemWithMeta(material, displayName, null);
-	}
-	
-	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore)
-	{
-		return getItemWithMeta(material, displayName, lore);
-	}
-	
-	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore, ItemFlag... itemFlags)
-	{
-		Validate.notNull((Object) material, "The material cannot be null.");
-		
-		final ItemStack resultItem = new ItemStack(material);
-		final ItemMeta resultMeta = resultItem.getItemMeta();
-		
-		if (StringHelper.isNotNullOrEmpty(displayName)) resultMeta.setDisplayName(displayName);	
-		if (lore != null) resultMeta.setLore(lore);
-		if (itemFlags != null) resultMeta.addItemFlags(itemFlags);
-			
-		resultItem.setItemMeta(resultMeta);
-		return resultItem;
-	}
-	
-	public static @NotNull ItemStack getSkullWithMeta(@NotNull OfflinePlayer owner, @Nullable String displayName)
-	{
-		return getSkullWithMeta(owner, displayName, null);
-	}
-	
-	public static @NotNull ItemStack getSkullWithMeta(@NotNull OfflinePlayer owner, @Nullable String displayName, @Nullable List<String> lore)
-	{
-		Validate.notNull((Object) owner, "The skull-owner cannot be null.");
-		
-		final ItemStack resultItem = getItemWithMeta(Material.PLAYER_HEAD, displayName, lore);
-		final SkullMeta resultMeta = (SkullMeta) resultItem.getItemMeta();
-		
-		resultMeta.setOwningPlayer(owner);
-		resultItem.setItemMeta(resultMeta);
-		return resultItem;
-	}
-	
 	public static @NotNull ItemStack getBorderItem()
 	{
-		return getItemWithMeta(Material.BLACK_STAINED_GLASS_PANE, null, null, ItemFlag.HIDE_ATTRIBUTES);
+		return ItemHelper.getItemWithMeta(Material.BLACK_STAINED_GLASS_PANE, null, null, ItemFlag.HIDE_ATTRIBUTES);
 	}
 	
 	public static @NotNull ItemStack getFillItem()
 	{
-		return getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, null, null, ItemFlag.HIDE_ATTRIBUTES);
+		return ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, null, null, ItemFlag.HIDE_ATTRIBUTES);
 	}
 	
 	public static @NotNull ItemStack getBackItem()
 	{		
-		return getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_BACK);
+		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_BACK);
 	}
 	
 	public static @NotNull ItemStack getAbortItem()
 	{
-		return getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_ABORT);
+		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_ABORT);
 	}
 	
 	public static @NotNull ItemStack getCloseItem()
 	{
-		return getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_CLOSE);
+		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_CLOSE);
+	}
+	
+	public static void setBorder(@NotNull Inventory inventory, @Nullable ItemStack borderItemStack)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");
+		
+		final int inventorySize = inventory.getSize();
+		final int lastLineIndex = inventorySize - ROW_LENGTH;
+		
+		for (int i = 0; i < inventorySize; i++)
+		{
+			if (i < ROW_LENGTH || i % ROW_LENGTH == 0 || (i - 1) % ROW_LENGTH == 0 || i >= lastLineIndex)
+			{
+				inventory.setItem(i, borderItemStack);
+			}
+		}
+	}
+	
+	public static void setFill(@NotNull Inventory inventory, @Nullable ItemStack fillItemStack, boolean ignoreBorder)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");
+		
+		final int inventorySize = inventory.getSize();
+		final int lastLineIndex = inventorySize - ROW_LENGTH;
+		
+		for (int i = 0; i < inventorySize; i++)
+		{
+			if (ignoreBorder || (i > ROW_LENGTH && i % ROW_LENGTH != 0 && (i - 1) % ROW_LENGTH != 0 || i < lastLineIndex))
+			{
+				inventory.setItem(i, fillItemStack);
+			}		
+		}
+	}
+	
+	public static void setItem(@NotNull Inventory inventory, int row, int coloum, @Nullable ItemStack itemStack)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
+	
+		inventory.setItem(getPositonFromRowColoum(inventory.getSize(), row, coloum), itemStack);
+	}
+	
+	public static @Nullable ItemStack getItem(@NotNull Inventory inventory, int row, int coloum)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
+		
+		return inventory.getItem(getPositonFromRowColoum(inventory.getSize(), row, coloum));
+	}
+	
+	private static int getPositonFromRowColoum(int inventorySize, int row, int coloum)
+	{
+		if (row * ROW_LENGTH > inventorySize)
+		{
+			row = getLastLine(inventorySize);
+		}
+		
+		if (coloum > ROW_LENGTH)
+		{
+			coloum = ROW_LENGTH;
+		}
+		row--;
+		coloum--;
+		
+		if (row < 0)
+		{
+			row = 0;
+		}
+		
+		if (coloum < 0)
+		{
+			coloum = 0;
+		}	
+		return ((row) * ROW_LENGTH) + coloum;
+	}
+	
+	public static int getLastLine(int inventorySize)
+	{			
+		if (inventorySize % ROW_LENGTH != 0)
+		{
+			throw new NumberFormatException(StringHelper.build("The inventory-size is not a multiply of ", ROW_LENGTH, "."));
+		}	
+		return inventorySize / ROW_LENGTH;
 	}
 }
