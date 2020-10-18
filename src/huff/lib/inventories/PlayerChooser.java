@@ -14,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
-import huff.lib.various.ExtendableInventory;
+import huff.lib.various.ExpandableInventory;
 
-public class PlayerChooser extends ExtendableInventory
+public class PlayerChooser extends ExpandableInventory
 {
 	private static final int MIN_SIZE = InventoryHelper.INV_SIZE_3;
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;

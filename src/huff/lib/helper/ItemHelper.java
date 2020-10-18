@@ -1,8 +1,10 @@
 package huff.lib.helper;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemFlag;
@@ -56,5 +58,15 @@ public class ItemHelper
 		resultMeta.setOwningPlayer(owner);
 		resultItem.setItemMeta(resultMeta);
 		return resultItem;
+	}
+	
+	public static @NotNull ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName)
+	{
+		return getSkullWithMeta(Bukkit.getOfflinePlayer(ownerUUID), displayName, null);
+	}
+	
+	public static @NotNull ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName, @Nullable List<String> lore)
+	{
+		return getSkullWithMeta(Bukkit.getOfflinePlayer(ownerUUID), displayName, lore);
 	}
 }

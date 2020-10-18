@@ -14,14 +14,14 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class ExtendableInventory implements Inventory
+public class ExpandableInventory implements Inventory
 {
-	public ExtendableInventory(@Nullable InventoryHolder owner, int size, @Nullable String title)
+	public ExpandableInventory(@Nullable InventoryHolder owner, int size, @Nullable String title)
 	{
 		this.inventory = Bukkit.createInventory(owner, size, title != null ? title : "");
 	}	
 	
-	public ExtendableInventory(@Nullable InventoryHolder owner, InventoryType type, @Nullable String title)
+	public ExpandableInventory(@Nullable InventoryHolder owner, InventoryType type, @Nullable String title)
 	{
 		this.inventory = Bukkit.createInventory(owner, type, title != null ? title : "");
 	}
