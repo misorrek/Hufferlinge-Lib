@@ -69,4 +69,11 @@ public class ItemHelper
 	{
 		return getSkullWithMeta(Bukkit.getOfflinePlayer(ownerUUID), displayName, lore);
 	}
+	
+	public static void applyLore(@NotNull ItemStack itemStack, @NotNull List<String> lore) 
+	{
+		ItemMeta loreMeta = itemStack.getItemMeta();
+		loreMeta.setLore(lore);
+		itemStack.setItemMeta(loreMeta);
+	}
 }

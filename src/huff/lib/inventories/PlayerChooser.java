@@ -21,12 +21,14 @@ public class PlayerChooser extends ExpandableInventory
 	private static final int MIN_SIZE = InventoryHelper.INV_SIZE_3;
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
 	
-	public PlayerChooser(@NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
+	public PlayerChooser(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
 	{
 		super(null, checkSize(size), title != null ? title : "§7» §9Personenauswahl");
 		
+		Validate.notNull((Object) players, "The key cannot be null.");
 		Validate.notNull((Object) players, "The players-list cannot be null.");
 		
+		this.key = key;
 		this.players = players;
 		this.playersPerSite = ((this.getSize() % InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
 		this.maxSite = (int) Math.ceil((double) players.size() / playersPerSite);
@@ -36,11 +38,17 @@ public class PlayerChooser extends ExpandableInventory
 		setPlayers();
 	}
 
+	private final String key;
 	private final List<UUID> players;
 	private final int playersPerSite;
 	private final int maxSite;
 	
 	private int site = 0;
+	
+	public String getKey()
+	{
+		return key;
+	}
 	
 	public @Nullable UUID handleEvent(@NotNull ItemStack currentItem)
 	{		

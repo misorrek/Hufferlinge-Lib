@@ -80,6 +80,12 @@ public class MessageHelper
 		}
 	}
     
+    public static @NotNull String getTime(int time)
+    {
+    	//TODO Rechnung für 1000 / 60
+    	return "Not implemented yet";
+    }
+    
     public static @NotNull String getTimeLabel(int time)
     {
     	if (time <= 1000)
