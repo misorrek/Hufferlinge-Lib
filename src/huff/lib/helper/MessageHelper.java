@@ -10,10 +10,12 @@ import org.jetbrains.annotations.Nullable;
 public class MessageHelper 
 {
 	private MessageHelper() { }
-	
+
 	public static final String PLACEHOLDER_PLAYER = "%player%";
 	public static final String PLACEHOLDER_TEXT = "%text%";
-	
+	public static final String PLACEHOLDER_HOUR = "%text%";
+	public static final String PLACEHOLDER_MINUTE = "%text%";
+
 	public static final String PREFIX_HUFF = "§8☰ §aHufferlinge §8☷§7 ";
 	public static final String PREFIX_HUFF_CONSOLE = "§7Hufferlinge §8☷ §7 ";
 	
@@ -80,39 +82,54 @@ public class MessageHelper
 		}
 	}
     
-    public static @NotNull String getTime(int time)
+    public static @NotNull String getTimeFormatted(int time, @Nullable String pattern)
     {
-    	//TODO Rechnung für 1000 / 60
-    	return "Not implemented yet";
+	final double divValue = 16.67;
+	final int maxTime = 24;
+	final int hourAddition = 6;
+	final int minuteMultiplier = 60;
+	
+	final int hourValue = ((int) (time * 0,001)) + hourAddition;
+	final int hour = hourValue >= maxTime ? hourValue - maxTime : hourValue;
+	final int minute = (int) (((time / 1000) % 1) * minuteMultiplier);
+    	
+	if (StringHelper.NotNullOrEmpty(pattern) && StringHelper.contains(false, pattern, PLACEHOLDER_HOUR, PLACEHOLDER_MINUTE))
+	{
+		return pattern.replace(PLACEHOLDER_HOUR, Integer.toString(hour)).replace(PLACEHOLDER_MINUTE, Integer.toString(minute));
+	}
+	else
+	{
+		return StringHelper.build(hour, ":", minute);
+	}    	
     }
     
     public static @NotNull String getTimeLabel(int time)
     {
-    	if (time <= 1000)
+    	if (time <= 1000) // 6 - 7
     	{
     		return "Sonnenaufgang";
     	}
-    	else if (time <= 6000)
+    	else if (time <= 6000) // 7 - 12
     	{
     		return "Vormittag";
     	}
-    	else if (time <= 7000)
+    	else if (time <= 7000) // 12 - 13
     	{
     		return "Mittag";
     	}
-    	else if (time <= 11000)
+    	else if (time <= 11000) // 13 - 17
     	{
     		return "Nachmittag";
     	}
-    	else if (time <= 13000)
+    	else if (time <= 13000) // 17 - 19 
     	{
     		return "Abend";
     	}
-    	else if (time <= 14000)
+    	else if (time <= 14000) // 19 - 20
     	{
     		return "Sonnenuntergang";
     	}
-    	else if (time <= 24000)
+    	else if (time <= 24000) // 20 - 6
     	{
     		return "Nacht";
     	}
