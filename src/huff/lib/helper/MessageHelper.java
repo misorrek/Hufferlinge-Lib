@@ -1,9 +1,13 @@
 package huff.lib.helper;
 
+import java.util.List;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,23 +88,22 @@ public class MessageHelper
     
     public static @NotNull String getTimeFormatted(int time, @Nullable String pattern)
     {
-	final double divValue = 16.67;
-	final int maxTime = 24;
-	final int hourAddition = 6;
-	final int minuteMultiplier = 60;
-	
-	final int hourValue = ((int) (time * 0,001)) + hourAddition;
-	final int hour = hourValue >= maxTime ? hourValue - maxTime : hourValue;
-	final int minute = (int) (((time / 1000) % 1) * minuteMultiplier);
-    	
-	if (StringHelper.NotNullOrEmpty(pattern) && StringHelper.contains(false, pattern, PLACEHOLDER_HOUR, PLACEHOLDER_MINUTE))
-	{
-		return pattern.replace(PLACEHOLDER_HOUR, Integer.toString(hour)).replace(PLACEHOLDER_MINUTE, Integer.toString(minute));
-	}
-	else
-	{
-		return StringHelper.build(hour, ":", minute);
-	}    	
+		final int maxTime = 24;
+		final int hourAddition = 6;
+		final int minuteMultiplier = 60;
+		
+		final int hourValue = ((int) (time * 0.001)) + hourAddition;
+		final int hour = hourValue >= maxTime ? hourValue - maxTime : hourValue;
+		final int minute = (int) (((time / 1000) % 1) * minuteMultiplier);
+	    	
+		if (StringHelper.isNotNullOrEmpty(pattern) && StringHelper.contains(false, pattern, PLACEHOLDER_HOUR, PLACEHOLDER_MINUTE))
+		{
+			return pattern.replace(PLACEHOLDER_HOUR, Integer.toString(hour)).replace(PLACEHOLDER_MINUTE, Integer.toString(minute));
+		}
+		else
+		{
+			return StringHelper.build(hour, ":", minute);
+		}    	
     }
     
     public static @NotNull String getTimeLabel(int time)
@@ -134,5 +137,28 @@ public class MessageHelper
     		return "Nacht";
     	}
     	return "";
+    }
+    
+    public static void sendMessageDelayed(@NotNull JavaPlugin plugin, @NotNull Player player, @NotNull String message, long ticks)
+    {
+    	new BukkitRunnable()
+		{				
+			@Override
+			public void run()
+			{
+				player.sendMessage(message);
+			}
+		}.runTaskLater(plugin, ticks);
+    }
+    
+    public static void sendMessagesDelayed(@NotNull JavaPlugin plugin, @NotNull Player player,  @NotNull List<String> messages, long ticks)
+    {
+    	long tickCounter = ticks;
+    	
+    	for (String message : messages)
+    	{
+    		sendMessageDelayed(plugin, player, message, tickCounter);
+    		tickCounter += ticks;
+    	}
     }
 }

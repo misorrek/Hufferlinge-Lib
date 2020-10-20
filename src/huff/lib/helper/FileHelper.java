@@ -1,8 +1,10 @@
 package huff.lib.helper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -21,6 +23,7 @@ public class FileHelper
 	public static @Nullable YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
 	{
 		Validate.notNull((Object) path, "The yaml-file-path cannot be null.");
+		
 		final File configFile = loadFile(path);
 		
 		if (configFile == null)
@@ -67,9 +70,17 @@ public class FileHelper
 		return configValue;
 	}
 	
-	public static @Nullable JSONObject loadJsonObject(@NotNull File jsonFile)
+	public static @Nullable JSONObject loadJsonObjectFromFile(@NotNull String path)
 	{
-		Validate.notNull((Object) jsonFile, "The json-file cannot be null.");
+		Validate.notNull((Object) path, "The json-file-path cannot be null.");
+		
+		final File jsonFile = loadFile(path);
+		
+		if (jsonFile == null)
+		{
+			return null;
+		}
+		
 		try
 		{
 			return (JSONObject) new JSONParser().parse(new FileReader(jsonFile));
@@ -81,9 +92,38 @@ public class FileHelper
 		return null;
 	}
 	
+	public static void saveJsonObjectToFile(@NotNull String path, @NotNull JSONObject jsonObject)
+	{
+		Validate.notNull((Object) path, "The json-file-path cannot be null.");
+		Validate.notNull((Object) path, "The json-object cannot be null.");
+		
+		final File jsonFile = loadFile(path);
+		
+		if (jsonFile == null)
+		{
+			return;
+		}		
+			
+		try
+		{
+			PrintWriter fileWriter = null;
+			
+			fileWriter = new PrintWriter(jsonFile);
+			
+			fileWriter.write(jsonObject.toJSONString());
+			fileWriter.flush();
+			fileWriter.close();
+		} 
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public static @Nullable File loadFile(@NotNull String path)
 	{
 		Validate.notNull((Object) path, "The file-path cannot be null.");
+		
 		final File file = new File(path);
 		
 		if (!createFileAndParents(file))
