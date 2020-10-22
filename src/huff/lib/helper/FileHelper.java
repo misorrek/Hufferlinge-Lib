@@ -81,15 +81,22 @@ public class FileHelper
 			return null;
 		}
 		
+		JSONObject parsedJsonObject = null;
+		
 		try
 		{
-			return (JSONObject) new JSONParser().parse(new FileReader(jsonFile));
+			parsedJsonObject = (JSONObject) new JSONParser().parse(new FileReader(jsonFile));
 		}
 		catch (Exception exception)
 		{
 			Bukkit.getLogger().log(Level.SEVERE, String.format("Cannot create json-object from file \"%s\".", jsonFile.getAbsolutePath()), exception);
 		}
-		return null;
+		
+		if (parsedJsonObject == null)
+		{
+			parsedJsonObject = new JSONObject();
+		}		
+		return parsedJsonObject;
 	}
 	
 	public static void saveJsonObjectToFile(@NotNull String path, @NotNull JSONObject jsonObject)

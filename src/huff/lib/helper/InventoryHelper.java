@@ -131,4 +131,26 @@ public class InventoryHelper
 		}	
 		return inventorySize / ROW_LENGTH;
 	}
+	
+	public static int getFreeItemStackAmount(@NotNull Inventory inventory, @NotNull ItemStack itemStack)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
+		Validate.notNull((Object) itemStack, "The item-stack cannot be null.");	
+		
+		final int maxStackSize = inventory.getMaxStackSize() < itemStack.getMaxStackSize() ? inventory.getMaxStackSize() : itemStack.getMaxStackSize();
+		int freeItemStackAmount = 0;
+		
+		for (ItemStack currentItemStack : inventory.getStorageContents())
+		{			
+			if (currentItemStack == null || currentItemStack.getType() == Material.AIR)
+			{
+				freeItemStackAmount += maxStackSize;
+			}
+			else if (currentItemStack.isSimilar(itemStack) && currentItemStack.getAmount() < maxStackSize)
+			{
+				freeItemStackAmount += maxStackSize - currentItemStack.getAmount();
+			}
+		}
+		return freeItemStackAmount;
+	}
 }

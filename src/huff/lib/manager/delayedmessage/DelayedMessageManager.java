@@ -115,7 +115,7 @@ public class DelayedMessageManager
 	
 	private void checkJson()
 	{
-		if (rootObject.containsKey(JSONARRAY_PLAYER))
+		if (!rootObject.containsKey(JSONARRAY_PLAYER))
 		{
 			rootObject.put(JSONARRAY_PLAYER, new JSONArray());
 		}
