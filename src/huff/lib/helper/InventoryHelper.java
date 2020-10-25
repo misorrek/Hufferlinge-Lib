@@ -60,7 +60,7 @@ public class InventoryHelper
 		
 		for (int i = 0; i < inventorySize; i++)
 		{
-			if (i < ROW_LENGTH || i % ROW_LENGTH == 0 || (i - 1) % ROW_LENGTH == 0 || i >= lastLineIndex)
+			if (i < ROW_LENGTH || i % ROW_LENGTH == 0 || (i + 1) % ROW_LENGTH == 0 || i >= lastLineIndex)
 			{
 				inventory.setItem(i, borderItemStack);
 			}
@@ -76,7 +76,7 @@ public class InventoryHelper
 		
 		for (int i = 0; i < inventorySize; i++)
 		{
-			if (ignoreBorder || (i > ROW_LENGTH && i % ROW_LENGTH != 0 && (i - 1) % ROW_LENGTH != 0 || i < lastLineIndex))
+			if (ignoreBorder || (i >= ROW_LENGTH && i % ROW_LENGTH != 0 && (i + 1) % ROW_LENGTH != 0 && i < lastLineIndex))
 			{
 				inventory.setItem(i, fillItemStack);
 			}		

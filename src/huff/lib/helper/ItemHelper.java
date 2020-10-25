@@ -25,7 +25,7 @@ public class ItemHelper
 	
 	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore)
 	{
-		return getItemWithMeta(material, displayName, lore);
+		return getItemWithMeta(material, displayName, lore, new ItemFlag[0]);
 	}
 	
 	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore, ItemFlag... itemFlags)

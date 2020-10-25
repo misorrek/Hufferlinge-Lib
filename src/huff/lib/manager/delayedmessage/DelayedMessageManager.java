@@ -118,6 +118,7 @@ public class DelayedMessageManager
 		if (!rootObject.containsKey(JSONARRAY_PLAYER))
 		{
 			rootObject.put(JSONARRAY_PLAYER, new JSONArray());
+			saveJsonObjectToFile();
 		}
 	}
 	
