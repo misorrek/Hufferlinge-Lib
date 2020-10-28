@@ -64,7 +64,7 @@ public class MessageHelper
     {
     	Validate.notNull((Object) message, "The message cannot be null.");
     	
-    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('ยง', PREFIX_HUFF_CONSOLE + message));
+    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('ง', PREFIX_HUFF_CONSOLE + message));
     }
     
     public static void sendPermssionMessage(@NotNull String permission, @NotNull String message) 

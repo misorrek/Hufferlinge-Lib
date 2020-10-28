@@ -39,6 +39,7 @@ public class NMSHelper
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static @Nullable <T extends Enum<T>> Class<T> getNMSEnum(@NotNull String enumName)
 	{
 		final Class<?> enumClass = getNMSClass(enumName);

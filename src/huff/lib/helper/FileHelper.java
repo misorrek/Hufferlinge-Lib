@@ -1,5 +1,6 @@
 package huff.lib.helper;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -13,12 +14,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class FileHelper
 {
 	private FileHelper() { }
+	
+	// Y A M L
 	
 	public static @Nullable YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
 	{
@@ -55,7 +60,7 @@ public class FileHelper
 		return configuration;
 	}
 	
-	public static @Nullable Object readConfigValue(@NotNull YamlConfiguration config, @NotNull String path)
+	public static @NotNull Object readConfigValue(@NotNull YamlConfiguration config, @NotNull String path)
 	{
 		Validate.notNull((Object) config, "The yaml-configuration cannot be null.");
 		Validate.notNull((Object) path, "The config-value-path cannot be null.");
@@ -70,7 +75,9 @@ public class FileHelper
 		return configValue;
 	}
 	
-	public static @Nullable JSONObject loadJsonObjectFromFile(@NotNull String path)
+	// J S O N
+	
+	public static @Nullable JsonObject loadJsonObjectFromFile(@NotNull String path)
 	{
 		Validate.notNull((Object) path, "The json-file-path cannot be null.");
 		
@@ -79,45 +86,43 @@ public class FileHelper
 		if (jsonFile == null)
 		{
 			return null;
-		}
-		
-		JSONObject parsedJsonObject = null;
-		
-		try
-		{
-			parsedJsonObject = (JSONObject) new JSONParser().parse(new FileReader(jsonFile));
-		}
-		catch (Exception exception)
-		{
-			Bukkit.getLogger().log(Level.SEVERE, String.format("Cannot create json-object from file \"%s\".", jsonFile.getAbsolutePath()), exception);
-		}
-		
-		if (parsedJsonObject == null)
-		{
-			parsedJsonObject = new JSONObject();
 		}		
-		return parsedJsonObject;
+		final String jsonFileContent = readFileContents(jsonFile);
+		JsonObject jsonObject = null;
+		
+		if (StringHelper.isNotNullOrWhitespace(jsonFileContent))
+		{
+			try
+			{
+				jsonObject = JsonParser.parseString(jsonFileContent).getAsJsonObject();
+			}
+			catch (Exception exception)
+			{
+				Bukkit.getLogger().log(Level.SEVERE, String.format("Cannot parse json-object from file \"%s\".", jsonFile.getAbsolutePath()), exception);
+			}
+		}
+		
+		if (jsonObject == null)
+		{
+			jsonObject = new JsonObject();
+		}		
+		return jsonObject;
 	}
 	
-	public static void saveJsonObjectToFile(@NotNull String path, @NotNull JSONObject jsonObject)
+	public static void saveJsonObjectToFile(@NotNull String path, @NotNull JsonElement jsonElement)
 	{
 		Validate.notNull((Object) path, "The json-file-path cannot be null.");
 		Validate.notNull((Object) path, "The json-object cannot be null.");
 		
 		final File jsonFile = loadFile(path);
 		
-		if (jsonFile == null)
-		{
-			return;
-		}		
+		Validate.notNull((Object) jsonFile, String.format("Cannot save json-element into json-file at \"%s\".", path));	
 			
 		try
 		{
-			PrintWriter fileWriter = null;
+			PrintWriter fileWriter = new PrintWriter(jsonFile);
 			
-			fileWriter = new PrintWriter(jsonFile);
-			
-			fileWriter.write(jsonObject.toJSONString());
+			fileWriter.write(jsonElement.getAsString());
 			fileWriter.flush();
 			fileWriter.close();
 		} 
@@ -127,19 +132,7 @@ public class FileHelper
 		}
 	}
 	
-	public static @Nullable File loadFile(@NotNull String path)
-	{
-		Validate.notNull((Object) path, "The file-path cannot be null.");
-		
-		final File file = new File(path);
-		
-		if (!createFileAndParents(file))
-		{
-			Bukkit.getLogger().log(Level.SEVERE, "File \"{0}\" cannot be loaded.", path);
-			return null;
-		}
-		return file;
-	}
+	// G E N E R A L
 	
 	public static boolean createFileAndParents(@NotNull File file)
 	{
@@ -164,5 +157,46 @@ public class FileHelper
 			}
 		}
 		return true;
+	}
+	
+	public static @Nullable File loadFile(@NotNull String path)
+	{
+		Validate.notNull((Object) path, "The file-path cannot be null.");
+		
+		final File file = new File(path);
+		
+		if (!createFileAndParents(file))
+		{
+			Bukkit.getLogger().log(Level.SEVERE, "File \"{0}\" cannot be loaded.", path);
+			return null;
+		}
+		return file;
+	}
+	
+	public static @NotNull String readFileContents(@NotNull File file)
+	{
+		Validate.notNull((Object) file, "The file cannot be null.");
+		
+		try (final BufferedReader reader = new BufferedReader(new FileReader(file)))
+		{
+			final StringBuilder stringBuilder = new StringBuilder();
+			
+			final String ls = System.getProperty("line.separator");
+			String line = null;
+			
+			while ((line = reader.readLine()) != null) 
+			{
+				stringBuilder.append(line);
+				stringBuilder.append(ls);
+			}
+			stringBuilder.deleteCharAt(stringBuilder.length() - 1); // delete the last new line separator
+			
+			return stringBuilder.toString();
+		}
+		catch (Exception exception)
+		{
+			Bukkit.getLogger().log(Level.SEVERE, String.format("Cannot read from file \"%s\".", file.getAbsolutePath()), exception);
+		}
+		return "";
 	}
 }
