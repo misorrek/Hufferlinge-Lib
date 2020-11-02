@@ -23,14 +23,14 @@ public class PlayerChooser extends ExpandableInventory
 	
 	public PlayerChooser(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
 	{
-		super(null, checkSize(size), title != null ? title : "§7» §9Personenauswahl");
+		super(checkSize(size), title != null ? title : "§7» §9Personenauswahl");
 		
 		Validate.notNull((Object) players, "The key cannot be null.");
 		Validate.notNull((Object) players, "The players-list cannot be null.");
 		
 		this.key = key;
 		this.players = players;
-		this.playersPerSite = ((this.getSize() % InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
+		this.playersPerSite = ((this.getInventory().getSize() % InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
 		this.maxSite = (int) Math.ceil((double) players.size() / playersPerSite);
 		
 		initInventory(isBackPossible);
@@ -58,11 +58,11 @@ public class PlayerChooser extends ExpandableInventory
      		
 			return currentOwningPlayer != null ? currentOwningPlayer.getUniqueId() : null;
      	}
-		else if (currentItem.equals(InventoryHelper.getItem(this, InventoryHelper.LAST_ROW, 4)))
+		else if (currentItem.equals(InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 4)))
 		{
 			changeSite(false);
 		}
-		else if (currentItem.equals(InventoryHelper.getItem(this, InventoryHelper.LAST_ROW, 6)))
+		else if (currentItem.equals(InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 6)))
 		{
 			changeSite(true);
 		}
@@ -85,9 +85,9 @@ public class PlayerChooser extends ExpandableInventory
 
 	private void initInventory(boolean isBackPossible)
 	{				
-		InventoryHelper.setBorder(this, InventoryHelper.getBorderItem());
-		InventoryHelper.setItem(this, InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.BLACK_STAINED_GLASS_PANE, "§7» Seite «"));
-		InventoryHelper.setItem(this, InventoryHelper.LAST_ROW, 9, isBackPossible ? InventoryHelper.getBackItem() : InventoryHelper.getCloseItem());
+		InventoryHelper.setBorder(this.getInventory(), InventoryHelper.getBorderItem());
+		InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.BLACK_STAINED_GLASS_PANE, "§7» Seite «"));
+		InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 9, isBackPossible ? InventoryHelper.getBackItem() : InventoryHelper.getCloseItem());
 	}
 	
 	private void setSiteFunction()
@@ -96,22 +96,22 @@ public class PlayerChooser extends ExpandableInventory
 		
 		if (site > 0)
 		{
-			InventoryHelper.setItem(this, InventoryHelper.LAST_ROW, 4, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7« §9Vorherige Seite"));
+			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 4, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7« §9Vorherige Seite"));
 		}
 		else
 		{
-			InventoryHelper.setItem(this, InventoryHelper.LAST_ROW, 4, borderItem);
+			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 4, borderItem);
 		}
 		
 		if (site != maxSite)
 		{
-			InventoryHelper.setItem(this, InventoryHelper.LAST_ROW, 6, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7» §9Nächste Seite"));
+			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 6, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7» §9Nächste Seite"));
 		}
 		else
 		{
-			InventoryHelper.setItem(this, InventoryHelper.LAST_ROW, 6, borderItem);
+			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 6, borderItem);
 		}
-		final ItemStack siteItem = InventoryHelper.getItem(this, InventoryHelper.LAST_ROW, 5);
+		final ItemStack siteItem = InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 5);
 		
 		if (siteItem != null)
 		{
@@ -134,7 +134,7 @@ public class PlayerChooser extends ExpandableInventory
 	
 	private void clearPlayers()
 	{
-		InventoryHelper.setFill(this, null, false);
+		InventoryHelper.setFill(this.getInventory(), null, false);
 	}
 	
 	private void changeSite(boolean increase)

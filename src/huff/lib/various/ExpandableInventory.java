@@ -1,33 +1,31 @@
 package huff.lib.various;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class ExpandableInventory implements Inventory
+public class ExpandableInventory implements InventoryHolder 
 {
-	public ExpandableInventory(@Nullable InventoryHolder owner, int size, @Nullable String title)
+	public ExpandableInventory(int size, @Nullable String title)
 	{
-		this.inventory = Bukkit.createInventory(owner, size, title != null ? title : "");
+		this.inventory = Bukkit.createInventory(this, size, title != null ? title : "");
 	}	
 	
-	public ExpandableInventory(@Nullable InventoryHolder owner, InventoryType type, @Nullable String title)
+	public ExpandableInventory(InventoryType type, @Nullable String title)
 	{
-		this.inventory = Bukkit.createInventory(owner, type, title != null ? title : "");
+		this.inventory = Bukkit.createInventory(this, type, title != null ? title : "");
 	}
 	
 	protected final Inventory inventory;
 	
+	@Override
+	public Inventory getInventory()
+	{
+		return inventory;
+	}
+	/*
 	@Override
 	public int getSize()
 	{
@@ -218,5 +216,5 @@ public class ExpandableInventory implements Inventory
 	public Location getLocation()
 	{
 		return inventory.getLocation();
-	}
+	}*/
 }
