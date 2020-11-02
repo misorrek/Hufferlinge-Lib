@@ -128,7 +128,7 @@ public class PlayerChooser extends ExpandableInventory
 		{
 			final OfflinePlayer player = Bukkit.getOfflinePlayer(players.get(i));
 			
-			this.inventory.addItem(ItemHelper.getSkullWithMeta(player, "§9" + player.getName()));	
+			this.getInventory().addItem(ItemHelper.getSkullWithMeta(player, "§9" + player.getName()));	
 		}
 	}
 	

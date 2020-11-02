@@ -18,7 +18,7 @@ public class ExpandableInventory implements InventoryHolder
 		this.inventory = Bukkit.createInventory(this, type, title != null ? title : "");
 	}
 	
-	protected final Inventory inventory;
+	private final Inventory inventory;
 	
 	@Override
 	public Inventory getInventory()
