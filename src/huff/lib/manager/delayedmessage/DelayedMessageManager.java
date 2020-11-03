@@ -2,6 +2,8 @@ package huff.lib.manager.delayedmessage;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.Validate;
@@ -10,41 +12,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import huff.lib.helper.FileHelper;
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.NMSHelper;
+import huff.lib.manager.delayedmessage.json.JsonDelayedMessages;
+import huff.lib.manager.delayedmessage.json.JsonPlayer;
+import huff.lib.manager.delayedmessage.json.JsonPlayerMessages;
 
 public class DelayedMessageManager
-{
-	/*
-	{
-		"player": [
-		  	{
-		  		"uuid": "",
-		  		"messages": [
-		  			{
-		  				"delay_type": "",
-		  				"message_type": "",
-		  				"message": ""
-		  			}
-		  		]
-		  	}	
-		]
-	} 
-	*/
-	
-	private static final String JSONARRAY_PLAYER = "player";
-	private static final String JSONFIELD_UUID = "uuid";
-	
-	private static final String JSONARRAY_MESSAGES = "messages";
-	private static final String JSONFIELD_DELAYTYPE = "delay_type";
-	private static final String JSONFIELD_MESSAGETYPE = "message_type";
-	private static final String JSONFIELD_MESSAGE = "message";
-	
+{	
 	public DelayedMessageManager(@NotNull JavaPlugin plugin, @NotNull String pluginFolderPath)
 	{
 		Validate.notNull((Object) plugin, "The plugin-instance cannot be null.");
@@ -52,32 +28,39 @@ public class DelayedMessageManager
 		
 		this.plugin = plugin;
 		this.jsonFilePath = Paths.get(pluginFolderPath, "delayedmessages.json").toString();
-		this.rootObject = FileHelper.loadJsonObjectFromFile(jsonFilePath);
+				
+		final Object jsonObject = FileHelper.loadJsonObjectFromFile(jsonFilePath, JsonDelayedMessages.class);
 		
-		checkJson();
+		if (jsonObject == null)
+		{
+			this.jsonDelayedMessages = new JsonDelayedMessages();
+		}
+		else
+		{
+			Validate.isTrue(jsonObject instanceof JsonDelayedMessages, String.format("Json object \"%s\" do not fit as JsonDelayedMessages.", jsonObject.toString()));
+			
+			this.jsonDelayedMessages = (JsonDelayedMessages) jsonObject;
+		}
 	}
 	
 	private final JavaPlugin plugin;
 	private final String jsonFilePath;
-	private final JsonObject rootObject;
+	private final JsonDelayedMessages jsonDelayedMessages;
 	
 	public void addDelayedMessage(@NotNull UUID uuid, DelayType delayType, MessageType messageType, @NotNull String message)
 	{		
 		Validate.notNull((Object) uuid, "The uuid cannot be null.");
 		Validate.notNull((Object) message, "The delayed-message cannot be null.");
 		
-		final JsonArray messagesArray = getMessagesArray(uuid, true);
+		final List<JsonPlayerMessages> messagesArray = getPlayerMessages(uuid, true);
+		final JsonPlayerMessages jsonPlayerMessages = new JsonPlayerMessages();
 		
-		if (messagesArray != null) 
-		{
-			final JsonObject messageObject = new JsonObject();
-			
-			messageObject.addProperty(JSONFIELD_DELAYTYPE, delayType.toString());
-			messageObject.addProperty(JSONFIELD_MESSAGETYPE, messageType.toString());
-			messageObject.addProperty(JSONFIELD_MESSAGE, message);		
-			messagesArray.add(messageObject);
-			saveJsonObjectToFile();
-		}
+		jsonPlayerMessages.delayType = delayType;
+		jsonPlayerMessages.messageType = messageType;
+		jsonPlayerMessages.message = message;
+		
+		messagesArray.add(jsonPlayerMessages);
+		saveJsonObjectToFile();
 	}
 	
 	public void sendDelayedMessages(@NotNull Player player, DelayType delayType, MessageType messageType)
@@ -85,23 +68,20 @@ public class DelayedMessageManager
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
 		final ArrayList<String> resultMessages = new ArrayList<>();		
-		final JsonArray messagesArray = getMessagesArray(player.getUniqueId(), false);
+		final List<JsonPlayerMessages> jsonPlayerMessage = getPlayerMessages(player.getUniqueId(), false);
 		
-		if (messagesArray != null) 
+		if (!jsonPlayerMessage.isEmpty()) 
 		{		
-			for (JsonElement messageElement : messagesArray)
-			{				
-				if (!messageElement.isJsonObject())
-				{
-					continue;
-				}
-				final JsonObject messageObject = messageElement.getAsJsonObject();
+			final Iterator<JsonPlayerMessages> iterator = jsonPlayerMessage.iterator(); 
+			
+			while(iterator.hasNext())
+			{
+				final JsonPlayerMessages playerMessage = iterator.next();
 				
-				if (messageObject.get(JSONFIELD_DELAYTYPE).getAsString().equals(delayType.toString()) &&
-				    messageObject.get(JSONFIELD_MESSAGETYPE).getAsString().equals(messageType.toString()))
+				if (playerMessage.delayType == delayType && playerMessage.messageType == messageType)
 				{
-					resultMessages.add(messageObject.get(JSONFIELD_MESSAGE).getAsString());
-					messageObject.remove(JSONFIELD_MESSAGE);
+					resultMessages.add(playerMessage.message);
+					jsonPlayerMessage.remove(playerMessage);
 				}
 			}
 		}
@@ -115,51 +95,28 @@ public class DelayedMessageManager
 	
 	private void saveJsonObjectToFile()
 	{
-		FileHelper.saveJsonObjectToFile(jsonFilePath, rootObject);
+		FileHelper.saveJsonObjectToFile(jsonFilePath, jsonDelayedMessages, jsonDelayedMessages.getClass());
 	}
 	
-	private void checkJson()
+	private @Nullable List<JsonPlayerMessages> getPlayerMessages(@NotNull UUID uuid, boolean createNewEntry)
 	{
-		if (!rootObject.keySet().contains(JSONARRAY_PLAYER))
+		for (JsonPlayer player : jsonDelayedMessages.player)
 		{
-			rootObject.add(JSONARRAY_PLAYER, new JsonArray());
-		}
-	}
-	
-	private @Nullable JsonArray getMessagesArray(@NotNull UUID uuid, boolean createNewEntry)
-	{
-		final JsonArray playerArray = rootObject.get(JSONARRAY_PLAYER).getAsJsonArray();
-		
-		if (playerArray == null)
-		{		
-			return null;
-		}
-			
-		for (JsonElement playerElement : playerArray)
-		{
-			if (playerElement.isJsonObject())
+			if (player.uuid.equals(uuid))
 			{
-				final JsonObject playerJsonObject = playerElement.getAsJsonObject();
-				final UUID currentUUID = UUID.fromString(playerJsonObject.get(JSONFIELD_UUID).getAsString());
-				
-				if (currentUUID != null && currentUUID.equals(uuid))
-				{
-					return playerJsonObject.get(JSONARRAY_MESSAGES).getAsJsonArray();
-				}
+				return player.messages;
 			}
-		}
+		} 
 		
 		if (createNewEntry)
 		{
-			JsonObject playerObject = new JsonObject();
-			JsonArray messagesArray = new JsonArray();
+			final JsonPlayer jsonPlayer = new JsonPlayer();
 			
-			playerObject.addProperty(JSONFIELD_UUID, uuid.toString());
-			playerObject.add(JSONARRAY_MESSAGES, messagesArray);
-			playerArray.add(playerObject);
+			jsonPlayer.uuid = uuid;
+			jsonDelayedMessages.player.add(jsonPlayer);
 			
-			return messagesArray;
+			return jsonPlayer.messages;
 		}
-		return null;
+		return new ArrayList<>();
 	}
 }

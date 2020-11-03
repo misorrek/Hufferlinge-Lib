@@ -15,9 +15,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class FileHelper
 {
@@ -77,7 +76,7 @@ public class FileHelper
 	
 	// J S O N
 	
-	public static @Nullable JsonObject loadJsonObjectFromFile(@NotNull String path)
+	public static @Nullable Object loadJsonObjectFromFile(@NotNull String path, @NotNull Class<?> jsonClass)
 	{
 		Validate.notNull((Object) path, "The json-file-path cannot be null.");
 		
@@ -88,28 +87,22 @@ public class FileHelper
 			return null;
 		}		
 		final String jsonFileContent = readFileContents(jsonFile);
-		JsonObject jsonObject = null;
 		
 		if (StringHelper.isNotNullOrWhitespace(jsonFileContent))
 		{
 			try
 			{
-				jsonObject = JsonParser.parseString(jsonFileContent).getAsJsonObject();
+				return new Gson().fromJson(jsonFileContent, jsonClass);
 			}
 			catch (Exception exception)
 			{
-				Bukkit.getLogger().log(Level.SEVERE, String.format("Cannot parse json-object from file \"%s\".", jsonFile.getAbsolutePath()), exception);
+				Bukkit.getLogger().log(Level.SEVERE, String.format("Cannot create json-objects from file \"%s\".", jsonFile.getAbsolutePath()), exception);
 			}
 		}
-		
-		if (jsonObject == null)
-		{
-			jsonObject = new JsonObject();
-		}		
-		return jsonObject;
+		return null;
 	}
 	
-	public static void saveJsonObjectToFile(@NotNull String path, @NotNull JsonElement jsonElement)
+	public static void saveJsonObjectToFile(@NotNull String path, @NotNull Object jsonObject, @NotNull Class<?> jsonClass)
 	{
 		Validate.notNull((Object) path, "The json-file-path cannot be null.");
 		Validate.notNull((Object) path, "The json-object cannot be null.");
@@ -118,17 +111,14 @@ public class FileHelper
 		
 		Validate.notNull((Object) jsonFile, String.format("Cannot save json-element into json-file at \"%s\".", path));	
 			
-		try
-		{
-			PrintWriter fileWriter = new PrintWriter(jsonFile);
-			
-			fileWriter.write(jsonElement.getAsString());
+		try (final PrintWriter fileWriter = new PrintWriter(jsonFile))
+		{	
+			fileWriter.write(new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject, jsonClass));
 			fileWriter.flush();
-			fileWriter.close();
 		} 
-		catch (FileNotFoundException e)
+		catch (FileNotFoundException exception)
 		{
-			e.printStackTrace();
+			Bukkit.getLogger().log(Level.SEVERE, String.format("Cannot save json-object to file \"%s\".", jsonFile.getAbsolutePath()), exception);
 		}
 	}
 	
