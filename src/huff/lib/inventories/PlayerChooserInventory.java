@@ -16,12 +16,12 @@ import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
 import huff.lib.various.ExpandableInventory;
 
-public class PlayerChooser extends ExpandableInventory
+public class PlayerChooserInventory extends ExpandableInventory
 {
 	private static final int MIN_SIZE = InventoryHelper.INV_SIZE_3;
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
 	
-	public PlayerChooser(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
+	public PlayerChooserInventory(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
 	{
 		super(checkSize(size), title != null ? title : "§7» §9Personenauswahl");
 		
