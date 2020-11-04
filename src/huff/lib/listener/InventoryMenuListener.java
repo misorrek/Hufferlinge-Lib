@@ -32,7 +32,14 @@ public class InventoryMenuListener implements Listener
 		
 		if (currentItemName.equals(InventoryHelper.ITEM_CLOSE))
 		{
+			final UUID uuid = event.getView().getPlayer().getUniqueId();
+			
 			view.close();
+			
+			if (lastInventories.containsKey(uuid))
+			{
+				lastInventories.remove(uuid);
+			}
 		} 
 		else if (currentItemName.equals(InventoryHelper.ITEM_BACK) || currentItemName.equals(InventoryHelper.ITEM_ABORT))
 		{
