@@ -56,11 +56,11 @@ public class RedisManager
 					jedis.connect();
 				}
 				MessageHelper.sendConsoleMessage("Redis-Ping : " + jedis.ping());
-				MessageHelper.sendConsoleMessage("Redis-Verbindung erfolgreich hergestellt.");
+				MessageHelper.sendConsoleMessage("Redis-Connection successful.");
 			} 
 			catch (Exception exception) 
 			{
-				Bukkit.getLogger().log(Level.SEVERE, "Redis-Verbindung fehlgeschlagen. Daten hinterlegt?", exception);
+				Bukkit.getLogger().log(Level.SEVERE, "Redis-Connection failed. Configured?", exception);
 			}
 		}
 	}
@@ -69,7 +69,14 @@ public class RedisManager
 	{
 		if (isConnected())
 		{
-			jedis.disconnect();
+			try 
+			{
+				jedis.disconnect();
+			} 
+			catch (Exception exception) 
+			{
+				Bukkit.getLogger().log(Level.SEVERE, "Redis-Disconnection failed.", exception);
+			}	
 		}
 	}
 	

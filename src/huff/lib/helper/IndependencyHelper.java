@@ -1,6 +1,7 @@
 package huff.lib.helper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -14,15 +15,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class NMSHelper 
+public class IndependencyHelper 
 {
 	private static final int TICK_SECOND = 20;
 	
-	private NMSHelper() { }
+	private IndependencyHelper() { }
 	
 	// G E N E R A L
 	
-	private static @Nullable Class<?> getNMSClass(@NotNull String className) 
+	private static @Nullable Class<?> getVersionDependentClass(VersionDependency versionDependency, @NotNull String className) 
 	{
 		Validate.notNull((Object) className, "The class-name cannot be null.");
 		
@@ -30,35 +31,36 @@ public class NMSHelper
 
 		try 
 		{
-			return Class.forName("net.minecraft.server." + version + "." + className);
+			return Class.forName(StringHelper.build(versionDependency.getLabel(), '.', version, '.', className));
 		} 
 		catch (ClassNotFoundException exception) 
 		{
-			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant get nms-class named \"%s\" in version \"%s\".", className, version), exception);
+			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant get version-depent-class named \"%s\" in version \"%s\" from package \"%s\".", 
+					                                           className, version, versionDependency.getLabel()), exception);
 			return null;
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static @Nullable <T extends Enum<T>> Class<T> getNMSEnum(@NotNull String enumName)
+	private static @Nullable <T extends Enum<T>> Class<T> getNMSEnum(VersionDependency versionDependency, @NotNull String enumName)
 	{
-		final Class<?> enumClass = getNMSClass(enumName);
+		final Class<?> enumClass = getVersionDependentClass(versionDependency, enumName);
 		
 		return enumClass != null && enumClass.isEnum() ? (Class<T>) enumClass : null;
 	}
 	
-	public static <T extends Enum<T>> T getEnumByName(@NotNull String enumName, @NotNull String enumValue)
+	public static <T extends Enum<T>> T getEnumByName(VersionDependency versionDependency, @NotNull String enumName, @NotNull String enumValue)
 	{
-		final Class<T> enumClass = getNMSEnum(enumName);
+		final Class<T> enumClass = getNMSEnum(versionDependency, enumName);
 		
 		return enumClass != null ? Enum.valueOf(enumClass, enumValue) : null;
 	}
 	
-	public static @Nullable Object createInstance(@NotNull String packetName, @Nullable Object... params)
+	public static @Nullable Object createInstance(VersionDependency versionDependency, @NotNull String packetName, @Nullable Object... params)
 	{
 		try
 		{
-			final Class<?> packetClass = getNMSClass(packetName);
+			final Class<?> packetClass = getVersionDependentClass(versionDependency, packetName);
 					
 			if (packetClass != null)
 			{
@@ -74,7 +76,7 @@ public class NMSHelper
 		} 
 		catch (Exception exception)
 		{
-			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant create packet named \"%s\" with params \"%s\".", packetName, params), exception);
+			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant create packet named \"%s\" with params \"%s\".", packetName, Arrays.toString(params)), exception);
 			return null;
 		}
 	}
@@ -98,16 +100,16 @@ public class NMSHelper
 		} 
 		catch (Exception exception)
 		{
-			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant invoke method named \"%s\" from object \"%s\" with params \"%s\".", methodName, object, params), exception);
+			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant invoke method named \"%s\" from object \"%s\" with params \"%s\".", methodName, object, Arrays.toString(params)), exception);
 			return null;
 		}
 	}
 	
-	public static @Nullable Object invokeStaticMethod(@NotNull String className, @NotNull String methodName, @Nullable Object... params)
+	public static @Nullable Object invokeStaticMethod(VersionDependency versionDependency, @NotNull String className, @NotNull String methodName, @Nullable Object... params)
 	{
 		try
 		{
-			final Class<?> methodClass = getNMSClass(className);
+			final Class<?> methodClass = getVersionDependentClass(versionDependency, className);
 			
 			if (methodClass != null)
 			{
@@ -123,7 +125,7 @@ public class NMSHelper
 		} 
 		catch (Exception exception)
 		{
-			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant invoke method named \"%s\" with params \"%s\".", methodName, params), exception);
+			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant invoke method named \"%s\" with params \"%s\".", methodName, Arrays.toString(params)), exception);
 			return null;
 		}
 	}
@@ -143,7 +145,7 @@ public class NMSHelper
 		{
 			Object handle = player.getClass().getMethod("getHandle").invoke(player);
 			Object playerCon = handle.getClass().getField("playerConnection").get(handle);
-			playerCon.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerCon, packet);
+			playerCon.getClass().getMethod("sendPacket", getVersionDependentClass(VersionDependency.NMS, "Packet")).invoke(playerCon, packet);
 		} 
 		catch (Exception exception) 
 		{
@@ -192,7 +194,7 @@ public class NMSHelper
 	{
 		Validate.notNull((Object) location, "The location cannot be null.");
 		
-		final Object vec3DObject = createInstance("Vec3D", location.getX(), location.getY(), location.getZ());
+		final Object vec3DObject = createInstance(VersionDependency.NMS, "Vec3D", location.getX(), location.getY(), location.getZ());
 		
 		if (vec3DObject != null)
 		{
@@ -215,7 +217,7 @@ public class NMSHelper
 	{
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
-		final Object packet = createInstance("PacketPlayOutTitle", getEnumByName("PacketPlayOutTitle.EnumTitleAction", "TIMES"), null, infade, ticks, outfade);
+		final Object packet = createInstance(VersionDependency.NMS, "PacketPlayOutTitle", getEnumByName(VersionDependency.NMS, "PacketPlayOutTitle.EnumTitleAction", "TIMES"), null, infade, ticks, outfade);
 		
 		sendPacket(player, packet);
 	}
@@ -228,10 +230,10 @@ public class NMSHelper
 		Validate.notNull((Object) player, "The title cannot be null.");
 		Validate.notNull((Object) player, "The subtitle cannot be null.");
 		
-		final Object serializedTitle = invokeStaticMethod("ChatSerializer", "a", getJsonMessage(title));
-		final Object serializedSubTitle = invokeStaticMethod("ChatSerializer", "a", getJsonMessage(subTitle));
-		final Object packet = createInstance("PacketPlayOutTitle", getEnumByName("PacketPlayOutTitle.EnumTitleAction", "TITLE"), serializedTitle);
-		final Object packet2 = createInstance("PacketPlayOutTitle", getEnumByName("PacketPlayOutTitle.EnumTitleAction", "SUBTITLE"), serializedSubTitle);
+		final Object serializedTitle = invokeStaticMethod(VersionDependency.NMS, "ChatSerializer", "a", getJsonMessage(title));
+		final Object serializedSubTitle = invokeStaticMethod(VersionDependency.NMS, "ChatSerializer", "a", getJsonMessage(subTitle));
+		final Object packet = createInstance(VersionDependency.NMS, "PacketPlayOutTitle", getEnumByName(VersionDependency.NMS, "PacketPlayOutTitle.EnumTitleAction", "TITLE"), serializedTitle);
+		final Object packet2 = createInstance(VersionDependency.NMS, "PacketPlayOutTitle", getEnumByName(VersionDependency.NMS, "PacketPlayOutTitle.EnumTitleAction", "SUBTITLE"), serializedSubTitle);
 	
 		sendPacket(player, packet);
 		sendPacket(player, packet2);
@@ -253,8 +255,8 @@ public class NMSHelper
 		Validate.notNull((Object) player, "The player cannot be null.");
 		Validate.notNull((Object) player, "The message cannot be null.");
 		
-		final Object serializedMessage = invokeStaticMethod("ChatSerializer", "a", getJsonMessage(message));
-		final Object packet = createInstance("PacketPlayOutChat", serializedMessage, getEnumByName("ChatMessageType", "GAME_INFO"), player.getUniqueId());
+		final Object serializedMessage = invokeStaticMethod(VersionDependency.NMS, "ChatSerializer", "a", getJsonMessage(message));
+		final Object packet = createInstance(VersionDependency.NMS, "PacketPlayOutChat", serializedMessage, getEnumByName(VersionDependency.NMS, "ChatMessageType", "GAME_INFO"), player.getUniqueId());
 		
 		sendPacket(player, packet);
 	}
@@ -263,13 +265,23 @@ public class NMSHelper
 
 	public static @NotNull ItemStack getTaggedItemStack(@NotNull ItemStack itemStack, @NotNull String key, @NotNull String value) 
 	{
-		final Object nmsItemStack = invokeStaticMethod("CraftItemStack", "asNMSCopy", itemStack);
-		final Object nmsItemCompound = (boolean) invokeMethod(nmsItemStack, "hasTag") ? invokeMethod(nmsItemStack, "getTag") : createInstance("NBTTagCompound");
+		final Object nmsItemStack;
+		final Class<?> craftItemStackClass = getVersionDependentClass(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack");
 		
-		invokeMethod(nmsItemCompound, "set", key, createInstance("NBTTagByteArray", value.getBytes()));
+		if (itemStack.getClass().equals(craftItemStackClass))
+		{
+			nmsItemStack = craftItemStackClass.cast(itemStack);
+		}
+		else
+		{
+			nmsItemStack = invokeStaticMethod(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack", "asNMSCopy", itemStack);
+		}
+		final Object nmsItemCompound = (boolean) invokeMethod(nmsItemStack, "hasTag") ? invokeMethod(nmsItemStack, "getTag") : createInstance(VersionDependency.NMS, "NBTTagCompound");
+		
+		invokeMethod(nmsItemCompound, "setString", key, value);
 		invokeMethod(nmsItemStack, "setTag", nmsItemCompound);
 	
-		final Object taggedItemStack = invokeStaticMethod("CraftItemStack", "asBukkitCopy", nmsItemStack);
+		final Object taggedItemStack = invokeStaticMethod(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack", "asBukkitCopy", nmsItemStack);
 		
 		if (taggedItemStack != null)
 		{
@@ -283,15 +295,19 @@ public class NMSHelper
 
 	public static @Nullable String getTagFromItemStack(@NotNull ItemStack itemStack, @NotNull String key)
 	{
-		final Object nmsItemStack = invokeStaticMethod("CraftItemStack", "asNMSCopy", itemStack);
-	
+		if (itemStack.getClass().equals(getVersionDependentClass(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack")))
+		{
+			itemStack = ItemStack.class.cast(itemStack);
+		}
+		final Object nmsItemStack = invokeStaticMethod(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack", "asNMSCopy", itemStack);
+
 		if (!(boolean) invokeMethod(nmsItemStack, "hasTag"))
 		{	
 			return null;		
 		}	
 		final Object nmsItemCompound = invokeMethod(nmsItemStack, "getTag");
-		final byte[] bytes = (byte[]) invokeMethod(nmsItemCompound, "getByteArray", key);
+		final String value = (String) invokeMethod(nmsItemCompound, "getString", key);
 
-		return bytes != null ? new String(bytes) : null;
+		return value != null ? value : null;
 	}
 }

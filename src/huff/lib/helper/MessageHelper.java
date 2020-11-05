@@ -64,7 +64,7 @@ public class MessageHelper
     {
     	Validate.notNull((Object) message, "The message cannot be null.");
     	
-    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('§', PREFIX_HUFF_CONSOLE + message));
+    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('ï¿½', PREFIX_HUFF_CONSOLE + message));
     }
     
     public static void sendPermssionMessage(@NotNull String permission, @NotNull String message) 
@@ -86,7 +86,7 @@ public class MessageHelper
 		}
 	}
     
-    public static @NotNull String getTimeFormatted(int time, @Nullable String pattern)
+    public static @NotNull String getTimeFormatted(int time, @Nullable String pattern) //TODO StringHelper Null Check Annotations
     {
 		final int maxTime = 24;
 		final int hourAddition = 6;

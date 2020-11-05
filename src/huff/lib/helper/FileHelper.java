@@ -179,8 +179,11 @@ public class FileHelper
 				stringBuilder.append(line);
 				stringBuilder.append(ls);
 			}
-			stringBuilder.deleteCharAt(stringBuilder.length() - 1); // delete the last new line separator
 			
+			if (stringBuilder.length() > 0)
+			{
+				stringBuilder.deleteCharAt(stringBuilder.length() - 1); // delete the last new line separator
+			}
 			return stringBuilder.toString();
 		}
 		catch (Exception exception)

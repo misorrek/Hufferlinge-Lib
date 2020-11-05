@@ -14,14 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.FileHelper;
 import huff.lib.helper.MessageHelper;
-import huff.lib.helper.NMSHelper;
+import huff.lib.helper.IndependencyHelper;
 import huff.lib.manager.delayedmessage.json.JsonDelayedMessages;
 import huff.lib.manager.delayedmessage.json.JsonPlayer;
 import huff.lib.manager.delayedmessage.json.JsonPlayerMessages;
 
-public class DelayedMessageManager
+public class DelayedMessagesManager
 {	
-	public DelayedMessageManager(@NotNull JavaPlugin plugin, @NotNull String pluginFolderPath)
+	public DelayedMessagesManager(@NotNull JavaPlugin plugin, @NotNull String pluginFolderPath)
 	{
 		Validate.notNull((Object) plugin, "The plugin-instance cannot be null.");
 		Validate.notNull((Object) pluginFolderPath, "The plugin-folder-path cannot be null.");
@@ -89,7 +89,7 @@ public class DelayedMessageManager
 		if (!resultMessages.isEmpty())
 		{
 			saveJsonObjectToFile();
-			MessageHelper.sendMessagesDelayed(plugin, player, resultMessages, NMSHelper.getSecondsInTicks(5));
+			MessageHelper.sendMessagesDelayed(plugin, player, resultMessages, IndependencyHelper.getSecondsInTicks(5));
 		}
 	}
 	
