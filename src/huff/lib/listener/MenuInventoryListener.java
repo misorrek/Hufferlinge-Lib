@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -14,13 +16,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
 import huff.lib.helper.InventoryHelper;
-import huff.lib.various.ExpandableInventory;
+import huff.lib.various.MenuInventoryHolder;
 
-public class InventoryMenuListener implements Listener
+public class MenuInventoryListener implements Listener
 {
 	private HashMap<UUID, List<Inventory>> lastInventories = new HashMap<>();
 	private List<UUID> goneBack = new ArrayList<>();
 	
+	@EventHandler (priority = EventPriority.HIGH)
 	public void onInventoryMenuClick(InventoryClickEvent event)
 	{
 		if (event.getCurrentItem() == null)
@@ -35,6 +38,7 @@ public class InventoryMenuListener implements Listener
 			final UUID uuid = event.getView().getPlayer().getUniqueId();
 			
 			view.close();
+			goneBack.add(uuid);
 			
 			if (lastInventories.containsKey(uuid))
 			{
@@ -70,7 +74,7 @@ public class InventoryMenuListener implements Listener
 	
 	public void onInventoryMenuClose(InventoryCloseEvent event)
 	{
-		if (!(event.getInventory().getHolder() instanceof ExpandableInventory))
+		if (!(event.getInventory().getHolder() instanceof MenuInventoryHolder))
 		{
 			return;
 		}
@@ -84,7 +88,17 @@ public class InventoryMenuListener implements Listener
 		
 		if (lastInventories.containsKey(uuid))
 		{
-			lastInventories.get(uuid).add(event.getInventory());
+			final List<Inventory> inventories = lastInventories.get(uuid);
+			
+			for (int i = 0; i < inventories.size(); i++)
+			{
+				if (((MenuInventoryHolder) inventories.get(i).getHolder()).equalsIdentifier((MenuInventoryHolder) event.getInventory().getHolder()))
+				{
+					inventories.set(i, event.getInventory());
+					return;
+				}
+			}
+			inventories.add(event.getInventory());
 		}
 		else
 		{

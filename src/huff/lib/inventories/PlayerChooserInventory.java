@@ -14,16 +14,18 @@ import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
-import huff.lib.various.ExpandableInventory;
+import huff.lib.various.MenuInventoryHolder;
 
-public class PlayerChooserInventory extends ExpandableInventory
+public class PlayerChooserInventory extends MenuInventoryHolder
 {
+	public static final String MENU_IDENTIFIER = "menu:playerchooser";
+	
 	private static final int MIN_SIZE = InventoryHelper.INV_SIZE_3;
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
 	
 	public PlayerChooserInventory(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
 	{
-		super(checkSize(size), title != null ? title : "§7» §9Personenauswahl");
+		super(MENU_IDENTIFIER, checkSize(size), title != null ? title : "§7» §9Personenauswahl");
 		
 		Validate.notNull((Object) players, "The key cannot be null.");
 		Validate.notNull((Object) players, "The players-list cannot be null.");
