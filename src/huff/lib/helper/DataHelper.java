@@ -18,6 +18,14 @@ public class DataHelper
 	
 	private DataHelper() { }
 	
+	/**
+	 * Converting a "org.bukkit.Location" to a String with the pattern "%s#%f#%f#%f#%f#%f".
+	 * %s : world
+	 * %f : x, y, z, yaw, pitch
+	 * 
+	 * @param   location   a not null "org.bukkit.Location"
+	 * @return             the location as string with the pattern descriped
+	 */
 	public static @NotNull String convertLocationToString(@NotNull Location location)
 	{
 		Validate.notNull((Object) location, "The location cannot be null.");
@@ -26,6 +34,14 @@ public class DataHelper
 		return String.format(PATTERN_STRINGLOC, location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 	}
 	
+	/**
+	 * Converting a string with the pattern "%s#%f#%f#%f#%f#%f" to a "org.bukkit.Location".
+	 * %s : world
+	 * %f : x, y, z, yaw, pitch
+	 * 
+	 * @param   locationString   a string with the pattern descriped
+	 * @return                   the "org.bukkit.Location" contained in the string - returns null if cannot be parsed
+	 */
 	public static @Nullable Location convertStringtoLocation(@NotNull String locationString)
 	{
 		Validate.notNull((Object) locationString, "The location-string cannot be null.");
@@ -51,7 +67,15 @@ public class DataHelper
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Parsing a double value from a string with standard java method. 
+	 * If it cannot be parsed, error gets directly logged and the given standard value returned
+	 *
+	 * @param   value   	    a string that respresents a double value
+	 * @param   standardValue   a standard value returned if a error occures
+	 * @return           	    the parsed double value - in case of error the standard value
+	 */	
 	public static double parseDouble(@Nullable String value, double standardValue)
 	{
 		if (value != null)
