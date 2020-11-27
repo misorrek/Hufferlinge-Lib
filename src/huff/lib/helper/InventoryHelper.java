@@ -2,6 +2,8 @@ package huff.lib.helper;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -132,6 +134,12 @@ public class InventoryHelper
 		return inventorySize / ROW_LENGTH;
 	}
 	
+	/**
+	 * 
+	 * @param inventory
+	 * @param itemStack
+	 * @return
+	 */
 	public static int getFreeItemStackAmount(@NotNull Inventory inventory, @NotNull ItemStack itemStack)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
@@ -152,5 +160,59 @@ public class InventoryHelper
 			}
 		}
 		return freeItemStackAmount;
+	}
+	
+	/**
+	 * 
+	 * @param inventory
+	 * @param itemStack
+	 * @return
+	 */
+	public static int getFreeItemStackSpace(@NotNull Inventory inventory, @NotNull ItemStack itemStack)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
+		Validate.notNull((Object) itemStack, "The item-stack cannot be null.");	
+		
+		final int maxStackSize = inventory.getMaxStackSize() < itemStack.getMaxStackSize() ? inventory.getMaxStackSize() : itemStack.getMaxStackSize();
+		int openAmount = itemStack.getAmount();
+		int freeItemStackSpace = 0;
+		
+		for (ItemStack currentItemStack : inventory.getStorageContents())
+		{			
+			if (currentItemStack == null || currentItemStack.getType() == Material.AIR)
+			{
+				freeItemStackSpace++;
+			}
+			else if (currentItemStack.isSimilar(itemStack) && currentItemStack.getAmount() < maxStackSize)
+			{
+				openAmount -= maxStackSize - currentItemStack.getAmount();
+			}
+		}
+		
+		if (openAmount > 0)
+		{
+			freeItemStackSpace--;
+		}		
+		return freeItemStackSpace;
+	}
+	
+	public static boolean isContainerInventory(@NotNull InventoryType inventoryType)
+	{
+		return inventoryType == InventoryType.PLAYER || inventoryType == InventoryType.CHEST || inventoryType == InventoryType.BARREL ||
+			   inventoryType == InventoryType.SHULKER_BOX || inventoryType == InventoryType.ENDER_CHEST || inventoryType == InventoryType.HOPPER ||
+			   inventoryType == InventoryType.DISPENSER || inventoryType == InventoryType.DROPPER;
+	}
+	
+	public static boolean isPickupAction(InventoryAction inventoryAction)
+	{
+		return inventoryAction == InventoryAction.PICKUP_ALL || inventoryAction == InventoryAction.PICKUP_HALF || 
+			   inventoryAction == InventoryAction.PICKUP_ONE || inventoryAction == InventoryAction.PICKUP_SOME ||
+			   inventoryAction == InventoryAction.MOVE_TO_OTHER_INVENTORY;
+	}
+	
+	public static boolean isPlaceAction(InventoryAction inventoryAction)
+	{
+		return inventoryAction == InventoryAction.PLACE_ALL || inventoryAction == InventoryAction.PLACE_SOME || 
+			   inventoryAction == InventoryAction.PLACE_ONE;
 	}
 }

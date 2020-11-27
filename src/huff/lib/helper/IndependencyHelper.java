@@ -23,7 +23,7 @@ public class IndependencyHelper
 	
 	// G E N E R A L
 	
-	private static @Nullable Class<?> getVersionDependentClass(VersionDependency versionDependency, @NotNull String className) 
+	private static @Nullable Class<?> getDependencyClass(DependencyKind dependencyKind, @NotNull String className) 
 	{
 		Validate.notNull((Object) className, "The class-name cannot be null.");
 		
@@ -31,55 +31,66 @@ public class IndependencyHelper
 
 		try 
 		{
-			return Class.forName(StringHelper.build(versionDependency.getLabel(), '.', version, '.', className));
+			return Class.forName(StringHelper.build(dependencyKind.getLabel(), '.', version, '.', className));
 		} 
 		catch (ClassNotFoundException exception) 
 		{
 			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant get version-depent-class named \"%s\" in version \"%s\" from package \"%s\".", 
-					                                           className, version, versionDependency.getLabel()), exception);
+					                                           className, version, dependencyKind.getLabel()), exception);
 			return null;
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static @Nullable <T extends Enum<T>> Class<T> getNMSEnum(VersionDependency versionDependency, @NotNull String enumName)
+	private static @Nullable <T extends Enum<T>> Class<T> getDependencyEnumClass(DependencyKind dependencyKind, @NotNull String enumName)
 	{
-		final Class<?> enumClass = getVersionDependentClass(versionDependency, enumName);
+		final Class<?> enumClass = getDependencyClass(dependencyKind, enumName);
 		
 		return enumClass != null && enumClass.isEnum() ? (Class<T>) enumClass : null;
 	}
 	
-	public static <T extends Enum<T>> T getEnumByName(VersionDependency versionDependency, @NotNull String enumName, @NotNull String enumValue)
+	public static <T extends Enum<T>> T getEnumByName(DependencyKind dependencyKind, @NotNull String enumName, @NotNull String enumValue)
 	{
-		final Class<T> enumClass = getNMSEnum(versionDependency, enumName);
+		final Class<T> enumClass = getDependencyEnumClass(dependencyKind, enumName);
 		
 		return enumClass != null ? Enum.valueOf(enumClass, enumValue) : null;
 	}
 	
-	public static @Nullable Object createInstance(VersionDependency versionDependency, @NotNull String packetName, @Nullable Object... params)
+	public static @Nullable Object createInstance(DependencyKind dependencyKind, @NotNull String packetName, @Nullable Object... params)
 	{
-		try
-		{
-			final Class<?> packetClass = getVersionDependentClass(versionDependency, packetName);
-					
-			if (packetClass != null)
-			{
-				List<Class<?>> paramClasses = new ArrayList<>();
+		final Class<?> dependencyClass = getDependencyClass(dependencyKind, packetName);
 				
-				for (Object param : params)
-				{
-					paramClasses.add(param.getClass());
-				}				
-				return packetClass.getConstructor(paramClasses.toArray(new Class<?>[0])).newInstance(params);
-			}
+		if (dependencyClass != null)
+		{
+			return createInstance(dependencyClass, params);
+		}
+		return null;
+	}
+	
+	public static @Nullable Object createInstance(@Nullable Class<?> dependencyClass, @Nullable Object... params)
+	{
+		if (dependencyClass == null)
+		{
 			return null;
+		}
+		
+		try
+		{				
+			List<Class<?>> paramClasses = new ArrayList<>();
+			
+			for (Object param : params)
+			{
+				paramClasses.add(param.getClass());
+			}				
+			return dependencyClass.getConstructor(paramClasses.toArray(new Class<?>[0])).newInstance(params);
 		} 
 		catch (Exception exception)
 		{
-			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant create packet named \"%s\" with params \"%s\".", packetName, Arrays.toString(params)), exception);
+			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant create instance named \"%s\" with params \"%s\".", dependencyClass.getName(), Arrays.toString(params)), exception);
 			return null;
 		}
 	}
+	
 	
 	public static @Nullable Object invokeMethod(@Nullable Object object, @NotNull String methodName, @Nullable Object... params)
 	{
@@ -105,27 +116,34 @@ public class IndependencyHelper
 		}
 	}
 	
-	public static @Nullable Object invokeStaticMethod(VersionDependency versionDependency, @NotNull String className, @NotNull String methodName, @Nullable Object... params)
+	public static @Nullable Object invokeStaticMethod(DependencyKind dependencyKind, @NotNull String className, @NotNull String methodName, @Nullable Object... params)
 	{
-		try
-		{
-			final Class<?> methodClass = getVersionDependentClass(versionDependency, className);
+		final Class<?> dependencyClass = getDependencyClass(dependencyKind, className);
 			
-			if (methodClass != null)
-			{
-				List<Class<?>> paramClasses = new ArrayList<>();
-				
-				for (Object param : params)
-				{
-					paramClasses.add(param.getClass());
-				}
-				return methodClass.getMethod(methodName, paramClasses.toArray(new Class<?>[0])).invoke(null, params);
-			}
+		return invokeStaticMethod(dependencyClass, methodName, params);
+	}
+	
+	
+	public static @Nullable Object invokeStaticMethod(@Nullable Class<?> dependencyClass, @NotNull String methodName, @Nullable Object... params)
+	{
+		if (dependencyClass == null)
+		{
 			return null;
+		}
+		
+		try
+		{			
+			List<Class<?>> paramClasses = new ArrayList<>();
+			
+			for (Object param : params)
+			{
+				paramClasses.add(param.getClass());
+			}
+			return dependencyClass.getMethod(methodName, paramClasses.toArray(new Class<?>[0])).invoke(null, params);
 		} 
 		catch (Exception exception)
 		{
-			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant invoke method named \"%s\" with params \"%s\".", methodName, Arrays.toString(params)), exception);
+			Bukkit.getLogger().log(Level.SEVERE, String.format("Cant invoke static method named \"%s\" with params \"%s\".", methodName, Arrays.toString(params)), exception);
 			return null;
 		}
 	}
@@ -145,7 +163,7 @@ public class IndependencyHelper
 		{
 			Object handle = player.getClass().getMethod("getHandle").invoke(player);
 			Object playerCon = handle.getClass().getField("playerConnection").get(handle);
-			playerCon.getClass().getMethod("sendPacket", getVersionDependentClass(VersionDependency.NMS, "Packet")).invoke(playerCon, packet);
+			playerCon.getClass().getMethod("sendPacket", getDependencyClass(DependencyKind.NMS, "Packet")).invoke(playerCon, packet);
 		} 
 		catch (Exception exception) 
 		{
@@ -155,7 +173,9 @@ public class IndependencyHelper
 	
 	public static void sendPacketDelayed(@NotNull JavaPlugin plugin, @NotNull Player player, @NotNull Object packet, long ticks) 
 	{
-		Validate.notNull((Object) player, "The plugin cannot be null.");
+		Validate.notNull((Object) plugin, "The plugin cannot be null.");
+		Validate.notNull((Object) player, "The player cannot be null.");
+		Validate.notNull(packet, "The packet-object cannot be null.");
 		
 		new BukkitRunnable()
 		{				
@@ -169,7 +189,9 @@ public class IndependencyHelper
 	
 	public static void sendPacketDelayedAsync(@NotNull JavaPlugin plugin, @NotNull Player player, @NotNull Object packet, int ticks) 
 	{
-		Validate.notNull((Object) player, "The plugin cannot be null.");
+		Validate.notNull((Object) plugin, "The plugin cannot be null.");
+		Validate.notNull((Object) player, "The player cannot be null.");
+		Validate.notNull(packet, "The packet-object cannot be null.");
 		
 		new BukkitRunnable()
 		{				
@@ -194,7 +216,7 @@ public class IndependencyHelper
 	{
 		Validate.notNull((Object) location, "The location cannot be null.");
 		
-		final Object vec3DObject = createInstance(VersionDependency.NMS, "Vec3D", location.getX(), location.getY(), location.getZ());
+		final Object vec3DObject = createInstance(DependencyKind.NMS, "Vec3D", location.getX(), location.getY(), location.getZ());
 		
 		if (vec3DObject != null)
 		{
@@ -217,7 +239,7 @@ public class IndependencyHelper
 	{
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
-		final Object packet = createInstance(VersionDependency.NMS, "PacketPlayOutTitle", getEnumByName(VersionDependency.NMS, "PacketPlayOutTitle.EnumTitleAction", "TIMES"), null, infade, ticks, outfade);
+		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "TIMES"), null, infade, ticks, outfade);
 		
 		sendPacket(player, packet);
 	}
@@ -230,10 +252,10 @@ public class IndependencyHelper
 		Validate.notNull((Object) player, "The title cannot be null.");
 		Validate.notNull((Object) player, "The subtitle cannot be null.");
 		
-		final Object serializedTitle = invokeStaticMethod(VersionDependency.NMS, "ChatSerializer", "a", getJsonMessage(title));
-		final Object serializedSubTitle = invokeStaticMethod(VersionDependency.NMS, "ChatSerializer", "a", getJsonMessage(subTitle));
-		final Object packet = createInstance(VersionDependency.NMS, "PacketPlayOutTitle", getEnumByName(VersionDependency.NMS, "PacketPlayOutTitle.EnumTitleAction", "TITLE"), serializedTitle);
-		final Object packet2 = createInstance(VersionDependency.NMS, "PacketPlayOutTitle", getEnumByName(VersionDependency.NMS, "PacketPlayOutTitle.EnumTitleAction", "SUBTITLE"), serializedSubTitle);
+		final Object serializedTitle = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonMessage(title));
+		final Object serializedSubTitle = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonMessage(subTitle));
+		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "TITLE"), serializedTitle);
+		final Object packet2 = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "SUBTITLE"), serializedSubTitle);
 	
 		sendPacket(player, packet);
 		sendPacket(player, packet2);
@@ -255,8 +277,8 @@ public class IndependencyHelper
 		Validate.notNull((Object) player, "The player cannot be null.");
 		Validate.notNull((Object) player, "The message cannot be null.");
 		
-		final Object serializedMessage = invokeStaticMethod(VersionDependency.NMS, "ChatSerializer", "a", getJsonMessage(message));
-		final Object packet = createInstance(VersionDependency.NMS, "PacketPlayOutChat", serializedMessage, getEnumByName(VersionDependency.NMS, "ChatMessageType", "GAME_INFO"), player.getUniqueId());
+		final Object serializedMessage = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonMessage(message));
+		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutChat", serializedMessage, getEnumByName(DependencyKind.NMS, "ChatMessageType", "GAME_INFO"), player.getUniqueId());
 		
 		sendPacket(player, packet);
 	}
@@ -265,23 +287,14 @@ public class IndependencyHelper
 
 	public static @NotNull ItemStack getTaggedItemStack(@NotNull ItemStack itemStack, @NotNull String key, @NotNull String value) 
 	{
-		final Object nmsItemStack;
-		final Class<?> craftItemStackClass = getVersionDependentClass(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack");
-		
-		if (itemStack.getClass().equals(craftItemStackClass))
-		{
-			nmsItemStack = craftItemStackClass.cast(itemStack);
-		}
-		else
-		{
-			nmsItemStack = invokeStaticMethod(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack", "asNMSCopy", itemStack);
-		}
-		final Object nmsItemCompound = (boolean) invokeMethod(nmsItemStack, "hasTag") ? invokeMethod(nmsItemStack, "getTag") : createInstance(VersionDependency.NMS, "NBTTagCompound");
+		final Class<?> craftItemStackClass = getDependencyClass(DependencyKind.CRAFTBUKKIT, "inventory.CraftItemStack");
+		final Object nmsItemStack = invokeStaticMethod(craftItemStackClass, "asNMSCopy", itemStack);
+		final Object nmsItemCompound = (boolean) invokeMethod(nmsItemStack, "hasTag") ? invokeMethod(nmsItemStack, "getTag") : createInstance(DependencyKind.NMS, "NBTTagCompound");
 		
 		invokeMethod(nmsItemCompound, "setString", key, value);
 		invokeMethod(nmsItemStack, "setTag", nmsItemCompound);
 	
-		final Object taggedItemStack = invokeStaticMethod(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack", "asBukkitCopy", nmsItemStack);
+		final Object taggedItemStack = invokeStaticMethod(craftItemStackClass, "asBukkitCopy", nmsItemStack);
 		
 		if (taggedItemStack != null)
 		{
@@ -295,11 +308,17 @@ public class IndependencyHelper
 
 	public static @Nullable String getTagFromItemStack(@NotNull ItemStack itemStack, @NotNull String key)
 	{
-		if (itemStack.getClass().equals(getVersionDependentClass(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack")))
-		{
-			itemStack = ItemStack.class.cast(itemStack);
+		final Class<?> craftItemStackClass = getDependencyClass(DependencyKind.CRAFTBUKKIT, "inventory.CraftItemStack");
+		final Object nmsItemStack;
+		
+		if (itemStack.getClass().equals(craftItemStackClass))
+		{		
+			nmsItemStack = invokeStaticMethod(craftItemStackClass, "asNMSCopy", ItemStack.deserialize(itemStack.serialize()));
 		}
-		final Object nmsItemStack = invokeStaticMethod(VersionDependency.CRAFTBUKKIT, "inventory.CraftItemStack", "asNMSCopy", itemStack);
+		else
+		{
+			nmsItemStack = invokeStaticMethod(craftItemStackClass, "asNMSCopy", itemStack);
+		}
 
 		if (!(boolean) invokeMethod(nmsItemStack, "hasTag"))
 		{	

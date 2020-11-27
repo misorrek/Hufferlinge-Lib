@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
+import huff.lib.helper.MessageHelper;
+import huff.lib.helper.StringHelper;
 import huff.lib.various.MenuInventoryHolder;
 
 public class PlayerChooserInventory extends MenuInventoryHolder
@@ -22,6 +24,7 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 	
 	private static final int MIN_SIZE = InventoryHelper.INV_SIZE_3;
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
+	private static final int START_SITE = 1;
 	
 	public PlayerChooserInventory(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
 	{
@@ -32,12 +35,14 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 		
 		this.key = key;
 		this.players = players;
-		this.playersPerSite = ((this.getInventory().getSize() % InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
+		this.playersPerSite = ((this.getInventory().getSize() / InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
 		this.maxSite = (int) Math.ceil((double) players.size() / playersPerSite);
 		
 		initInventory(isBackPossible);
 		setSiteFunction();
 		setPlayers();
+		
+		Bukkit.getConsoleSender().sendMessage("MAXSITE : " + maxSite);
 	}
 
 	private final String key;
@@ -45,7 +50,7 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 	private final int playersPerSite;
 	private final int maxSite;
 	
-	private int site = 0;
+	private int site = START_SITE;
 	
 	public String getKey()
 	{
@@ -88,7 +93,6 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 	private void initInventory(boolean isBackPossible)
 	{				
 		InventoryHelper.setBorder(this.getInventory(), InventoryHelper.getBorderItem());
-		InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.BLACK_STAINED_GLASS_PANE, "§7» Seite «"));
 		InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 9, isBackPossible ? InventoryHelper.getBackItem() : InventoryHelper.getCloseItem());
 	}
 	
@@ -96,7 +100,10 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 	{
 		final ItemStack borderItem = InventoryHelper.getBorderItem();	
 		
-		if (site > 0)
+		InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, 
+				                                                                                             StringHelper.build("§7» Seite", MessageHelper.getHighlighted(Integer.toString(site)), "«")));
+		
+		if (site > START_SITE)
 		{
 			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 4, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7« §9Vorherige Seite"));
 		}
@@ -105,7 +112,7 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 4, borderItem);
 		}
 		
-		if (site != maxSite)
+		if (site < maxSite)
 		{
 			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 6, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7» §9Nächste Seite"));
 		}
@@ -117,17 +124,17 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 		
 		if (siteItem != null)
 		{
-			siteItem.setAmount(site + 1); 
+			siteItem.setAmount(site); 
 		}
 	}
 	
 	private void setPlayers()
-	{
-		final int startIndex = site * playersPerSite;
+	{		
+		final int startIndex = (site - 1) * playersPerSite;
 		final int maxIndex = startIndex + playersPerSite;
 		
 		for (int i = startIndex; i < players.size() && i < maxIndex; i++)
-		{
+		{			
 			final OfflinePlayer player = Bukkit.getOfflinePlayer(players.get(i));
 			
 			this.getInventory().addItem(ItemHelper.getSkullWithMeta(player, "§9" + player.getName()));	
@@ -145,7 +152,7 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 		{
 			site++;
 		}
-		else if (site > 0)
+		else if (!increase && site > START_SITE)
 		{
 			site--;
 		}	

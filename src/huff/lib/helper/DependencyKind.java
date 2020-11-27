@@ -2,12 +2,12 @@ package huff.lib.helper;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum VersionDependency
+public enum DependencyKind
 {
 	NMS("net.minecraft.server"),
 	CRAFTBUKKIT("org.bukkit.craftbukkit");
 	
-	private VersionDependency(String label)
+	private DependencyKind(String label)
 	{
 		this.label = label;
 	}
