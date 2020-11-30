@@ -11,6 +11,10 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A Helper class containing static data processing methods.
+ * Covers for example data converting or parsing.
+ */
 public class DataHelper
 {
 	private static final String PATTERN_STRINGLOC = "%s#%f#%f#%f#%f#%f";
