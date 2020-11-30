@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.GameRule;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ public class EnvironmentHelper
 			Bukkit.getLogger().log(Level.SEVERE, "Cannot initialize daylight circle in a null world.");
 			return;
 		}
-		//TODO Set DayligthCycle = false
+		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		world.setTime(0);
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
