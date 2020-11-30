@@ -15,15 +15,24 @@ public class EnvironmentHelper
 {
 	private EnvironmentHelper() { }
 	
-	public static void initDayligthCircle(@NotNull JavaPlugin plugin, @Nullable World world, @Nullable Action action)
+	/**
+	 * Initializing a custom daylight cycle in a given world.
+	 * Also possible to give a action which get called every iteration.  
+	 * 
+	 * @param   plugin   the java plugin instance
+	 * @param   world    the target world
+	 * @param   action   a optional action to run custom functionality
+	 */
+	public static void initDaylightCycle(@NotNull JavaPlugin plugin, @Nullable World world, @Nullable Action action)
 	{
 		Validate.notNull((Object) plugin, "The plugin-instance cannot be null.");
 		
 		if (world == null)
 		{
-			Bukkit.getLogger().log(Level.SEVERE, "Cannot init daylight circle in a null world.");
+			Bukkit.getLogger().log(Level.SEVERE, "Cannot initialize daylight circle in a null world.");
 			return;
 		}
+		//TODO Set DayligthCycle = false
 		world.setTime(0);
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
