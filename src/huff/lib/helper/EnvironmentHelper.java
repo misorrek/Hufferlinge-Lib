@@ -12,6 +12,10 @@ import org.jetbrains.annotations.Nullable;
 
 import huff.lib.interfaces.Action;
 
+/**
+ * A Helper class containing static game environment methods.
+ * Covers for example world functionality.
+ */
 public class EnvironmentHelper
 {
 	private EnvironmentHelper() { }
