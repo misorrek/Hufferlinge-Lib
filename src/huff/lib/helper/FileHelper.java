@@ -18,12 +18,25 @@ import org.jetbrains.annotations.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * A Helper class containing static file IO methods.
+ * Covers gerneral files, yaml and json.
+ */
 public class FileHelper
 {
 	private FileHelper() { }
 	
 	// Y A M L
 	
+	/**
+	 * Tries to load a YamlConfiguration from the file at the given path.
+	 * Are the header and/or the default values of the Yaml Configuration empty, the given values are used.
+	 * 
+	 * @param   path       the path to the file including filename
+	 * @param   header     the optional header for the case of an empty file
+	 * @param   defaults   the optional default values for the case of an empty file
+	 * @returns            The loaded YamlConfiguration.
+	 */
 	public static @Nullable YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
 	{
 		Validate.notNull((Object) path, "The yaml-file-path cannot be null.");
@@ -59,6 +72,13 @@ public class FileHelper
 		return configuration;
 	}
 	
+	/**
+	 * Tries to read the value at the given path in the given YamlConfiguration.
+	 * 
+	 * @param   config   the YamlConfiguration to read
+	 * @param   path     the path of the target value
+	 * @returns          The readed value.
+	 */
 	public static @NotNull Object readConfigValue(@NotNull YamlConfiguration config, @NotNull String path)
 	{
 		Validate.notNull((Object) config, "The yaml-configuration cannot be null.");
@@ -76,6 +96,13 @@ public class FileHelper
 	
 	// J S O N
 	
+	/**
+	 * Tries to load a json object as the specified class from the file at the given path.
+	 * 
+	 * @param   path       	  the path to the file including filename
+	 * @param   jsonClass     the class of json object to be loaded
+	 * @returns            	  The loaded object representing a json structure.
+	 */
 	public static @Nullable Object loadJsonObjectFromFile(@NotNull String path, @NotNull Class<?> jsonClass)
 	{
 		Validate.notNull((Object) path, "The json-file-path cannot be null.");
@@ -102,6 +129,9 @@ public class FileHelper
 		return null;
 	}
 	
+	/**
+	 * TODO Refactor method
+	 */
 	public static void saveJsonObjectToFile(@NotNull String path, @NotNull Object jsonObject, @NotNull Class<?> jsonClass)
 	{
 		Validate.notNull((Object) path, "The json-file-path cannot be null.");
