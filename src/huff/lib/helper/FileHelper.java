@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * A Helper class containing static file IO methods.
+ * A helper class containing static file IO methods.
  * Covers gerneral files, yaml and json.
  */
 public class FileHelper

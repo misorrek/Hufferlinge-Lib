@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A Helper class containing static data processing methods.
+ * A helper class containing static data processing methods.
  * Covers for example data converting or parsing.
  */
 public class DataHelper

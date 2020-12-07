@@ -10,6 +10,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A helper class containing static inventory methods.
+ * Covers everything around "org.bukkit.inventory.Inventory".
+ */
 public class InventoryHelper
 {
 	public static final int INV_SIZE_1 = 9;

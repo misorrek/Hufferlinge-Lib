@@ -11,7 +11,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.query.QueryOptions;
 
 /**
- * A Helper class containing static permisson methods.
+ * A helper class containing static permisson methods.
  * Covers gerneral permission and LuckPerms. 
  */
 public class PermissionHelper 

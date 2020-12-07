@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A Helper class containing static string methods.
+ * A helper class containing static string methods.
  */
 public class StringHelper
 {
@@ -52,7 +52,7 @@ public class StringHelper
 	 */
 	public static boolean isNotNullOrWhitespace(@Nullable String value)
 	{
-		return string != null && !string.trim().isEmpty();
+		return value != null && !value.trim().isEmpty();
 	}
 
 	/**

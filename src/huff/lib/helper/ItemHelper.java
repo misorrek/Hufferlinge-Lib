@@ -14,20 +14,48 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A helper class containing static item methods.
+ * Covers everything around "org.bukkit.inventory.ItemStack".
+ */
 public class ItemHelper
 {
 	private ItemHelper() { }
 	
+	/**
+	 * Gets an "org.bukkit.inventory.ItemStack" which has the given meta details set.
+	 * 
+	 * @param   material      the material that defines the type of the returned item
+	 * @param   displayName   a string that is displayed as name on the returned item
+	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
+	 */
 	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName)
 	{
 		return getItemWithMeta(material, displayName, null);
 	}
 	
+	/**
+	 * Gets an "org.bukkit.inventory.ItemStack" which has the given meta details set.
+	 * 
+	 * @param   material      the material that defines the type of the returned item
+	 * @param   displayName   a string that is displayed as name on the returned item
+	 * @param   lore          a list of strings that is displayed as description on the returned item
+	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
+	 */
 	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore)
 	{
 		return getItemWithMeta(material, displayName, lore, new ItemFlag[0]);
 	}
 	
+	/**
+	 * Gets an "org.bukkit.inventory.ItemStack" which has the given meta details set.
+	 * 
+	 * @param   material      the material that defines the type of the returned item
+	 * @param   displayName   a string that is displayed as name on the returned item
+	 * @param   lore          a list of strings that is displayed as description on the returned item 
+	 * @param   itemFlags     a optional list of flags that set specific options for the returned item
+	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
+	 */
 	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore, ItemFlag... itemFlags)
 	{
 		Validate.notNull((Object) material, "The material cannot be null.");
@@ -43,11 +71,26 @@ public class ItemHelper
 		return resultItem;
 	}
 	
+	/**
+	 * Gets an "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" which has the given meta details set.
+	 * 
+	 * @param   owner         the owner which the skull is from
+	 * @param   displayName   a string that is displayed as name on the returned skull item
+	 * @return                A "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" with the given meta details.
+	 */
 	public static @NotNull ItemStack getSkullWithMeta(@NotNull OfflinePlayer owner, @Nullable String displayName)
 	{
 		return getSkullWithMeta(owner, displayName, null);
 	}
 	
+	/**
+	 * Gets an "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" which has the given meta details set.
+	 * 
+	 * @param   owner         the owner which the skull is from
+	 * @param   displayName   a string that is displayed as name on the returned skull item
+	 * @param   lore          a list of strings that is displayed as description on the returned skull item 
+	 * @return                A "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" with the given meta details.
+	 */
 	public static @NotNull ItemStack getSkullWithMeta(@NotNull OfflinePlayer owner, @Nullable String displayName, @Nullable List<String> lore)
 	{
 		Validate.notNull((Object) owner, "The skull-owner cannot be null.");
@@ -59,17 +102,39 @@ public class ItemHelper
 		resultItem.setItemMeta(resultMeta);
 		return resultItem;
 	}
-	
+
+	/**
+	 * Gets an "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" which has the given meta details set.
+	 * 
+	 * @param   ownerUUID     the owner's uuid which the skull is from
+	 * @param   displayName   a string that is displayed as name on the returned skull item
+	 * @return                A "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" with the given meta details.
+	 */
 	public static @NotNull ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName)
 	{
 		return getSkullWithMeta(Bukkit.getOfflinePlayer(ownerUUID), displayName, null);
 	}
 	
+	/**
+	 * Gets an "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" which has the given meta details set.
+	 * 
+	 * @param   ownerUUID     the owner's uuid which the skull is from
+	 * @param   displayName   a string that is displayed as name on the returned skull item
+	 * @param   lore          a list of strings that is displayed as description on the returned skull item 
+	 * @return                A "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" with the given meta details.
+	 */
 	public static @NotNull ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName, @Nullable List<String> lore)
 	{
 		return getSkullWithMeta(Bukkit.getOfflinePlayer(ownerUUID), displayName, lore);
 	}
 	
+	/**
+	 * Applies a lore meta detail to the given "org.bukkit.inventory.ItemStack".
+	 * 
+	 * @param   itemStack     the item stack which the lore meta detail gets applied
+	 * @param   lore          the list of strings that gets applied to the item stack
+	 * @return                The "org.bukkit.inventory.ItemStack" with the lore meta detail applied.
+	 */
 	public static void applyLore(@NotNull ItemStack itemStack, @NotNull List<String> lore) 
 	{
 		ItemMeta loreMeta = itemStack.getItemMeta();
