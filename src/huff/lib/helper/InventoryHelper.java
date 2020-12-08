@@ -32,31 +32,62 @@ public class InventoryHelper
 	
 	private InventoryHelper() { }
 	
+	/**
+	 * Gets the menu inventory border item.
+	 * 
+	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
+	 */
 	public static @NotNull ItemStack getBorderItem()
 	{
 		return ItemHelper.getItemWithMeta(Material.BLACK_STAINED_GLASS_PANE, null, null, ItemFlag.HIDE_ATTRIBUTES);
 	}
 	
+	/**
+	 * Gets the menu inventory fill item.
+	 * 
+	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
+	 */
 	public static @NotNull ItemStack getFillItem()
 	{
 		return ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, null, null, ItemFlag.HIDE_ATTRIBUTES);
 	}
 	
+	/**
+	 * Gets the menu inventory back item.
+	 * 
+	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
+	 */
 	public static @NotNull ItemStack getBackItem()
 	{		
 		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_BACK);
 	}
 	
+	/**
+	 * Gets the menu inventory abort item.
+	 * 
+	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
+	 */
 	public static @NotNull ItemStack getAbortItem()
 	{
 		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_ABORT);
 	}
 	
+	/**
+	 * Gets the menu inventory close item.
+	 * 
+	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
+	 */
 	public static @NotNull ItemStack getCloseItem()
 	{
 		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_CLOSE);
 	}
 	
+	/**
+	 * Sets the border in the given inventory with the specified item. 
+	 * 
+	 * @param   inventory         the inventory to set the border in
+	 * @param   borderItemStack   the item that is set as border
+	 */
 	public static void setBorder(@NotNull Inventory inventory, @Nullable ItemStack borderItemStack)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");
@@ -73,6 +104,14 @@ public class InventoryHelper
 		}
 	}
 	
+	/**
+	 * Sets the filling in the given inventory with the specified item. 
+	 * Can also fill the border area.
+	 * 
+	 * @param   inventory       the inventory to fill
+	 * @param   fillItemStack   the item that is set as filling
+	 * @param   ignoreBorder    a boolean if the border area should also be filled
+	 */
 	public static void setFill(@NotNull Inventory inventory, @Nullable ItemStack fillItemStack, boolean ignoreBorder)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");
@@ -89,46 +128,70 @@ public class InventoryHelper
 		}
 	}
 	
-	public static void setItem(@NotNull Inventory inventory, int row, int coloum, @Nullable ItemStack itemStack)
+	/**
+	 * Sets the given item stack to the target slot in the given inventory.
+	 * The target slot gets located by the row and column value.
+	 * 
+	 * @param   inventory       the inventory to set the item stack in
+	 * @param   row             the row to the target slot
+	 * @param   column          the column to the target slot
+	 * @param   itemStack       the item stack to set in the target slot
+	 */
+	public static void setItem(@NotNull Inventory inventory, int row, int column, @Nullable ItemStack itemStack)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
 	
-		inventory.setItem(getPositonFromRowColoum(inventory.getSize(), row, coloum), itemStack);
+		inventory.setItem(getPositonFromRowcolumn(inventory.getSize(), row, column), itemStack);
 	}
 	
-	public static @Nullable ItemStack getItem(@NotNull Inventory inventory, int row, int coloum)
+	/**
+	 * Gets the item stack from the target slot in the given inventory.
+	 * The target slot gets located by the row and column value.
+	 * 
+	 * @param   inventory   the inventory to get the item stack from
+	 * @param   row         the row to the target slot
+	 * @param   column      the column to the target slot
+	 * @return              The item stack at the target slot.
+	 */
+	public static @Nullable ItemStack getItem(@NotNull Inventory inventory, int row, int column)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
 		
-		return inventory.getItem(getPositonFromRowColoum(inventory.getSize(), row, coloum));
+		return inventory.getItem(getPositonFromRowcolumn(inventory.getSize(), row, column));
 	}
 	
-	private static int getPositonFromRowColoum(int inventorySize, int row, int coloum)
+	private static int getPositonFromRowcolumn(int inventorySize, int row, int column)
 	{
 		if (row * ROW_LENGTH > inventorySize)
 		{
 			row = getLastLine(inventorySize);
 		}
 		
-		if (coloum > ROW_LENGTH)
+		if (column > ROW_LENGTH)
 		{
-			coloum = ROW_LENGTH;
+			column = ROW_LENGTH;
 		}
 		row--;
-		coloum--;
+		column--;
 		
 		if (row < 0)
 		{
 			row = 0;
 		}
 		
-		if (coloum < 0)
+		if (column < 0)
 		{
-			coloum = 0;
+			column = 0;
 		}	
-		return ((row) * ROW_LENGTH) + coloum;
+		return ((row) * ROW_LENGTH) + column;
 	}
 	
+	/**
+	 * Gets the last row from the a specified inventory size.
+	 * 
+	 * @param   inventorySize   the inventory size that has to be a multiply of "ROW_LENGTH"
+	 * @return                  The last row in a inventory with the specified size.
+	 */
 	public static int getLastLine(int inventorySize)
 	{			
 		if (inventorySize % ROW_LENGTH != 0)
@@ -139,10 +202,11 @@ public class InventoryHelper
 	}
 	
 	/**
+	 * Checks how much amount of a specified item stack can be added to a given inventory.
 	 * 
-	 * @param inventory
-	 * @param itemStack
-	 * @return
+	 * @param   inventory   the inventory to check free item stack amount in
+	 * @param   itemStack   the item stack with that the check is processed
+	 * @return              The summed up free item stack amount.
 	 */
 	public static int getFreeItemStackAmount(@NotNull Inventory inventory, @NotNull ItemStack itemStack)
 	{
@@ -167,12 +231,13 @@ public class InventoryHelper
 	}
 	
 	/**
+	 * Checks how many free inventory slots exist if the specified item stack is added to the given inventory.
 	 * 
-	 * @param inventory
-	 * @param itemStack
-	 * @return
+	 * @param   inventory   the inventory to check free slots in
+	 * @param   itemStack   the item stack with that the check is processed
+	 * @return              The free slots if the given item stack will be added. 
 	 */
-	public static int getFreeItemStackSpace(@NotNull Inventory inventory, @NotNull ItemStack itemStack)
+	public static int getFreeSlotsAfterAdding(@NotNull Inventory inventory, @NotNull ItemStack itemStack)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
 		Validate.notNull((Object) itemStack, "The item-stack cannot be null.");	
@@ -200,6 +265,13 @@ public class InventoryHelper
 		return freeItemStackSpace;
 	}
 	
+	/**
+	 * Checks if the given inventory type is a container.
+	 * Means that the inventory only has storage function.
+	 * 
+	 * @param   inventoryType   the inventory type to check
+	 * @return                  The check result.
+	 */
 	public static boolean isContainerInventory(@NotNull InventoryType inventoryType)
 	{
 		return inventoryType == InventoryType.PLAYER || inventoryType == InventoryType.CHEST || inventoryType == InventoryType.BARREL ||
@@ -207,6 +279,13 @@ public class InventoryHelper
 			   inventoryType == InventoryType.DISPENSER || inventoryType == InventoryType.DROPPER;
 	}
 	
+	/**
+	 * Checks if the given inventory action is a pickup.
+	 * Means that a item stack were picked up from a slot or moved with shift in directly to another inventory.
+	 * 
+	 * @param   inventoryType   the inventory action to check
+	 * @return                  The check result.
+	 */
 	public static boolean isPickupAction(InventoryAction inventoryAction)
 	{
 		return inventoryAction == InventoryAction.PICKUP_ALL || inventoryAction == InventoryAction.PICKUP_HALF || 
@@ -214,6 +293,13 @@ public class InventoryHelper
 			   inventoryAction == InventoryAction.MOVE_TO_OTHER_INVENTORY;
 	}
 	
+	/**
+	 * Checks if the given inventory action is a place.
+	 * Means that a picked up item stack were placed to a slot.
+	 * 
+	 * @param   inventoryType   the inventory action to check
+	 * @return                  The check result.
+	 */
 	public static boolean isPlaceAction(InventoryAction inventoryAction)
 	{
 		return inventoryAction == InventoryAction.PLACE_ALL || inventoryAction == InventoryAction.PLACE_SOME || 
