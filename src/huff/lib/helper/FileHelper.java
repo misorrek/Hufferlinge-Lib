@@ -20,7 +20,7 @@ import com.google.gson.GsonBuilder;
 
 /**
  * A helper class containing static file IO methods.
- * Covers gerneral files, yaml and json.
+ * Covers general files, yaml and json.
  */
 public class FileHelper
 {
@@ -30,7 +30,7 @@ public class FileHelper
 	
 	/**
 	 * Tries to load a YamlConfiguration from the file at the given path.
-	 * Are the header and/or the default values of the Yaml Configuration empty, the given values are used.
+	 * Are the header and/or the default values of the YamlConfiguration empty, the given values are used.
 	 * 
 	 * @param   path       the path to the file including filename
 	 * @param   header     the optional header for the case of an empty file
@@ -77,7 +77,7 @@ public class FileHelper
 	 * 
 	 * @param   config   the YamlConfiguration to read
 	 * @param   path     the path of the target value
-	 * @returns          The readed value.
+	 * @returns          The read value.
 	 */
 	public static @NotNull Object readConfigValue(@NotNull YamlConfiguration config, @NotNull String path)
 	{
@@ -99,9 +99,9 @@ public class FileHelper
 	/**
 	 * Tries to load a json object as the specified class from the file at the given path.
 	 * 
-	 * @param   path       	  the path to the file including filename
-	 * @param   jsonClass     the class of json object to be loaded
-	 * @returns            	  The loaded object representing a json structure.
+	 * @param   path       	the path to the file including filename
+	 * @param   jsonClass   the class of json object to be loaded
+	 * @returns            	The loaded object representing a json structure.
 	 */
 	public static @Nullable Object loadJsonObjectFromFile(@NotNull String path, @NotNull Class<?> jsonClass)
 	{
@@ -130,7 +130,13 @@ public class FileHelper
 	}
 	
 	/**
-	 * TODO Refactor method
+	 * Tries to save a json object as the specified class to the file at the given path.
+	 * If the file doesn't exist it will tried to create a new one.
+	 * 
+	 * @param   path       	 the path to the file including filename
+	 * @param   jsonObject   the json object to save
+	 * @param   jsonClass    the class of json object to be loaded
+	 * @returns            	 The loaded object representing a json structure.
 	 */
 	public static void saveJsonObjectToFile(@NotNull String path, @NotNull Object jsonObject, @NotNull Class<?> jsonClass)
 	{
@@ -154,6 +160,13 @@ public class FileHelper
 	
 	// G E N E R A L
 	
+	/**
+	 * Tries to create a new file at the file's path.
+	 * If the path contains parent elements that not exist, they will be created.
+	 * 
+	 * @param   file   the file object containing the target path
+	 * @returns        A boolean if the creation was successful.
+	 */
 	public static boolean createFileAndParents(@NotNull File file)
 	{
 		Validate.notNull((Object) file, "The file cannot be null.");
@@ -179,6 +192,13 @@ public class FileHelper
 		return true;
 	}
 	
+	/**
+	 * Tries to load a file object from the given path.
+	 * If the file doesn't exist it will tried to create a new one.
+	 * 
+	 * @param   path   the path to the target file
+	 * @returns        The loaded file object.
+	 */
 	public static @Nullable File loadFile(@NotNull String path)
 	{
 		Validate.notNull((Object) path, "The file-path cannot be null.");
@@ -193,6 +213,13 @@ public class FileHelper
 		return file;
 	}
 	
+	/**
+	 * Reads all contents from a given file.
+	 * If the file doesn't exist a empty string will be returned.
+	 * 
+	 * @param   file   the file object to read from
+	 * @returns        The read contents as a string.
+	 */
 	public static @NotNull String readFileContents(@NotNull File file)
 	{
 		Validate.notNull((Object) file, "The file cannot be null.");
