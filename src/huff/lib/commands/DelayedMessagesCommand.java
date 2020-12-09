@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import huff.lib.helper.MessageHelper;
+import huff.lib.helper.PermissionHelper;
 import huff.lib.manager.delayedmessage.DelayType;
 import huff.lib.manager.delayedmessage.DelayedMessagesManager;
-import huff.lib.manager.delayedmessage.MessageType;
 
 public class DelayedMessagesCommand implements CommandExecutor 
 {
@@ -27,36 +27,16 @@ public class DelayedMessagesCommand implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) 
 	{	
-		/*if (sender instanceof Player && !PermissionHelper.hasPlayerPermissionFeedbacked((Player) sender, PermissionHelper.PERM_ALL))
+		if (sender instanceof Player && !PermissionHelper.hasPlayerPermissionFeedbacked((Player) sender, PermissionHelper.PERM_ALL))
 		{
 			return false;
-		}*/
+		}
 		
-		if (args.length >= 4)
+		if (args.length >= 3)
 		{
 			Player targetPlayer = Bukkit.getPlayer(args[0]);
-			MessageType messageType = MessageType.valueOf(args[1]);
-			DelayType delayType = DelayType.valueOf(args[2]);			
+			DelayType delayType = DelayType.valueOf(args[1]);			
 			StringBuilder builder = new StringBuilder();
-			
-			if (messageType == null)
-			{
-				MessageType[] messageTypeValue = MessageType.values();
-				
-				for (int i = 0; i < messageTypeValue.length; i++)
-				{
-					if (i != (messageTypeValue.length - 1))
-					{
-						builder.append(messageTypeValue[i].toString() + ", ");
-					}
-					else
-					{
-						builder.append(messageTypeValue[i].toString());
-					}
-				}	
-				sender.sendMessage(MessageHelper.PREFIX_HUFF + "Die Nachrichten-Kategorie ist ungültig. Mögliche Werte §9\"" + builder.toString() + "\"§7.");
-				return false;
-			}
 			
 			if (delayType == null)
 			{
@@ -92,7 +72,7 @@ public class DelayedMessagesCommand implements CommandExecutor
 			{
 				builder.deleteCharAt(builder.length() -1);
 			}
-			delayedMessageManager.addDelayedMessage(targetPlayer.getUniqueId(), delayType, messageType, builder.toString());
+			delayedMessageManager.addDelayedMessage(targetPlayer.getUniqueId(), delayType, builder.toString());
 			return true;
 		}
 		sender.sendMessage(MessageHelper.getWrongInput("/delayedmessage [Nachrichten-Kategorie] [Benachrichtigungs-Art] [Spieler] <Nachricht>"));

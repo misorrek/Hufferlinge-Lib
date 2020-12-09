@@ -3,15 +3,14 @@ package huff.lib.manager.delayedmessage.json;
 import com.google.gson.annotations.SerializedName;
 
 import huff.lib.manager.delayedmessage.DelayType;
-import huff.lib.manager.delayedmessage.MessageType;
 
-public class JsonPlayerMessages 
+public class JsonPlayerMessage 
 {
 	@SerializedName("delay_type")
 	public DelayType delayType = DelayType.NEXTJOIN;
 	
-	@SerializedName("message_type")
-	public MessageType messageType = MessageType.INFO;
+	@SerializedName("prefix")
+	public String prefix = "";
 	
 	@SerializedName("message")
 	public String message = "";

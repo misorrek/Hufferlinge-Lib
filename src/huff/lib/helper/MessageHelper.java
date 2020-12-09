@@ -22,6 +22,7 @@ public class MessageHelper
 
 	public static final String PREFIX_HUFF = "§8☰ §aHufferlinge §8☷§7 ";
 	public static final String PREFIX_HUFF_CONSOLE = "§7Hufferlinge §8☷ §7 ";
+	public static final String PREFIX_DELAYMESSAGE = "§8☰ §aAus der Vergangenheit §8☷§7 ";
 	
     public static final String NOPERMISSION = "Du hast keine Berechtigung für diesen Befehl.";
     public static final String PLAYERNOTFOUND = "Der Spieler" + PLACEHOLDER_PLAYER + "konnte nicht zugeordnet werden.";

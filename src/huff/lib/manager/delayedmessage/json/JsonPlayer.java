@@ -12,5 +12,5 @@ public class JsonPlayer
 	public UUID uuid = null;
 	
 	@SerializedName("messages")
-	public List<JsonPlayerMessages> messages = new ArrayList<>();
+	public List<JsonPlayerMessage> messages = new ArrayList<>();
 }
