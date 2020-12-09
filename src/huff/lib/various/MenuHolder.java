@@ -7,15 +7,15 @@ import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MenuInventoryHolder implements InventoryHolder 
+public class MenuHolder implements InventoryHolder 
 {
-	public MenuInventoryHolder(@NotNull String identifier, int size, @Nullable String title)
+	public MenuHolder(@NotNull String identifier, int size, @Nullable String title)
 	{
 		this.identifier = identifier;
 		this.inventory = Bukkit.createInventory(this, size, title != null ? title : "");
 	}	
 	
-	public MenuInventoryHolder(@NotNull String identifier, InventoryType type, @Nullable String title)
+	public MenuHolder(@NotNull String identifier, InventoryType type, @Nullable String title)
 	{
 		this.identifier = identifier;
 		this.inventory = Bukkit.createInventory(this, type, title != null ? title : "");
@@ -30,8 +30,10 @@ public class MenuInventoryHolder implements InventoryHolder
 		return inventory;
 	}
 	
-	public boolean equalsIdentifier(MenuInventoryHolder menuInventoryHolder)
+	public boolean equalsIdentifier(MenuHolder menuInventoryHolder)
 	{
 		return this.identifier.equals(menuInventoryHolder.identifier);
 	}
+	
+	//TODO Close/Back/Abort Listener
 }

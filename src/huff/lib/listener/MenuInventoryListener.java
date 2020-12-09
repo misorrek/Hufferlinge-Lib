@@ -15,7 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
 import huff.lib.helper.InventoryHelper;
-import huff.lib.various.MenuInventoryHolder;
+import huff.lib.various.MenuHolder;
 
 public class MenuInventoryListener implements Listener
 {
@@ -78,7 +78,7 @@ public class MenuInventoryListener implements Listener
 	{
 		final UUID uuid = event.getPlayer().getUniqueId();
 		
-		if (!(event.getInventory().getHolder() instanceof MenuInventoryHolder))
+		if (!(event.getInventory().getHolder() instanceof MenuHolder))
 		{
 			if (lastInventories.containsKey(uuid))
 			{
@@ -104,7 +104,7 @@ public class MenuInventoryListener implements Listener
 			
 			for (int i = 0; i < inventories.size(); i++)
 			{
-				if (((MenuInventoryHolder) inventories.get(i).getHolder()).equalsIdentifier((MenuInventoryHolder) event.getInventory().getHolder()))
+				if (((MenuHolder) inventories.get(i).getHolder()).equalsIdentifier((MenuHolder) event.getInventory().getHolder()))
 				{
 					inventories.set(i, event.getInventory());
 					return;

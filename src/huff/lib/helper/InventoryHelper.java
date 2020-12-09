@@ -5,10 +5,13 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import huff.lib.various.MenuHolder;
 
 /**
  * A helper class containing static inventory methods.
@@ -160,32 +163,6 @@ public class InventoryHelper
 		return inventory.getItem(getPositonFromRowcolumn(inventory.getSize(), row, column));
 	}
 	
-	private static int getPositonFromRowcolumn(int inventorySize, int row, int column)
-	{
-		if (row * ROW_LENGTH > inventorySize)
-		{
-			row = getLastLine(inventorySize);
-		}
-		
-		if (column > ROW_LENGTH)
-		{
-			column = ROW_LENGTH;
-		}
-		row--;
-		column--;
-		
-		if (row < 0)
-		{
-			row = 0;
-		}
-		
-		if (column < 0)
-		{
-			column = 0;
-		}	
-		return ((row) * ROW_LENGTH) + column;
-	}
-	
 	/**
 	 * Gets the last row from the a specified inventory size.
 	 * 
@@ -228,6 +205,28 @@ public class InventoryHelper
 			}
 		}
 		return freeItemStackAmount;
+	}
+	
+	/**
+	 * Checks how many free inventory slots in the given inventory exist.
+	 * 
+	 * @param   inventory   the inventory to check free slots in
+	 * @return              The free slots. 
+	 */
+	public static int getFreeSlots(@NotNull Inventory inventory)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");
+		
+		int freeSlots = 0;
+		
+		for (ItemStack currentItemStack : inventory.getStorageContents())
+		{			
+			if (currentItemStack == null || currentItemStack.getType() == Material.AIR)
+			{
+				freeSlots++;
+			}
+		}	
+		return freeSlots;
 	}
 	
 	/**
@@ -304,5 +303,52 @@ public class InventoryHelper
 	{
 		return inventoryAction == InventoryAction.PLACE_ALL || inventoryAction == InventoryAction.PLACE_SOME || 
 			   inventoryAction == InventoryAction.PLACE_ONE;
+	}
+	
+	/**
+	 * Checks if a holder of an inventory equals the given class.
+	 * If so the holder gets casted and returned.
+	 * If not so null will be returned.
+	 * 
+	 * @param   <T>           a type extending from "huff.lib.various.MenuHolder"
+	 * @param   inventory     the inventory the holder holds
+	 * @param   holderClass   a class from the described type parameter
+	 * @return                The menu holder as specified type.
+	 */
+	public static @Nullable <T extends MenuHolder> T getMenuHolder(@NotNull Inventory inventory, Class<T> holderClass)
+	{
+		final InventoryHolder inventoryHolder = inventory.getHolder(); 
+		
+		if (holderClass.isInstance(inventoryHolder))
+		{
+			return (T) inventoryHolder;
+		}
+		return null;
+	}
+	
+	private static int getPositonFromRowcolumn(int inventorySize, int row, int column)
+	{
+		if (row * ROW_LENGTH > inventorySize)
+		{
+			row = getLastLine(inventorySize);
+		}
+		
+		if (column > ROW_LENGTH)
+		{
+			column = ROW_LENGTH;
+		}
+		row--;
+		column--;
+		
+		if (row < 0)
+		{
+			row = 0;
+		}
+		
+		if (column < 0)
+		{
+			column = 0;
+		}	
+		return ((row) * ROW_LENGTH) + column;
 	}
 }

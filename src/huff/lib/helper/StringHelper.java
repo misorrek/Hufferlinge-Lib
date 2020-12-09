@@ -23,7 +23,7 @@ public class StringHelper
 	}
 
 	/**
-	 * Checks if a string is null, empty or has only whitespaces.
+	 * Checks if a string is null, empty or has only whitespace.
 	 * 
 	 * @param   value   the string to check
 	 * @return          A boolean that gives the check result
@@ -60,7 +60,7 @@ public class StringHelper
 	 * 
 	 * @param   ignoreCase   option to (de-)activate case sensitivity
 	 * @param   value   	 a string to compare
-	 * @param   list	 a list of strings to compare
+	 * @param   list	     a list of strings to compare
 	 * @return           	 A boolean that gives the comparing result
 	 */
 	public static boolean isIn(boolean ignoreCase, @NotNull String value, @NotNull String... list)
@@ -80,7 +80,7 @@ public class StringHelper
 	 * 
 	 * @param   ignoreCase   option to (de-)activate case sensitivity
 	 * @param   value   	 a string to compare
-	 * @param   list	 a list of strings to compare
+	 * @param   list	     a list of strings to compare
 	 * @return           	 A boolean that gives the comparing result
 	 */
 	public static boolean contains(boolean ignoreCase, @NotNull String value, @NotNull String... list)

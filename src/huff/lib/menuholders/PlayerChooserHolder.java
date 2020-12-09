@@ -1,4 +1,4 @@
-package huff.lib.inventories;
+package huff.lib.menuholders;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,9 +16,9 @@ import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.StringHelper;
-import huff.lib.various.MenuInventoryHolder;
+import huff.lib.various.MenuHolder;
 
-public class PlayerChooserInventory extends MenuInventoryHolder
+public class PlayerChooserHolder extends MenuHolder
 {
 	public static final String MENU_IDENTIFIER = "menu:playerchooser";
 	
@@ -26,7 +26,7 @@ public class PlayerChooserInventory extends MenuInventoryHolder
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
 	private static final int START_SITE = 1;
 	
-	public PlayerChooserInventory(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
+	public PlayerChooserHolder(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
 	{
 		super(MENU_IDENTIFIER, checkSize(size), title != null ? title : "§7» §9Personenauswahl");
 		
