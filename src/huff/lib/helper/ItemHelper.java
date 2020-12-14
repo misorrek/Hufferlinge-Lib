@@ -29,7 +29,7 @@ public class ItemHelper
 	 * @param   displayName   a string that is displayed as name on the returned item
 	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
 	 */
-	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName)
+	public static @NotNull ItemStack getItemWithMeta(Material material, @Nullable String displayName)
 	{
 		return getItemWithMeta(material, displayName, null);
 	}
@@ -42,7 +42,7 @@ public class ItemHelper
 	 * @param   lore          a list of strings that is displayed as description on the returned item
 	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
 	 */
-	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore)
+	public static @NotNull ItemStack getItemWithMeta(Material material, @Nullable String displayName, @Nullable List<String> lore)
 	{
 		return getItemWithMeta(material, displayName, lore, new ItemFlag[0]);
 	}
@@ -56,10 +56,8 @@ public class ItemHelper
 	 * @param   itemFlags     a optional list of flags that set specific options for the returned item
 	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
 	 */
-	public static @NotNull ItemStack getItemWithMeta(@NotNull Material material, @Nullable String displayName, @Nullable List<String> lore, ItemFlag... itemFlags)
+	public static @NotNull ItemStack getItemWithMeta(Material material, @Nullable String displayName, @Nullable List<String> lore, ItemFlag... itemFlags)
 	{
-		Validate.notNull((Object) material, "The material cannot be null.");
-		
 		final ItemStack resultItem = new ItemStack(material);
 		final ItemMeta resultMeta = resultItem.getItemMeta();
 		
@@ -126,6 +124,50 @@ public class ItemHelper
 	public static @NotNull ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName, @Nullable List<String> lore)
 	{
 		return getSkullWithMeta(Bukkit.getOfflinePlayer(ownerUUID), displayName, lore);
+	}
+	
+	/**
+	 * Updates the meta details of the given item stack.
+	 * 
+	 * @param   itemStack     the item stack where are the meta details to update from
+	 * @param   displayName   a string that is displayed as name on the returned item
+	 */
+	public static void updateItemWithMeta(@NotNull ItemStack itemStack, @Nullable String displayName)
+	{
+		updateItemWithMeta(itemStack, displayName, null, new ItemFlag[0]);
+	}
+	
+	/**
+	 * Updates the meta details of the given item stack.
+	 * 
+	 * @param   itemStack     the item stack where are the meta details to update from
+	 * @param   displayName   a string that is displayed as name on the returned item
+	 * @param   lore          a list of strings that is displayed as description on the returned item
+	 */
+	public static void updateItemWithMeta(@NotNull ItemStack itemStack, @Nullable String displayName, @Nullable List<String> lore)
+	{
+		updateItemWithMeta(itemStack, displayName, lore, new ItemFlag[0]);
+	}
+	
+	/**
+	 * Updates the meta details of the given item stack.
+	 * 
+	 * @param   itemStack     the item stack where are the meta details to update from
+	 * @param   displayName   a string that is displayed as name on the returned item
+	 * @param   lore          a list of strings that is displayed as description on the returned item 
+	 * @param   itemFlags     a optional list of flags that set specific options for the returned item
+	 */
+	public static void updateItemWithMeta(@NotNull ItemStack itemStack, @Nullable String displayName, @Nullable List<String> lore, ItemFlag... itemFlags)
+	{
+		Validate.notNull((Object) itemStack, "The item stack cannot be null.");
+		
+		final ItemMeta itemMeta = itemStack.getItemMeta();
+		
+		if (StringHelper.isNotNullOrEmpty(displayName)) itemMeta.setDisplayName(displayName);	
+		if (lore != null) itemMeta.setLore(lore);
+		if (itemFlags != null) itemMeta.addItemFlags(itemFlags);
+			
+		itemStack.setItemMeta(itemMeta);
 	}
 	
 	/**

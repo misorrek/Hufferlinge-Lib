@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.various.MenuHolder;
+import huff.lib.various.Pair;
 
 /**
  * A helper class containing static inventory methods.
@@ -144,7 +145,7 @@ public class InventoryHelper
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
 	
-		inventory.setItem(getPositonFromRowcolumn(inventory.getSize(), row, column), itemStack);
+		inventory.setItem(getSlotFromRowColumn(inventory.getSize(), row, column), itemStack);
 	}
 	
 	/**
@@ -160,7 +161,7 @@ public class InventoryHelper
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
 		
-		return inventory.getItem(getPositonFromRowcolumn(inventory.getSize(), row, column));
+		return inventory.getItem(getSlotFromRowColumn(inventory.getSize(), row, column));
 	}
 	
 	/**
@@ -315,6 +316,7 @@ public class InventoryHelper
 	 * @param   holderClass   a class from the described type parameter
 	 * @return                The menu holder as specified type.
 	 */
+	@SuppressWarnings("unchecked")
 	public static @Nullable <T extends MenuHolder> T getMenuHolder(@NotNull Inventory inventory, Class<T> holderClass)
 	{
 		final InventoryHolder inventoryHolder = inventory.getHolder(); 
@@ -326,7 +328,7 @@ public class InventoryHelper
 		return null;
 	}
 	
-	private static int getPositonFromRowcolumn(int inventorySize, int row, int column)
+	public static int getSlotFromRowColumn(int inventorySize, int row, int column)
 	{
 		if (row * ROW_LENGTH > inventorySize)
 		{
@@ -350,5 +352,13 @@ public class InventoryHelper
 			column = 0;
 		}	
 		return ((row) * ROW_LENGTH) + column;
+	}
+	
+	public static Pair<Integer, Integer> getRowColumnFromSlot(int slot)
+	{
+		int row = slot / ROW_LENGTH;
+		int column = slot % ROW_LENGTH;
+		
+		return new Pair<>(row, column); 
 	}
 }
