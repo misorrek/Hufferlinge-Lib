@@ -1,7 +1,11 @@
 package huff.lib.helper;
 
+import java.util.UUID;
+
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -328,6 +332,15 @@ public class InventoryHelper
 		return null;
 	}
 	
+	/**
+	 * Calculates and gets the slot from the given row and column.
+	 * If row or column are out of bounds the maximal value will be used.
+	 * 
+	 * @param   inventorySize   the inventory size to define maximal rows
+	 * @param   row             the row to calculate the slot from
+	 * @param   column          the column to calculate the slot from
+	 * @return                  The calculated slot.
+	 */
 	public static int getSlotFromRowColumn(int inventorySize, int row, int column)
 	{
 		if (row * ROW_LENGTH > inventorySize)
@@ -351,14 +364,54 @@ public class InventoryHelper
 		{
 			column = 0;
 		}	
-		return ((row) * ROW_LENGTH) + column;
+		return (row * ROW_LENGTH) + column;
 	}
 	
+	/**
+	 * Calculates and gets the row and column from the given slot.
+	 * 
+	 * @param   slot   the slot to calculate the row and column from
+	 * @return         The calculated row and column as pair.
+	 */
 	public static Pair<Integer, Integer> getRowColumnFromSlot(int slot)
 	{
 		int row = slot / ROW_LENGTH;
 		int column = slot % ROW_LENGTH;
 		
 		return new Pair<>(row, column); 
+	}
+
+	/**
+	 * Checks if the player represented from the unique id is a viewer in the specified inventory.
+	 * 
+	 * @param   inventory   the inventory to check the viewer from
+	 * @param   uuid        the unique id from the player to check
+	 * @return              The check result.
+	 */
+	public static boolean isViewer(@NotNull Inventory inventory, @Nullable UUID uuid)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");
+		
+		if (uuid != null)
+		{
+			final Player player = Bukkit.getPlayer(uuid);
+			
+			return isViewer(inventory, player);
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the given player is a viewer in the specified inventory.
+	 * 
+	 * @param   inventory   the inventory to check the viewer from
+	 * @param   player      the player to check
+	 * @return              The check result.
+	 */
+	public static boolean isViewer(@NotNull Inventory inventory, @Nullable Player player)
+	{
+		Validate.notNull((Object) inventory, "The inventory cannot be null.");
+
+		return player != null && inventory.getViewers().contains(player);
 	}
 }

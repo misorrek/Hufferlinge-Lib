@@ -78,6 +78,8 @@ public class MenuInventoryListener implements Listener
 	{
 		final UUID uuid = event.getPlayer().getUniqueId();
 		
+		//TODO If contains back/abort item use that!
+		
 		if (!(event.getInventory().getHolder() instanceof MenuHolder))
 		{
 			if (lastInventories.containsKey(uuid))
