@@ -4,6 +4,8 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -83,6 +85,10 @@ public abstract class MenuHolder implements InventoryHolder
 
 	public abstract boolean handleClick(@NotNull InventoryClickEvent event);
 	
+	public boolean handleDrag(@NotNull InventoryDragEvent event) { return false; }
+	
+	public void handleClose(@NotNull InventoryCloseEvent event) { }
+	
 	@Override
 	public Inventory getInventory()
 	{
@@ -123,7 +129,6 @@ public abstract class MenuHolder implements InventoryHolder
 	{
 		isForwarding = false;
 	}
-	
 	
 	public void setForwarding(boolean isForwarding)
 	{

@@ -10,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,13 +28,15 @@ public class PlayerChooserHolder extends MenuHolder
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
 	private static final int START_SITE = 1;
 	
-	public PlayerChooserHolder(@NotNull List<UUID> players, int size, @Nullable String title, MenuExitType menuExitType, Action chooseAction)
+	public PlayerChooserHolder(@NotNull JavaPlugin plugin, @NotNull List<UUID> players, int size, @Nullable String title, MenuExitType menuExitType, Action chooseAction)
 	{
 		super(MENU_IDENTIFIER, checkSize(size), title != null ? title : "§7» §9Personenauswahl", menuExitType);
 		
+		Validate.notNull((Object) plugin, "The plugin instance cannot be null.");
 		Validate.notNull((Object) players, "The player list cannot be null.");
 		Validate.notNull((Object) chooseAction, "The choose action cannot be null.");
 		
+		this.plugin = plugin;
 		this.players = players;
 		this.chooseAction = chooseAction;
 		this.playersPerSite = ((this.getInventory().getSize() / InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
@@ -44,6 +47,7 @@ public class PlayerChooserHolder extends MenuHolder
 		setPlayers();
 	}
 
+	private final JavaPlugin plugin;
 	private final List<UUID> players;
 	private final Action chooseAction;
 	private final int playersPerSite;
@@ -57,6 +61,7 @@ public class PlayerChooserHolder extends MenuHolder
 		Validate.notNull((Object) event, "The inventory click event cannot be null.");
 		
 		final ItemStack currentItem = event.getCurrentItem();
+		final int inventorySize = this.getInventory().getSize();
 		
 		if (ItemHelper.hasMeta(currentItem))
 		{
@@ -69,11 +74,11 @@ public class PlayerChooserHolder extends MenuHolder
 	     			chooseAction.execute(currentOwningPlayer.getUniqueId());
 	     		}
 	     	}
-			else if (currentItem.equals(InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 4)))
+			else if (event.getSlot() == InventoryHelper.getSlotFromRowColumn(inventorySize, InventoryHelper.getLastLine(inventorySize), 4)) 
 			{
 				changeSite(false);
 			}
-			else if (currentItem.equals(InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 6)))
+			else if (event.getSlot() == InventoryHelper.getSlotFromRowColumn(inventorySize, InventoryHelper.getLastLine(inventorySize), 6))
 			{
 				changeSite(true);
 			}
@@ -134,18 +139,21 @@ public class PlayerChooserHolder extends MenuHolder
 	}
 	
 	private void setPlayers()
-	{		
+	{	
 		final int startIndex = (site - 1) * playersPerSite;
 		final int maxIndex = startIndex + playersPerSite;
 		
-		for (int i = startIndex; i < players.size() && i < maxIndex; i++)
-		{			
-			final OfflinePlayer player = Bukkit.getOfflinePlayer(players.get(i));
-			
-			this.getInventory().addItem(ItemHelper.getSkullWithMeta(player, "§9" + player.getName()));	
-		}
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> 
+		{
+			for (int i = startIndex; i < players.size() && i < maxIndex; i++)
+			{			
+				final OfflinePlayer player = Bukkit.getOfflinePlayer(players.get(i));
+
+				this.getInventory().addItem(ItemHelper.getSkullWithMeta(player, MessageHelper.getHighlighted(player.getName(), false, false)));
+			}
+		});
 	}
-	
+
 	private void clearPlayers()
 	{
 		InventoryHelper.setFill(this.getInventory(), null, false);
