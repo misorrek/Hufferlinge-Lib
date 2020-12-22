@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,64 +14,51 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import huff.lib.helper.InventoryHelper;
-import huff.lib.various.MenuHolder;
+import huff.lib.helper.ItemHelper;
+import huff.lib.menuholder.MenuHolder;
 
 public class MenuInventoryListener implements Listener
 {
+	public MenuInventoryListener(@NotNull JavaPlugin plugin)
+	{
+		Validate.notNull((Object) plugin, "The plugin instance cannot be null.");
+		
+		this.plugin = plugin;
+	}
+	
+	private final JavaPlugin plugin;
+	
 	private HashMap<UUID, List<Inventory>> lastInventories = new HashMap<>();
-	private List<UUID> goneBack = new ArrayList<>();
+	private List<UUID> isExiting = new ArrayList<>();
 	
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onInventoryMenuClick(InventoryClickEvent event)
-	{
-		if (event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null)
+	{		
+		if (!(InventoryHelper.getHolder(event.getClickedInventory()) instanceof MenuHolder) || !ItemHelper.hasMeta(event.getCurrentItem()))
 		{
 			return;
 		}
-		final InventoryView view = event.getView();
+		final HumanEntity human = event.getWhoClicked();
 		final String currentItemName = event.getCurrentItem().getItemMeta().getDisplayName();
 		
-		//Bukkit.getConsoleSender().sendMessage("CurrentItem : " + event.getCurrentItem().toString());
-		
 		if (currentItemName.equals(InventoryHelper.ITEM_CLOSE))
-		{
-			//Bukkit.getConsoleSender().sendMessage("CloseItem : TRUE");
-			
-			final UUID uuid = event.getView().getPlayer().getUniqueId();
+		{			
+			final UUID uuid = human.getUniqueId();
 					
-			goneBack.add(uuid);
+			isExiting.add(uuid);
+			lastInventories.remove(uuid);
 			
-			if (lastInventories.containsKey(uuid))
-			{
-				lastInventories.remove(uuid);
-			}
-			view.close();
+			MenuHolder.close(human);
 		} 
 		else if (currentItemName.equals(InventoryHelper.ITEM_BACK) || currentItemName.equals(InventoryHelper.ITEM_ABORT))
 		{
-			//Bukkit.getConsoleSender().sendMessage("BackItem : TRUE");
-			
-			final HumanEntity human = event.getView().getPlayer();
-			
-			if (lastInventories.containsKey(human.getUniqueId()))
-			{
-				//Bukkit.getConsoleSender().sendMessage("ContainsLastInv : TRUE");
-				
-				final List<Inventory> inventories = lastInventories.get(human.getUniqueId());
-				
-				if (!inventories.isEmpty())
-				{
-					final int lastIndex = inventories.size() - 1;
-					
-					goneBack.add(human.getUniqueId());
-					human.closeInventory();
-					human.openInventory(inventories.get(lastIndex));
-					inventories.remove(lastIndex);
-				}			
-			}
+			isExiting.add(human.getUniqueId());
+			openLastInventory(human);
 		}		
 	}
 	
@@ -77,51 +66,60 @@ public class MenuInventoryListener implements Listener
 	public void onInventoryMenuClose(InventoryCloseEvent event)
 	{
 		final UUID uuid = event.getPlayer().getUniqueId();
-		
-		//TODO If contains back/abort item use that!
-		
-		if (!(event.getInventory().getHolder() instanceof MenuHolder))
+		final InventoryHolder inventoryHolder = event.getInventory().getHolder();
+
+		if (!(inventoryHolder instanceof MenuHolder))
 		{
-			if (lastInventories.containsKey(uuid))
-			{
-				lastInventories.remove(uuid);
-			}
 			return;
 		}
-		//Bukkit.getConsoleSender().sendMessage("OpenInventory : " + event.getPlayer().getOpenInventory().countSlots());
-		//Bukkit.getConsoleSender().sendMessage("MenuInventoryHolder : TRUE");
-			
-		if (goneBack.contains(uuid))
+		final MenuHolder menuHolder = (MenuHolder) inventoryHolder;
+
+		if (!menuHolder.isReturnable() && !menuHolder.isForwarding())
 		{
-			//Bukkit.getConsoleSender().sendMessage("ContainsGoneBack : TRUE");
-			goneBack.remove(uuid);
+			lastInventories.remove(uuid);
+			isExiting.remove(uuid);
 			return;
 		}
 		
-		if (lastInventories.containsKey(uuid))
+		if (isExiting.contains(uuid))
 		{
-			//Bukkit.getConsoleSender().sendMessage("AddToList : TRUE");
-			
-			final List<Inventory> inventories = lastInventories.get(uuid);
-			
-			for (int i = 0; i < inventories.size(); i++)
-			{
-				if (((MenuHolder) inventories.get(i).getHolder()).equalsIdentifier((MenuHolder) event.getInventory().getHolder()))
-				{
-					inventories.set(i, event.getInventory());
-					return;
-				}
-			}
+			isExiting.remove(uuid);
+			return;
+		}
+	
+        if (menuHolder.isReturnable() && !menuHolder.isForwarding())
+		{
+			openLastInventory(event.getPlayer());
+			return;
+		}		
+		final List<Inventory> inventories = lastInventories.get(uuid);
+		
+		if (inventories != null)
+		{
 			inventories.add(event.getInventory());
 		}
 		else
 		{
-			//Bukkit.getConsoleSender().sendMessage("NewList : TRUE");
+			final ArrayList<Inventory> newInventories = new ArrayList<>();
 			
-			final ArrayList<Inventory> inventories = new ArrayList<>();
-			
-			inventories.add(event.getInventory());
-			lastInventories.put(uuid, inventories);
+			newInventories.add(event.getInventory());
+			lastInventories.put(uuid, newInventories);
 		}
+	}
+	
+	private void openLastInventory(@NotNull HumanEntity human)
+	{			
+		final List<Inventory> inventories = lastInventories.get(human.getUniqueId());
+		
+		if (inventories != null && !inventories.isEmpty())
+		{
+			final int lastIndex = inventories.size() - 1;
+			
+			Bukkit.getScheduler().runTaskLater(plugin, () ->
+			{				
+				MenuHolder.open(human, (MenuHolder) inventories.get(lastIndex).getHolder(), true);
+				inventories.remove(lastIndex);
+			}, 1);			
+		}			
 	}
 }

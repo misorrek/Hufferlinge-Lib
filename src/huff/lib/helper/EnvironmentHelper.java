@@ -40,27 +40,23 @@ public class EnvironmentHelper
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		world.setTime(0);
 		
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () ->
 		{
-			@Override
-			public void run()
+			final long worldTime = world.getTime();
+			
+			if (worldTime < 24000) 
 			{
-				final long worldTime = world.getTime();
-				
-				if (worldTime < 24000) 
-				{
-					world.setTime(worldTime + 10);
-				}
-				else
-				{
-					world.setTime(0);
-				}				
-				
-				if (action != null)
-				{
-					action.execute(world);
-				}
+				world.setTime(worldTime + 10);
 			}
+			else
+			{
+				world.setTime(0);
+			}				
+			
+			if (action != null)
+			{
+				action.execute(world);
+			}	
 		}, 20, 5);
 	}
 }

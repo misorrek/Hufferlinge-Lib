@@ -63,8 +63,8 @@ public class ItemHelper
 		
 		if (StringHelper.isNotNullOrEmpty(displayName)) resultMeta.setDisplayName(displayName);	
 		if (lore != null) resultMeta.setLore(lore);
-		if (itemFlags != null) resultMeta.addItemFlags(itemFlags);
-			
+		if (itemFlags != null) resultMeta.addItemFlags(itemFlags);		
+		
 		resultItem.setItemMeta(resultMeta);
 		return resultItem;
 	}
@@ -182,5 +182,17 @@ public class ItemHelper
 		ItemMeta loreMeta = itemStack.getItemMeta();
 		loreMeta.setLore(lore);
 		itemStack.setItemMeta(loreMeta);
+	}
+	
+	
+	/**
+	 * Checks if a item stack is not null and has an item meta.
+	 * 
+	 * @param   itemStack   the item stack to check the meta from
+	 * @return              The check result.
+	 */
+	public static boolean hasMeta(@Nullable ItemStack itemStack)
+	{
+		return itemStack != null && itemStack.getItemMeta() != null;
 	}
 }

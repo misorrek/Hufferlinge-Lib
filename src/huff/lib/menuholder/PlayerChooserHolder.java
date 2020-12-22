@@ -1,4 +1,4 @@
-package huff.lib.menuholders;
+package huff.lib.menuholder;
 
 import java.util.List;
 import java.util.UUID;
@@ -7,6 +7,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.StringHelper;
-import huff.lib.various.MenuHolder;
+import huff.lib.interfaces.Action;
 
 public class PlayerChooserHolder extends MenuHolder
 {
@@ -26,54 +27,58 @@ public class PlayerChooserHolder extends MenuHolder
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
 	private static final int START_SITE = 1;
 	
-	public PlayerChooserHolder(@NotNull String key, @NotNull List<UUID> players, int size, @Nullable String title, boolean isBackPossible)
+	public PlayerChooserHolder(@NotNull List<UUID> players, int size, @Nullable String title, MenuExitType menuExitType, Action chooseAction)
 	{
-		super(MENU_IDENTIFIER, checkSize(size), title != null ? title : "§7» §9Personenauswahl");
+		super(MENU_IDENTIFIER, checkSize(size), title != null ? title : "§7» §9Personenauswahl", menuExitType);
 		
-		Validate.notNull((Object) players, "The key cannot be null.");
-		Validate.notNull((Object) players, "The players-list cannot be null.");
+		Validate.notNull((Object) players, "The player list cannot be null.");
+		Validate.notNull((Object) chooseAction, "The choose action cannot be null.");
 		
-		this.key = key;
 		this.players = players;
+		this.chooseAction = chooseAction;
 		this.playersPerSite = ((this.getInventory().getSize() / InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
 		this.maxSite = (int) Math.ceil((double) players.size() / playersPerSite);
 		
-		initInventory(isBackPossible);
+		initInventory();
 		setSiteFunction();
 		setPlayers();
-		
-		Bukkit.getConsoleSender().sendMessage("MAXSITE : " + maxSite);
 	}
 
-	private final String key;
 	private final List<UUID> players;
+	private final Action chooseAction;
 	private final int playersPerSite;
 	private final int maxSite;
 	
 	private int site = START_SITE;
 	
-	public String getKey()
+	@Override
+	public boolean handleClick(@NotNull InventoryClickEvent event)
 	{
-		return key;
-	}
-	
-	public @Nullable UUID handleEvent(@NotNull ItemStack currentItem)
-	{		
-     	if (currentItem.getType() == Material.PLAYER_HEAD)
-     	{		 
-     		final OfflinePlayer currentOwningPlayer = ((SkullMeta) currentItem.getItemMeta()).getOwningPlayer();
-     		
-			return currentOwningPlayer != null ? currentOwningPlayer.getUniqueId() : null;
-     	}
-		else if (currentItem.equals(InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 4)))
+		Validate.notNull((Object) event, "The inventory click event cannot be null.");
+		
+		final ItemStack currentItem = event.getCurrentItem();
+		
+		if (ItemHelper.hasMeta(currentItem))
 		{
-			changeSite(false);
+			if (currentItem.getType() == Material.PLAYER_HEAD)
+	     	{		 
+	     		final OfflinePlayer currentOwningPlayer = ((SkullMeta) currentItem.getItemMeta()).getOwningPlayer();
+	     		
+	     		if (currentOwningPlayer != null)
+	     		{
+	     			chooseAction.execute(currentOwningPlayer.getUniqueId());
+	     		}
+	     	}
+			else if (currentItem.equals(InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 4)))
+			{
+				changeSite(false);
+			}
+			else if (currentItem.equals(InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 6)))
+			{
+				changeSite(true);
+			}
 		}
-		else if (currentItem.equals(InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 6)))
-		{
-			changeSite(true);
-		}
-     	return null;
+     	return true;
 	}
 	
 	private static int checkSize(int size)
@@ -90,10 +95,10 @@ public class PlayerChooserHolder extends MenuHolder
 		return size;
 	}
 
-	private void initInventory(boolean isBackPossible)
+	private void initInventory()
 	{				
 		InventoryHelper.setBorder(this.getInventory(), InventoryHelper.getBorderItem());
-		InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 9, isBackPossible ? InventoryHelper.getBackItem() : InventoryHelper.getCloseItem());
+		this.setMenuExitItem();
 	}
 	
 	private void setSiteFunction()

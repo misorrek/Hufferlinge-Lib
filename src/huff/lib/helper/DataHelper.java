@@ -57,8 +57,6 @@ public class DataHelper
 		{
 			final World locationWorld = Bukkit.getWorld(matcher.group(1));
 
-			Bukkit.getConsoleSender().sendMessage(String.format("%s, %s, %s, %s, %s, %s", matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4), matcher.group(5), matcher.group(6)));
-			
 			if (locationWorld != null)
 			{
 				return new Location(locationWorld, 

@@ -1,5 +1,6 @@
 package huff.lib.manager;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -8,157 +9,155 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import huff.lib.helper.MessageHelper;
 import huff.lib.interfaces.RedisProperties;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisManager
-{
-	public RedisManager(@NotNull RedisProperties redisProperties)
-	{
-		this.host = redisProperties.getHost();
-		this.port = redisProperties.getPort();
-	}
-	
+{	
 	public RedisManager(@NotNull String host, int port)
 	{	
-		this.host = host;
-		this.port = port;
-	}
-	
-	private final String host;
-	private final int port;
-	
-	private Jedis jedis;
-	
-	public boolean isConnected()
-	{
-		return jedis != null && jedis.isConnected();
-	}
-	
-	public @Nullable Jedis getJedis()
-	{
-		return jedis;
-	}
-	
-	public void connect() // WAS GEMEINT MIT NICHT DAUERHAFTEN CONNECTION?
-	{
-		if (!isConnected())
-		{
-			try 
-			{
-				if (jedis == null)
-				{
-					jedis = new Jedis(host, port);
-				}
-				else
-				{
-					jedis.connect();
-				}
-				MessageHelper.sendConsoleMessage("Redis-Ping : " + jedis.ping());
-				MessageHelper.sendConsoleMessage("Redis-Connection successful.");
-			} 
-			catch (Exception exception) 
-			{
-				Bukkit.getLogger().log(Level.SEVERE, "Redis-Connection failed. Configured?", exception);
-			}
-		}
+		Validate.notNull((Object) host, "The redis host cannot be null.");
+		
+		this.jedisPool = new JedisPool(buildPoolConfig(), host, port);
 	}
 
-	public void disconnect()
+	public RedisManager(@NotNull RedisProperties redisProperties)
 	{
-		if (isConnected())
-		{
-			try 
-			{
-				jedis.disconnect();
-			} 
-			catch (Exception exception) 
-			{
-				Bukkit.getLogger().log(Level.SEVERE, "Redis-Disconnection failed.", exception);
-			}	
-		}
+		this(redisProperties.getHost(), redisProperties.getPort());
 	}
+	
+	private final JedisPool jedisPool;
+	
+	public @NotNull Jedis getJedis()
+	{
+		return jedisPool.getResource();
+	}
+
+	private JedisPoolConfig buildPoolConfig() 
+	{
+	    final JedisPoolConfig poolConfig = new JedisPoolConfig();
+	    
+	    poolConfig.setMaxTotal(8);
+	    poolConfig.setMaxIdle(8);
+	    poolConfig.setMinIdle(0);
+	    poolConfig.setTestOnBorrow(false);
+	    poolConfig.setTestOnReturn(false);
+	    poolConfig.setTestWhileIdle(true);
+	    poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(360).toMillis());
+	    poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(360).toMillis());
+	    poolConfig.setNumTestsPerEvictionRun(3);
+	    poolConfig.setBlockWhenExhausted(true);
+	    
+	    return poolConfig;
+	}
+	
+	public void destroyPool() 
+	{
+		try 
+		{
+			jedisPool.destroy();
+		} 
+		catch (Exception exception) 
+		{
+			Bukkit.getLogger().log(Level.SEVERE, "Redis-Disconnection failed.", exception);
+		}		
+	}
+	
+	// U T I L
 	
 	public boolean existKey(@NotNull String key)
 	{
 		Validate.notNull((Object) key, "The key cannot be null.");
-		
-		if (isConnected())
+
+		try (final Jedis jedis = getJedis()) 
 		{
-			try 
-			{
-				return jedis.exists(key);
-			} 
-			catch (Exception exception) 
-			{
-				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
-			}
-		}	
+			return jedis.exists(key);
+		} 
+		catch (Exception exception) 
+		{
+			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+		}
+		return false;
+	}
+	
+	public boolean deleteKey(@NotNull String key)
+	{
+		try (final Jedis jedis = getJedis()) 
+		{
+			jedis.del(key);
+		}
+		catch (Exception exception) 
+		{
+			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+		}
 		return false;
 	}
 	
 	public boolean addMap(@NotNull String key, Map<String, String> fieldValuePairs) 
 	{
-		if (isConnected() || !existKey(key))
+		try (final Jedis jedis = getJedis()) 
 		{
-			try 
-			{
-				jedis.hmset(key, fieldValuePairs);
-				return true;
-			} 
-			catch (Exception exception) 
-			{
-				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
-			}
+			jedis.hmset(key, fieldValuePairs);
+			return true;
+		} 
+		catch (Exception exception) 
+		{
+			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
 		}
 		return false;
 	}
 	
 	public @Nullable String getFieldValue(@NotNull String key, @NotNull String field)
 	{
-		if (isConnected() || existKey(key))
+		try (final Jedis jedis = getJedis()) 
 		{
-			try
-			{
-				return jedis.hget(key, field);
-			}
-			catch (Exception exception) 
-			{
-				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
-			}
+			return jedis.hget(key, field);
+		}
+		catch (Exception exception) 
+		{
+			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
 		}
 		return null;
 	}
 	
-	public @Nullable Map<String, String> getAlllValues(@NotNull String key)
+	public @Nullable Map<String, String> getAllValues(@NotNull String key)
 	{
-		if (isConnected() || existKey(key))
+		try (final Jedis jedis = getJedis()) 
 		{
-			try
-			{
-				return jedis.hgetAll(key);
-			}
-			catch (Exception exception) 
-			{
-				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
-			}
+			return jedis.hgetAll(key);
+		}
+		catch (Exception exception) 
+		{
+			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
 		}
 		return null;
 	}
 	
-	public void updateFieldValue(@NotNull String key, @NotNull String field, @NotNull String value)
+	public boolean setFieldValue(@NotNull String key, @NotNull String field, @NotNull String value)
 	{
-		if (isConnected() || existKey(key))
+		try (final Jedis jedis = getJedis()) 
 		{
-			try
-			{
-				jedis.hset(key, field, value);
-			}
-			catch (Exception exception) 
-			{
-				Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
-			}
+			jedis.hset(key, field, value);
 		}
+		catch (Exception exception) 
+		{
+			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+		}
+		return false;
+	}
+	
+	public boolean setValue(@NotNull String key, @NotNull String value)
+	{
+		try (final Jedis jedis = getJedis()) 
+		{
+			jedis.set(key, value);
+		}
+		catch (Exception exception) 
+		{
+			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
+		}
+		return false;
 	}
 }

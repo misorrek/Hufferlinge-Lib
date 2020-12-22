@@ -4,6 +4,12 @@
   <artifactId>lib</artifactId>
   <version>1.16.4-R0.1-SNAPSHOT</version>
   
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
   <repositories>
     <repository>
       <id>spigot-repo</id>
@@ -31,7 +37,7 @@
     <dependency>
 	  <groupId>redis.clients</groupId>
 	  <artifactId>jedis</artifactId>
-	  <version>3.3.0</version>
+	  <version>3.4.0</version>
 	</dependency>
 	<dependency>
       <groupId>com.google.code.gson</groupId>

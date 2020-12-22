@@ -5,17 +5,17 @@ import java.util.UUID;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import huff.lib.various.MenuHolder;
+import huff.lib.menuholder.MenuHolder;
 import huff.lib.various.Pair;
 
 /**
@@ -38,6 +38,10 @@ public class InventoryHelper
 	public static final String ITEM_ABORT = "§7» §cAbbrechen";
 	public static final String ITEM_CLOSE = "§7» §cSchließen §7«";
 	
+	public static final Material MATERIAL_BORDER = Material.BLACK_STAINED_GLASS_PANE;
+	public static final Material MATERIAL_FILL = Material.WHITE_STAINED_GLASS_PANE;
+	public static final Material MATERIAL_RETURN = Material.RED_STAINED_GLASS_PANE;
+	
 	private InventoryHelper() { }
 	
 	/**
@@ -47,7 +51,7 @@ public class InventoryHelper
 	 */
 	public static @NotNull ItemStack getBorderItem()
 	{
-		return ItemHelper.getItemWithMeta(Material.BLACK_STAINED_GLASS_PANE, null, null, ItemFlag.HIDE_ATTRIBUTES);
+		return ItemHelper.getItemWithMeta(MATERIAL_BORDER, " ");
 	}
 	
 	/**
@@ -57,7 +61,7 @@ public class InventoryHelper
 	 */
 	public static @NotNull ItemStack getFillItem()
 	{
-		return ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, null, null, ItemFlag.HIDE_ATTRIBUTES);
+		return ItemHelper.getItemWithMeta(MATERIAL_FILL, " ");
 	}
 	
 	/**
@@ -67,7 +71,7 @@ public class InventoryHelper
 	 */
 	public static @NotNull ItemStack getBackItem()
 	{		
-		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_BACK);
+		return ItemHelper.getItemWithMeta(MATERIAL_RETURN, ITEM_BACK);
 	}
 	
 	/**
@@ -77,7 +81,7 @@ public class InventoryHelper
 	 */
 	public static @NotNull ItemStack getAbortItem()
 	{
-		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_ABORT);
+		return ItemHelper.getItemWithMeta(MATERIAL_RETURN, ITEM_ABORT);
 	}
 	
 	/**
@@ -87,7 +91,7 @@ public class InventoryHelper
 	 */
 	public static @NotNull ItemStack getCloseItem()
 	{
-		return ItemHelper.getItemWithMeta(Material.RED_STAINED_GLASS_PANE, ITEM_CLOSE);
+		return ItemHelper.getItemWithMeta(MATERIAL_RETURN, ITEM_CLOSE);
 	}
 	
 	/**
@@ -321,15 +325,24 @@ public class InventoryHelper
 	 * @return                The menu holder as specified type.
 	 */
 	@SuppressWarnings("unchecked")
-	public static @Nullable <T extends MenuHolder> T getMenuHolder(@NotNull Inventory inventory, Class<T> holderClass)
+	public static @Nullable <T extends MenuHolder> T getMenuHolder(@Nullable Inventory inventory, Class<T> holderClass)
 	{
+		if (inventory == null)
+		{
+			return null;
+		}
 		final InventoryHolder inventoryHolder = inventory.getHolder(); 
 		
-		if (holderClass.isInstance(inventoryHolder))
+		if (inventoryHolder != null && holderClass.isInstance(inventoryHolder))
 		{
 			return (T) inventoryHolder;
 		}
 		return null;
+	}
+	
+	public static @Nullable InventoryHolder getHolder(@Nullable Inventory inventory)
+	{
+		return inventory != null ? inventory.getHolder() : null;
 	}
 	
 	/**
@@ -408,10 +421,10 @@ public class InventoryHelper
 	 * @param   player      the player to check
 	 * @return              The check result.
 	 */
-	public static boolean isViewer(@NotNull Inventory inventory, @Nullable Player player)
+	public static boolean isViewer(@NotNull Inventory inventory, @Nullable HumanEntity human)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");
 
-		return player != null && inventory.getViewers().contains(player);
+		return human != null && inventory.getViewers().contains(human);
 	}
 }
