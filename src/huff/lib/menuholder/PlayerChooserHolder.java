@@ -20,6 +20,11 @@ import huff.lib.helper.MessageHelper;
 import huff.lib.helper.StringHelper;
 import huff.lib.interfaces.Action;
 
+/**
+ * A menu holder class that contains a menu to choose a entry from a given list of UUID's.
+ * The inventory has the possibility to display several pages.
+ * The choosen entry will returned via the given action.
+ */
 public class PlayerChooserHolder extends MenuHolder
 {
 	public static final String MENU_IDENTIFIER = "menu:playerchooser";
@@ -28,6 +33,14 @@ public class PlayerChooserHolder extends MenuHolder
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
 	private static final int START_SITE = 1;
 	
+	/**
+	 * @param   plugin         the java plugin instance
+	 * @param   players        the list of UUID's representing human entities
+	 * @param   size           the size the menu inventory should have
+	 * @param   title          a optional title for the menu inventory
+	 * @param   menuExitType   the menu exit behavior
+	 * @param   chooseAction   the action called when a entry were choosen
+	 */
 	public PlayerChooserHolder(@NotNull JavaPlugin plugin, @NotNull List<UUID> players, int size, @Nullable String title, MenuExitType menuExitType, Action chooseAction)
 	{
 		super(MENU_IDENTIFIER, checkSize(size), title != null ? title : "§7» §9Personenauswahl", menuExitType);
