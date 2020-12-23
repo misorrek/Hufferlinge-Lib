@@ -1,5 +1,8 @@
 package huff.lib.various;
 
+/**
+ * A data class to store two values in.
+ */
 public class Pair<V1, V2> 
 {
 	public Pair(V1 value1, V2 value2)
