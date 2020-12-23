@@ -340,6 +340,13 @@ public class InventoryHelper
 		return null;
 	}
 	
+	/**
+	 * Gets a holder from the given inventory.
+	 * If nothing can be obtained null will be returned.
+	 * 
+	 * @param   inventory     the inventory to get the holder from
+	 * @return                The holder of the given inventory.
+	 */
 	public static @Nullable InventoryHolder getHolder(@Nullable Inventory inventory)
 	{
 		return inventory != null ? inventory.getHolder() : null;
