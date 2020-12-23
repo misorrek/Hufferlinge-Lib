@@ -8,40 +8,43 @@ import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SupportMap extends HashMap<UUID, HashSet<UUID>>
+/**
+ * A data class that extends a HashMap.
+ * Stores the data for the support command.
+ */
+class SupportMap extends HashMap<UUID, HashSet<UUID>>
 {
 	private static final long serialVersionUID = 5598594219303972185L;
 
-	public void add(@NotNull UUID userUUID)
+	public void add(@NotNull UUID user)
 	{
-		Validate.notNull((Object) userUUID, "The user-uuid cannot be null.");
-		this.put(userUUID, new HashSet<>());
+		Validate.notNull((Object) user, "The user cannot be null.");
+		this.put(user, new HashSet<>());
 	}
 	
-	public void addSupporter(@NotNull UUID userUUID, @NotNull UUID supporterUUID)
+	public void addSupporter(@NotNull UUID user, @NotNull UUID supporter)
 	{
-		Validate.notNull((Object) userUUID, "The user-uuid cannot be null.");
-		Validate.notNull((Object) supporterUUID, "The supporter-uuid cannot be null.");
-		this.get(userUUID).add(supporterUUID);
+		Validate.notNull((Object) user, "The user cannot be null.");
+		Validate.notNull((Object) supporter, "The supporter cannot be null.");
+		this.get(user).add(supporter);
 	}
 	
-	public void removeSupporter(@NotNull UUID userUUID, @NotNull UUID supporterUUID)
+	public void removeSupporter(@NotNull UUID user, @NotNull UUID supporter)
 	{
-		Validate.notNull((Object) userUUID, "The user-uuid cannot be null.");
-		Validate.notNull((Object) supporterUUID, "The supporter-uuid cannot be null.");
-		this.get(userUUID).remove(supporterUUID);
+		Validate.notNull((Object) user, "The user cannot be null.");
+		Validate.notNull((Object) supporter, "The supporter cannot be null.");
+		this.get(user).remove(supporter);
 	}	
 	
-	@Nullable
-	public UUID getCurrentSupportChat(@NotNull UUID targetSupporterUUID)
+	public @Nullable UUID getCurrentSupportChat(@NotNull UUID supporter)
 	{
-		Validate.notNull((Object) targetSupporterUUID, "The target supporter-uuid cannot be null.");
+		Validate.notNull((Object) supporter, "The supporter cannot be null.");
 		
 		for (Entry<UUID, HashSet<UUID>> chatEntry : this.entrySet())
 		{
-			for (UUID supporterUUID : chatEntry.getValue())
+			for (UUID currentSupporter : chatEntry.getValue())
 			{
-				if (supporterUUID.equals(targetSupporterUUID))
+				if (currentSupporter.equals(supporter))
 				{
 					return chatEntry.getKey();
 				}
