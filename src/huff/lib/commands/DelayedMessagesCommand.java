@@ -13,6 +13,10 @@ import huff.lib.helper.PermissionHelper;
 import huff.lib.manager.delayedmessage.DelayType;
 import huff.lib.manager.delayedmessage.DelayedMessagesManager;
 
+/**
+ * A command class for sending a delayed message to a player via DelayedMessagesManager.
+ * Contains the command.
+ */
 public class DelayedMessagesCommand implements CommandExecutor 
 {
 	public DelayedMessagesCommand(@NotNull DelayedMessagesManager delayedMessageManager)
