@@ -22,6 +22,10 @@ import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
 import huff.lib.menuholder.MenuHolder;
 
+/**
+ * A listener class that handles the exit behavior in menu inventories.
+ * Stores the last inventories so you can go back.
+ */
 public class MenuInventoryListener implements Listener
 {
 	public MenuInventoryListener(@NotNull JavaPlugin plugin)
