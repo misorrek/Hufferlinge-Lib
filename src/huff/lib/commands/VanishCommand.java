@@ -22,6 +22,10 @@ import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.various.AlphanumericComparator;
 
+/**
+ * A command class to vanish its own or another player.
+ * Contains the command, tab completion and a listener for the player join event.
+ */
 public class VanishCommand implements CommandExecutor, TabCompleter, Listener
 {
 	private static final String PERM_VANISH =  PermissionHelper.PERM_ROOT_HUFF + "vanish";
@@ -33,8 +37,8 @@ public class VanishCommand implements CommandExecutor, TabCompleter, Listener
 		this.plugin = plugin;
 	}
 	
-	private JavaPlugin plugin;
-	private HashSet<UUID> vanishedPlayer = new HashSet<>();
+	private final JavaPlugin plugin;
+	private final HashSet<UUID> vanishedPlayer = new HashSet<>();
 	
 	// C O M M A N D
 	
