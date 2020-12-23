@@ -2,6 +2,9 @@ package huff.lib.helper;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A enum that represents the origin package of a dependency.
+ */
 public enum DependencyKind
 {
 	NMS("net.minecraft.server"),
