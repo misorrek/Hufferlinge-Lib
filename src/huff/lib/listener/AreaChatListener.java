@@ -10,6 +10,10 @@ import org.bukkit.util.BoundingBox;
 import huff.lib.helper.PermissionHelper;
 import net.luckperms.api.LuckPerms;
 
+/**
+ * A listener class that handles the appearance of the player chat.
+ * Also is splits the chat in a global and a area chat.
+ */
 public class AreaChatListener
 {
 	public AreaChatListener(boolean withLuckPerms)
@@ -27,7 +31,8 @@ public class AreaChatListener
 	{
 		final Player player = event.getPlayer();
 		final String message = event.getMessage();
-		final boolean isGlobalMessgae = message.toLowerCase().startsWith("@all") || message.toLowerCase().startsWith("@global");
+		final boolean isGlobalMessgae = message.trim().toLowerCase().startsWith("@all") || message.trim().toLowerCase().startsWith("@global") || 
+			                        message.trim().startsWith("!");
 		final StringBuilder formatBuilder = new StringBuilder();
 		
 		formatBuilder.append("§8☰ ");
@@ -59,7 +64,7 @@ public class AreaChatListener
 		else
 		{
 			final BoundingBox areaChatBox = new BoundingBox(20, 10, 20, -20, -10, -20);
-			final String finalMessage = formatBuilder.toString().replace("%1$s", player.getName()).replace("%2$s", message);
+			final String finalMessage = String.format(formatBuilder.toString(), player.getName(), message);
 			
 			for (Entity nearbyEntity : player.getWorld().getNearbyEntities(areaChatBox))
 			{
