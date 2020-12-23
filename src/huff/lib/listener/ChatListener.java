@@ -9,6 +9,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import huff.lib.helper.PermissionHelper;
 import net.luckperms.api.LuckPerms;
 
+/**
+ * A listener class that handles the appearance of the player chat.
+ */
 public class ChatListener implements Listener 
 {
 	public ChatListener(boolean withLuckPerms, boolean withWorldDisplay)
