@@ -16,6 +16,10 @@ import huff.lib.helper.PermissionHelper;
 import huff.lib.helper.StringHelper;
 import huff.lib.various.AlphanumericComparator;
 
+/**
+ * A command class to send messages from the console or a player to another player.
+ * Contains the command and tab completion.
+ */
 public class TellCommand implements CommandExecutor, TabCompleter
 {
 	private static final String PERM_TELL =  PermissionHelper.PERM_ROOT_HUFF + "tell";
