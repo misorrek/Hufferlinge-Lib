@@ -24,6 +24,12 @@ import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.various.AlphanumericComparator;
 
+/**
+ * A command class to create a support chat which can be joined by a supporter.
+ * So one or more supporters can chat with the person that needs help.
+ * A supporter cannot create a support chat.
+ * Contains the command, tab completion and listener for the async player chat and player quit event.
+ */
 public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 {
 	private static final String PREFIX_SUPPORT = "§8☰ §eSupport §8☷§7 ";	
