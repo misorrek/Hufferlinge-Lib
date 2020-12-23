@@ -5,6 +5,9 @@ import java.util.Comparator;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A comparer class to compare the alphanumeric value of two strings.
+ */
 public class AlphanumericComparator implements Comparator<String>
 {
 	@Override
