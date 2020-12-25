@@ -23,12 +23,10 @@ import huff.lib.interfaces.Action;
 /**
  * A menu holder class that contains a menu to choose a entry from a given list of UUID's.
  * The inventory has the possibility to display several pages.
- * The choosen entry will returned via the given action.
+ * The chosen entry will returned via the given action.
  */
 public class PlayerChooserHolder extends MenuHolder
 {
-	public static final String MENU_IDENTIFIER = "menu:playerchooser";
-	
 	private static final int MIN_SIZE = InventoryHelper.INV_SIZE_3;
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
 	private static final int START_PAGE = 1;
@@ -39,11 +37,11 @@ public class PlayerChooserHolder extends MenuHolder
 	 * @param   size           the size the menu inventory should have
 	 * @param   title          a optional title for the menu inventory
 	 * @param   menuExitType   the menu exit behavior
-	 * @param   chooseAction   the action called when a entry were choosen
+	 * @param   chooseAction   the action called when a entry were chosen
 	 */
 	public PlayerChooserHolder(@NotNull JavaPlugin plugin, @NotNull List<UUID> players, int size, @Nullable String title, MenuExitType menuExitType, Action chooseAction)
 	{
-		super(MENU_IDENTIFIER, checkSize(size), title != null ? title : "§7» §9Personenauswahl", menuExitType);
+		super("playerchooser", checkSize(size), title != null ? title : "§7» §9Personenauswahl", menuExitType);
 		
 		Validate.notNull((Object) plugin, "The plugin instance cannot be null.");
 		Validate.notNull((Object) players, "The player list cannot be null.");

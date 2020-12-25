@@ -20,6 +20,8 @@ import huff.lib.helper.InventoryHelper;
  */
 public abstract class MenuHolder implements InventoryHolder 
 {
+	private static final String MENU_IDENT_PREFIX = "menu:";
+	
 	/**
 	 * Creates a menu holder with the specified identifier and menu exit type holding a inventory that has the given size and title.
 	 * The type is set to "CHEST" regardless of the size.
@@ -32,7 +34,7 @@ public abstract class MenuHolder implements InventoryHolder
 	public MenuHolder(@NotNull String identifier, int size, @Nullable String title, MenuExitType menuExitType)
 	{
 		this.menuExitType = menuExitType;
-		this.identifier = identifier;
+		this.identifier = MENU_IDENT_PREFIX + identifier;
 		this.inventory = Bukkit.createInventory(this, size, title != null ? title : "");
 		resetReturnable();
 		resetForwarding();
@@ -50,7 +52,7 @@ public abstract class MenuHolder implements InventoryHolder
 	public MenuHolder(@NotNull String identifier, InventoryType type, @Nullable String title, MenuExitType menuExitType)
 	{
 		this.menuExitType = menuExitType;
-		this.identifier = identifier;
+		this.identifier = MENU_IDENT_PREFIX + identifier;
 		this.inventory = Bukkit.createInventory(this, type, title != null ? title : "");
 		resetReturnable();
 		resetForwarding();
@@ -164,6 +166,16 @@ public abstract class MenuHolder implements InventoryHolder
 	public Inventory getInventory()
 	{
 		return inventory;
+	}
+	
+	/**
+	 * Gets the identifier of the menu holder.
+	 * 
+	 * @return   The identifier.
+	 */
+	public String getIdentifier()
+	{
+		return identifier;
 	}
 	
 	/**

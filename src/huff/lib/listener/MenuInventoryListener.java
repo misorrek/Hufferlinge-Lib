@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,27 +44,47 @@ public class MenuInventoryListener implements Listener
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onInventoryMenuClick(InventoryClickEvent event)
 	{		
-		if (!(InventoryHelper.getHolder(event.getClickedInventory()) instanceof MenuHolder) || !ItemHelper.hasMeta(event.getCurrentItem()))
+		if (event.getClickedInventory() == null || !(event.getView().getTopInventory().getHolder() instanceof MenuHolder))
 		{
 			return;
 		}
-		final HumanEntity human = event.getWhoClicked();
-		final String currentItemName = event.getCurrentItem().getItemMeta().getDisplayName();
 		
-		if (currentItemName.equals(InventoryHelper.ITEM_CLOSE))
-		{			
-			final UUID uuid = human.getUniqueId();
-					
-			isExiting.add(uuid);
-			lastInventories.remove(uuid);
-			
-			MenuHolder.close(human);
-		} 
-		else if (currentItemName.equals(InventoryHelper.ITEM_BACK) || currentItemName.equals(InventoryHelper.ITEM_ABORT))
+		if (ItemHelper.hasMeta(event.getCurrentItem()))
 		{
-			isExiting.add(human.getUniqueId());
-			openLastInventory(human);
-		}		
+			final HumanEntity human = event.getWhoClicked();
+			final String currentItemName = event.getCurrentItem().getItemMeta().getDisplayName();
+			
+			if (currentItemName.equals(InventoryHelper.ITEM_CLOSE))
+			{			
+				final UUID uuid = human.getUniqueId();
+						
+				isExiting.add(uuid);
+				lastInventories.remove(uuid);
+				
+				MenuHolder.close(human);
+				event.setCancelled(true);
+				return;
+			} 
+			else if (currentItemName.equals(InventoryHelper.ITEM_BACK) || currentItemName.equals(InventoryHelper.ITEM_ABORT))
+			{
+				isExiting.add(human.getUniqueId());
+				openLastInventory(human);
+				event.setCancelled(true);
+				return;
+			}	
+		}
+		event.setCancelled(((MenuHolder) event.getView().getTopInventory().getHolder()).handleClick(event));
+	}
+	
+	@EventHandler
+	public void onEconomyInventoryDrag(InventoryDragEvent event)
+	{	
+		final InventoryHolder inventoryHolder = event.getView().getTopInventory().getHolder();
+
+		if (inventoryHolder instanceof MenuHolder)
+		{
+			event.setCancelled(((MenuHolder) inventoryHolder).handleDrag(event));
+		}
 	}
 	
 	@EventHandler
@@ -78,6 +99,8 @@ public class MenuInventoryListener implements Listener
 		}
 		final MenuHolder menuHolder = (MenuHolder) inventoryHolder;
 
+		((MenuHolder) inventoryHolder).handleClose(event);
+		
 		if (!menuHolder.isReturnable() && !menuHolder.isForwarding())
 		{
 			lastInventories.remove(uuid);
