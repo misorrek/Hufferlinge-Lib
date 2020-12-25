@@ -351,7 +351,7 @@ public class IndependencyHelper
 	{
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
-		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "TIMES"), null, infade, duration, outfade);
+		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumValueByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "TIMES"), null, infade, duration, outfade);
 		
 		sendPacket(player, packet);
 	}
@@ -364,10 +364,10 @@ public class IndependencyHelper
 		Validate.notNull((Object) player, "The title cannot be null.");
 		Validate.notNull((Object) player, "The subtitle cannot be null.");
 		
-		final Object serializedTitle = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonMessage(title));
-		final Object serializedSubTitle = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonMessage(subTitle));
-		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "TITLE"), serializedTitle);
-		final Object packet2 = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "SUBTITLE"), serializedSubTitle);
+		final Object serializedTitle = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonText(title));
+		final Object serializedSubTitle = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonText(subTitle));
+		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumValueByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "TITLE"), serializedTitle);
+		final Object packet2 = createInstance(DependencyKind.NMS, "PacketPlayOutTitle", getEnumValueByName(DependencyKind.NMS, "PacketPlayOutTitle.EnumTitleAction", "SUBTITLE"), serializedSubTitle);
 	
 		sendPacket(player, packet);
 		sendPacket(player, packet2);
@@ -377,7 +377,7 @@ public class IndependencyHelper
 	 * Sends the given player a title packet with the specified title and subtitle.
 	 * The title is shown the certain amount of ticks set by the duration.
 	 * The infade (time how long the title takes from zero to hundred percent visibility) and the
-         * outfade (the opposite function) are set to twenty ticks or one second.
+     * outfade (the opposite function) are set to twenty ticks or one second.
 	 *
 	 * @param   player     the target player
 	 * @param   title      the title to be shown
@@ -405,7 +405,7 @@ public class IndependencyHelper
 	public static void sendTitle(@NotNull Player player, @NotNull String title, @NotNull String subtitle, int duration, int infade, int outfade) 
 	{
 		sendRawTitle(player, title, subtitle);
-		sendTime(player, ticks, infade, outfade);
+		sendTime(player, duration, infade, outfade);
 	}
 	
 	/**
@@ -419,8 +419,8 @@ public class IndependencyHelper
 		Validate.notNull((Object) player, "The player cannot be null.");
 		Validate.notNull((Object) player, "The message cannot be null.");
 		
-		final Object serializedMessage = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonMessage(message));
-		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutChat", serializedMessage, getEnumByName(DependencyKind.NMS, "ChatMessageType", "GAME_INFO"), player.getUniqueId());
+		final Object serializedMessage = invokeStaticMethod(DependencyKind.NMS, "ChatSerializer", "a", getJsonText(message));
+		final Object packet = createInstance(DependencyKind.NMS, "PacketPlayOutChat", serializedMessage, getEnumValueByName(DependencyKind.NMS, "ChatMessageType", "GAME_INFO"), player.getUniqueId());
 		
 		sendPacket(player, packet);
 	}

@@ -31,7 +31,7 @@ public class PlayerChooserHolder extends MenuHolder
 	
 	private static final int MIN_SIZE = InventoryHelper.INV_SIZE_3;
 	private static final int MAX_SIZE = InventoryHelper.INV_SIZE_6;
-	private static final int START_SITE = 1;
+	private static final int START_PAGE = 1;
 	
 	/**
 	 * @param   plugin         the java plugin instance
@@ -52,21 +52,21 @@ public class PlayerChooserHolder extends MenuHolder
 		this.plugin = plugin;
 		this.players = players;
 		this.chooseAction = chooseAction;
-		this.playersPerSite = ((this.getInventory().getSize() / InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
-		this.maxSite = (int) Math.ceil((double) players.size() / playersPerSite);
+		this.entriesPerPage = ((this.getInventory().getSize() / InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
+		this.lastPage = (int) Math.ceil((double) players.size() / entriesPerPage);
 		
 		initInventory();
-		setSiteFunction();
+		setPageFunctions();
 		setPlayers();
 	}
 
 	private final JavaPlugin plugin;
 	private final List<UUID> players;
 	private final Action chooseAction;
-	private final int playersPerSite;
-	private final int maxSite;
+	private final int entriesPerPage;
+	private final int lastPage;
 	
-	private int site = START_SITE;
+	private int page = START_PAGE;
 	
 	@Override
 	public boolean handleClick(@NotNull InventoryClickEvent event)
@@ -89,11 +89,11 @@ public class PlayerChooserHolder extends MenuHolder
 	     	}
 			else if (event.getSlot() == InventoryHelper.getSlotFromRowColumn(inventorySize, InventoryHelper.getLastLine(inventorySize), 4)) 
 			{
-				changeSite(false);
+				changePage(false);
 			}
 			else if (event.getSlot() == InventoryHelper.getSlotFromRowColumn(inventorySize, InventoryHelper.getLastLine(inventorySize), 6))
 			{
-				changeSite(true);
+				changePage(true);
 			}
 		}
      	return true;
@@ -119,14 +119,14 @@ public class PlayerChooserHolder extends MenuHolder
 		this.setMenuExitItem();
 	}
 	
-	private void setSiteFunction()
+	private void setPageFunctions()
 	{
 		final ItemStack borderItem = InventoryHelper.getBorderItem();	
 		
 		InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, 
-				                                                                                             StringHelper.build("§7» Seite", MessageHelper.getHighlighted(Integer.toString(site)), "«")));
+				                                                                                             StringHelper.build("§7» Seite", MessageHelper.getHighlighted(Integer.toString(page)), "«")));
 		
-		if (site > START_SITE)
+		if (page > START_PAGE)
 		{
 			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 4, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7« §9Vorherige Seite"));
 		}
@@ -135,7 +135,7 @@ public class PlayerChooserHolder extends MenuHolder
 			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 4, borderItem);
 		}
 		
-		if (site < maxSite)
+		if (page < lastPage)
 		{
 			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 6, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7» §9Nächste Seite"));
 		}
@@ -143,18 +143,18 @@ public class PlayerChooserHolder extends MenuHolder
 		{
 			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 6, borderItem);
 		}
-		final ItemStack siteItem = InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 5);
+		final ItemStack pageItem = InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 5);
 		
-		if (siteItem != null)
+		if (pageItem != null)
 		{
-			siteItem.setAmount(site); 
+			pageItem.setAmount(page); 
 		}
 	}
 	
 	private void setPlayers()
 	{	
-		final int startIndex = (site - 1) * playersPerSite;
-		final int maxIndex = startIndex + playersPerSite;
+		final int startIndex = (page - 1) * entriesPerPage;
+		final int maxIndex = startIndex + entriesPerPage;
 		
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> 
 		{
@@ -172,17 +172,17 @@ public class PlayerChooserHolder extends MenuHolder
 		InventoryHelper.setFill(this.getInventory(), null, false);
 	}
 	
-	private void changeSite(boolean increase)
+	private void changePage(boolean increase)
 	{
-		if (increase && site < maxSite)
+		if (increase && page < lastPage)
 		{
-			site++;
+			page++;
 		}
-		else if (!increase && site > START_SITE)
+		else if (!increase && page > START_PAGE)
 		{
-			site--;
+			page--;
 		}	
-		setSiteFunction();
+		setPageFunctions();
 		clearPlayers();
 		setPlayers();
 	}
