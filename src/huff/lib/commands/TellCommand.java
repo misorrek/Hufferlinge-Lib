@@ -3,6 +3,7 @@ package huff.lib.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
-import huff.lib.helper.StringHelper;
 import huff.lib.various.AlphanumericComparator;
 
 /**
@@ -26,13 +26,13 @@ public class TellCommand implements CommandExecutor, TabCompleter
 	
 	public TellCommand(@Nullable String consolePrefix)
 	{
-		if (StringHelper.isNotNullOrEmpty(consolePrefix))
+		if (StringUtils.isNotEmpty(consolePrefix))
 		{
 			this.consolePrefix = consolePrefix;
 		}
 	}
 	
-	private String consolePrefix = "§lKonsole";
+	private String consolePrefix = MessageHelper.NAME_HUFF_CONSOLE;
 	
 	// C O M M A N D
 	

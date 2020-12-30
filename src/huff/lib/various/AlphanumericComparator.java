@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 public class AlphanumericComparator implements Comparator<String>
 {
 	@Override
-	public int compare(@NotNull String stringCurrent, @NotNull String stringNext)
+	public int compare(@NotNull String currentString, @NotNull String nextString)
 	{
-		Validate.notNull((Object) stringCurrent, "The current string for comparison cannot be null.");
-		Validate.notNull((Object) stringNext, "The next string for comparison cannot be null.");
+		Validate.notNull((Object) currentString, "The current string for comparison cannot be null.");
+		Validate.notNull((Object) nextString, "The next string for comparison cannot be null.");
 		
-		return stringCurrent.compareTo(stringNext);
+		return currentString.compareTo(nextString);
 	}
 }

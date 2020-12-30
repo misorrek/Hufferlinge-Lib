@@ -1,4 +1,4 @@
-package huff.lib.manager.delayedmessage.json;
+package huff.lib.manager.delaymessage.json;
 
 import java.util.ArrayList;
 import java.util.List;

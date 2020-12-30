@@ -32,8 +32,8 @@ import huff.lib.various.AlphanumericComparator;
  */
 public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 {
-	private static final String PREFIX_SUPPORT = "§8☰ §eSupport §8☷§7 ";	
 	private static final String PERM_SUPPORT =  PermissionHelper.PERM_ROOT_HUFF + "support";
+	private static final String PREFIX_SUPPORT = "§8☰ §eSupport §8☷§7 ";	
 	
 	private final SupportMap supportMap = new SupportMap();
 	

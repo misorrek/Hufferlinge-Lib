@@ -1,8 +1,8 @@
-package huff.lib.manager.delayedmessage.json;
+package huff.lib.manager.delaymessage.json;
 
 import com.google.gson.annotations.SerializedName;
 
-import huff.lib.manager.delayedmessage.DelayType;
+import huff.lib.manager.delaymessage.DelayType;
 
 public class JsonPlayerMessage 
 {

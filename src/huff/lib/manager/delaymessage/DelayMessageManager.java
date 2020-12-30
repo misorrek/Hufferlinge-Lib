@@ -1,10 +1,11 @@
-package huff.lib.manager.delayedmessage;
+package huff.lib.manager.delaymessage;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,62 +14,61 @@ import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.FileHelper;
 import huff.lib.helper.MessageHelper;
-import huff.lib.helper.StringHelper;
+import huff.lib.manager.delaymessage.json.JsonDelayMessages;
+import huff.lib.manager.delaymessage.json.JsonPlayer;
+import huff.lib.manager.delaymessage.json.JsonPlayerMessage;
 import huff.lib.helper.IndependencyHelper;
-import huff.lib.manager.delayedmessage.json.JsonDelayedMessages;
-import huff.lib.manager.delayedmessage.json.JsonPlayer;
-import huff.lib.manager.delayedmessage.json.JsonPlayerMessage;
 
-public class DelayedMessagesManager
+public class DelayMessageManager
 {	
-	public DelayedMessagesManager(@NotNull JavaPlugin plugin, @NotNull String pluginFolderPath)
+	public DelayMessageManager(@NotNull JavaPlugin plugin, @NotNull String pluginFolderPath)
 	{
 		Validate.notNull((Object) plugin, "The plugin-instance cannot be null.");
 		Validate.notNull((Object) pluginFolderPath, "The plugin-folder-path cannot be null.");
 		
 		this.plugin = plugin;
-		this.jsonFilePath = Paths.get(pluginFolderPath, "delayedmessages.json").toString();
+		this.jsonFilePath = Paths.get(pluginFolderPath, "delaymessages.json").toString();
 				
-		final Object jsonObject = FileHelper.loadJsonObjectFromFile(jsonFilePath, JsonDelayedMessages.class);
+		final Object jsonObject = FileHelper.loadJsonObjectFromFile(jsonFilePath, JsonDelayMessages.class);
 		
 		if (jsonObject == null)
 		{
-			this.jsonDelayedMessages = new JsonDelayedMessages();
+			this.jsonDelayMessages = new JsonDelayMessages();
 		}
 		else
 		{
-			Validate.isTrue(jsonObject instanceof JsonDelayedMessages, String.format("Json object \"%s\" do not fit as JsonDelayedMessages.", jsonObject.toString()));
+			Validate.isTrue(jsonObject instanceof JsonDelayMessages, String.format("Json object \"%s\" do not fit as jsonDelayMessages.", jsonObject.toString()));
 			
-			this.jsonDelayedMessages = (JsonDelayedMessages) jsonObject;
+			this.jsonDelayMessages = (JsonDelayMessages) jsonObject;
 		}
 	}
 	
 	private final JavaPlugin plugin;
 	private final String jsonFilePath;
-	private final JsonDelayedMessages jsonDelayedMessages;
+	private final JsonDelayMessages jsonDelayMessages;
 	
-	public void addDelayedMessage(@NotNull UUID uuid, DelayType delayType, @NotNull String message)
+	public void addDelayMessage(@NotNull UUID uuid, DelayType delayType, @NotNull String message)
 	{
-		addDelayedMessage(uuid, delayType, null, message);
+		addDelayMessage(uuid, delayType, null, message);
 	}
 	
-	public void addDelayedMessage(@NotNull UUID uuid, DelayType delayType, @Nullable String prefix, @NotNull String message)
+	public void addDelayMessage(@NotNull UUID uuid, DelayType delayType, @Nullable String prefix, @NotNull String message)
 	{		
 		Validate.notNull((Object) uuid, "The uuid cannot be null.");
-		Validate.notNull((Object) message, "The delayed-message cannot be null.");
+		Validate.notNull((Object) message, "The delay message cannot be null.");
 		
 		final List<JsonPlayerMessage> messagesArray = getPlayerMessages(uuid, true);
 		final JsonPlayerMessage jsonPlayerMessages = new JsonPlayerMessage();
 		
 		jsonPlayerMessages.delayType = delayType;
-		if (StringHelper.isNotNullOrEmpty(prefix)) jsonPlayerMessages.prefix = prefix;
-		if (StringHelper.isNotNullOrEmpty(message)) jsonPlayerMessages.message = message;
+		if (StringUtils.isNotEmpty(prefix)) jsonPlayerMessages.prefix = prefix;
+		if (StringUtils.isNotEmpty(message)) jsonPlayerMessages.message = message;
 		
 		messagesArray.add(jsonPlayerMessages);
 		saveJsonObjectToFile();
 	}
 	
-	public @NotNull List<String> getDelayedMessages(@NotNull Player player, DelayType delayType)
+	public @NotNull List<String> getDelayMessages(@NotNull Player player, DelayType delayType)
 	{
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
@@ -93,7 +93,7 @@ public class DelayedMessagesManager
 			{	
 				jsonPlayerMessages.remove(playerMessage);
 				
-				if (StringHelper.isNotNullOrEmpty(playerMessage.prefix))
+				if (StringUtils.isNotEmpty(playerMessage.prefix))
 				{
 					resultMessages.add(playerMessage.prefix + " " + playerMessage.message);
 				}
@@ -105,7 +105,7 @@ public class DelayedMessagesManager
 			
 			if (jsonPlayerMessages.isEmpty())
 			{
-				jsonDelayedMessages.player.remove(getPlayer(player.getUniqueId()));
+				jsonDelayMessages.player.remove(getPlayer(player.getUniqueId()));
 			}
 		}
 		
@@ -116,24 +116,24 @@ public class DelayedMessagesManager
 		return resultMessages;
 	}
 	
-	public void sendDelayedMessages(@NotNull Player player, DelayType delayType)
+	public void sendDelayMessages(@NotNull Player player, DelayType delayType)
 	{
-		final List<String> delayedMessages = getDelayedMessages(player, delayType);
+		final List<String> delayMessages = getDelayMessages(player, delayType);
 		
-		if (!delayedMessages.isEmpty())
+		if (!delayMessages.isEmpty())
 		{
-			MessageHelper.sendMessagesDelayed(plugin, player, delayedMessages, IndependencyHelper.getSecondsInTicks(10));
+			MessageHelper.sendMessagesDelayed(plugin, player, delayMessages, IndependencyHelper.getSecondsInTicks(10));
 		}
 	}
 	
 	private void saveJsonObjectToFile()
 	{
-		FileHelper.saveJsonObjectToFile(jsonFilePath, jsonDelayedMessages, jsonDelayedMessages.getClass());
+		FileHelper.saveJsonObjectToFile(jsonFilePath, jsonDelayMessages, jsonDelayMessages.getClass());
 	}
 	
 	private @Nullable JsonPlayer getPlayer(@NotNull UUID uuid)
 	{
-		for (JsonPlayer player : jsonDelayedMessages.player)
+		for (JsonPlayer player : jsonDelayMessages.player)
 		{
 			if (player.uuid.equals(uuid))
 			{
@@ -157,7 +157,7 @@ public class DelayedMessagesManager
 			final JsonPlayer jsonPlayer = new JsonPlayer();
 			
 			jsonPlayer.uuid = uuid;
-			jsonDelayedMessages.player.add(jsonPlayer);
+			jsonDelayMessages.player.add(jsonPlayer);
 			
 			return jsonPlayer.messages;
 		}

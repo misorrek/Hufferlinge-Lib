@@ -2,6 +2,7 @@ package huff.lib.helper;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,8 +22,10 @@ public class MessageHelper
 	public static final String PLACEHOLDER_MINUTE = "%text%";
 
 	public static final String PREFIX_HUFF = "§8☰ §aHufferlinge §8☷§7 ";
-	public static final String PREFIX_HUFF_CONSOLE = "§7Hufferlinge §8☷ §7 ";
+	public static final String PREFIX_HUFF_CONSOLE = "§7Hufferlinge ☷  ";
 	public static final String PREFIX_DELAYMESSAGE = "§8☰ §aAus der Vergangenheit §8☷§7 ";
+	
+	public static final String NAME_HUFF_CONSOLE = "§lTerminal§r";
 	
     public static final String NOPERMISSION = "Du hast keine Berechtigung für diesen Befehl.";
     public static final String PLAYERNOTFOUND = "Der Spieler" + PLACEHOLDER_PLAYER + "konnte nicht zugeordnet werden.";
@@ -65,7 +68,7 @@ public class MessageHelper
     {
     	Validate.notNull((Object) message, "The message cannot be null.");
     	
-    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('�', PREFIX_HUFF_CONSOLE + message));
+    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('§', PREFIX_HUFF_CONSOLE + message));
     }
     
     public static void sendPermssionMessage(@NotNull String permission, @NotNull String message) 
@@ -80,14 +83,14 @@ public class MessageHelper
     	
 		for (Player player : Bukkit.getOnlinePlayers()) 
 		{
-			if ((StringHelper.isNullOrEmpty(excludedPlayer) || !player.getName().equals(excludedPlayer)) && PermissionHelper.hasPlayerPermission(player, permission)) 
+			if ((StringUtils.isNotEmpty(excludedPlayer) || !player.getName().equals(excludedPlayer)) && PermissionHelper.hasPlayerPermission(player, permission)) 
 			{
 				player.sendMessage(message);
 			}
 		}
 	}
     
-    public static @NotNull String getTimeFormatted(int time, @Nullable String pattern) //TODO StringHelper Null Check Annotations
+    public static @NotNull String getTimeFormatted(int time, @Nullable String pattern)
     {
 		final int maxTime = 24;
 		final int hourAddition = 6;
@@ -95,9 +98,9 @@ public class MessageHelper
 		
 		final int hourValue = ((int) (time * 0.001)) + hourAddition;
 		final int hour = hourValue >= maxTime ? hourValue - maxTime : hourValue;
-		final int minute = (int) (((time / 1000) % 1) * minuteMultiplier);
-	    	
-		if (StringHelper.isNotNullOrEmpty(pattern) && StringHelper.contains(false, pattern, PLACEHOLDER_HOUR, PLACEHOLDER_MINUTE))
+		final int minute = (time / 1000) * minuteMultiplier;
+		
+		if (StringUtils.isNotEmpty(pattern) && StringHelper.contains(false, pattern, PLACEHOLDER_HOUR, PLACEHOLDER_MINUTE))
 		{
 			return pattern.replace(PLACEHOLDER_HOUR, Integer.toString(hour)).replace(PLACEHOLDER_MINUTE, Integer.toString(minute));
 		}

@@ -11,15 +11,15 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.query.QueryOptions;
 
 /**
- * A helper class containing static permisson methods.
- * Covers gerneral permission and LuckPerms. 
+ * A helper class containing static permission methods.
+ * Covers general permission and LuckPerms.
  */
 public class PermissionHelper 
 {
 	private PermissionHelper() { }
 	
 	public static final String PERM_ROOT_HUFF = "huff.";
-        public static final String PERM_ALL =  PERM_ROOT_HUFF + "*";
+    public static final String PERM_ALL =  PERM_ROOT_HUFF + "*";
 	
 	/**
 	 * Checks if the player has the given permission.
@@ -27,7 +27,7 @@ public class PermissionHelper
 	 * Note: The player does not receive any feedback.
 	 * 
 	 * @param   player  	 the player to check
-	 * @param   permission   the to checking permisson
+	 * @param   permission   the to checking permission
 	 * @return             	 A boolean that gives the check result.
 	 */
 	public static boolean hasPlayerPermission(@NotNull Player player, @NotNull String permission) 
@@ -43,7 +43,7 @@ public class PermissionHelper
 	 * If not the player receives feedback. 
 	 * 
 	 * @param   player  	 the player to check
-	 * @param   permission   the to checking permisson
+	 * @param   permission   the to checking permission
 	 * @return             	 A boolean that gives the check result.
 	 */
 	public static boolean hasPlayerPermissionFeedbacked(@NotNull Player player, @NotNull String permission) 
@@ -74,7 +74,7 @@ public class PermissionHelper
 	 * Gets the LuckPerms QueryOptions from the given player out of the LuckPerms provider.
 	 * 
 	 * @param   luckPerms   the LuckPerms provider 
-	 * @param   player	the target player
+	 * @param   player	    the target player
 	 * @return              The LuckPerms QueryOptions from the given player.
 	 */
 	public static @NotNull QueryOptions getPlayerQueryOptions(@NotNull LuckPerms luckPerms, @NotNull Player player)
@@ -89,7 +89,7 @@ public class PermissionHelper
 	 * Gets the LuckPerms primary prefix from the given player out of the LuckPerms provider.
 	 * 
 	 * @param   luckPerms   the LuckPerms provider 
-	 * @param   player	the target player
+	 * @param   player	    the target player
 	 * @return              The LuckPerms primary prefix from the given player.
 	 */
 	public static @Nullable String getPrimaryPlayerPrefix(@NotNull LuckPerms luckPerms, @NotNull Player player)

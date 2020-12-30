@@ -2,7 +2,6 @@ package huff.lib.helper;
 
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A helper class containing static string methods.
@@ -11,50 +10,6 @@ public class StringHelper
 {
 	private StringHelper() { }
 	
-	/**
-	 * Checks if a string is null or empty.
-	 * 
-	 * @param   value   the string to check
-	 * @return          A boolean that gives the check result.
-	 */
-	public static boolean isNullOrEmpty(@Nullable String value)
-	{
-		return value == null || value.isEmpty();
-	}
-
-	/**
-	 * Checks if a string is null, empty or has only whitespace.
-	 * 
-	 * @param   value   the string to check
-	 * @return          A boolean that gives the check result
-	 */
-	public static boolean isNullOrWhitespace(@Nullable String value)
-	{
-		return value == null || value.trim().isEmpty();
-	}
-	
-	/**
-	 * Checks if a string is not null and empty.
-	 * 
-	 * @param   value   the string to check
-	 * @return          A boolean that gives the check result
-	 */
-	public static boolean isNotNullOrEmpty(@Nullable String value)
-	{
-		return value != null && !value.isEmpty();
-	}
-	
-	/**
-	 * Checks if a string is not null, not empty or don't has only whitespaces.
-	 * 
-	 * @param   value   the string to check
-	 * @return          A boolean that gives the check result
-	 */
-	public static boolean isNotNullOrWhitespace(@Nullable String value)
-	{
-		return value != null && !value.trim().isEmpty();
-	}
-
 	/**
 	 * Checks if the string is equals a string from the list.
 	 * 
@@ -111,6 +66,25 @@ public class StringHelper
 		{
 			builder.append(object);
 		}
+		return builder.toString();
+	}
+	
+	public static @NotNull String toValueList(Class<? extends Enum<?>> enumClass)
+	{
+		final StringBuilder builder = new StringBuilder();
+		final Enum<?>[] enumValues = enumClass.getEnumConstants();
+		
+		for (int i = 0; i < enumValues.length; i++)
+		{
+			if (i != (enumValues.length - 1))
+			{
+				builder.append(enumValues[i].toString() + ", ");
+			}
+			else
+			{
+				builder.append(enumValues[i].toString());
+			}
+		}	
 		return builder.toString();
 	}
 }

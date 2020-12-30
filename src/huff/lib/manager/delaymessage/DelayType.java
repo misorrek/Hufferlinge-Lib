@@ -1,4 +1,4 @@
-package huff.lib.manager.delayedmessage;
+package huff.lib.manager.delaymessage;
 
 public enum DelayType
 {

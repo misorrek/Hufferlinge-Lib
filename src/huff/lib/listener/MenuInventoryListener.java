@@ -92,7 +92,7 @@ public class MenuInventoryListener implements Listener
 	{
 		final UUID uuid = event.getPlayer().getUniqueId();
 		final InventoryHolder inventoryHolder = event.getInventory().getHolder();
-
+		
 		if (!(inventoryHolder instanceof MenuHolder))
 		{
 			return;

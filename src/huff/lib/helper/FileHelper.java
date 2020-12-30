@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -51,7 +52,7 @@ public class FileHelper
 		
 		if (configuration.options().header() == null || configuration.options().header().isEmpty())
 		{
-			configuration.options().header(StringHelper.isNotNullOrWhitespace(header) ? header : "Created by Hufferlinge Config Manager");
+			configuration.options().header(StringUtils.isNotBlank(header) ? header : "Created by Hufferlinge Config Manager");
 		}		
 		
 		if (configuration.getDefaults() == null && defaults != null)
@@ -115,7 +116,7 @@ public class FileHelper
 		}		
 		final String jsonFileContent = readFileContents(jsonFile);
 		
-		if (StringHelper.isNotNullOrWhitespace(jsonFileContent))
+		if (StringUtils.isNotBlank(jsonFileContent))
 		{
 			try
 			{

@@ -1,5 +1,7 @@
 package huff.lib.helper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.Validate;
@@ -9,14 +11,17 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.menuholder.MenuHolder;
 import huff.lib.various.Pair;
+import huff.lib.various.SlotItemValueComparator;
 
 /**
  * A helper class containing static inventory methods.
@@ -33,6 +38,8 @@ public class InventoryHelper
 
 	public static final int ROW_LENGTH = 9;
 	public static final int LAST_ROW = 6;
+	
+	public static final int SECONDARY_HAND = 45;
 	
 	public static final String ITEM_BACK = "§7» §cZurück";
 	public static final String ITEM_ABORT = "§7» §cAbbrechen";
@@ -220,9 +227,9 @@ public class InventoryHelper
 	 * Checks how many free inventory slots in the given inventory exist.
 	 * 
 	 * @param   inventory   the inventory to check free slots in
-	 * @return              The free slots. 
+	 * @return              The free slot count. 
 	 */
-	public static int getFreeSlots(@NotNull Inventory inventory)
+	public static int getFreeSlotCount(@NotNull Inventory inventory)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");
 		
@@ -239,13 +246,72 @@ public class InventoryHelper
 	}
 	
 	/**
+	 * Gets all free slots from the specified inventory in the given inventory view.
+	 * 
+	 * @param   inventoryView   the inventory view containing the inventory to get the free slots from
+	 * @param   topInventory    determines which inventory from the inventory view will be used 
+	 * @return                  The free slots. 
+	 */
+	public static List<Integer> getFreeSlots(@NotNull InventoryView inventoryView, boolean topInventory)
+	{
+		return getFreeSlots(inventoryView, topInventory, null);
+	}
+	
+	/**
+	 * Gets all free or compatible slots from the specified inventory in the given inventory view.
+	 * 
+	 * @param   inventoryView   the inventory view containing the inventory to get the free slots from
+	 * @param   topInventory    determines which inventory from the inventory view will be used 
+	 * @param   itemStack       the item with which the compatibility is checked
+	 * @return                  The free and compatible slots.
+	 */
+	public static List<Integer> getFreeSlots(@NotNull InventoryView inventoryView, boolean topInventory, @Nullable ItemStack itemStack)
+	{
+		Validate.notNull((Object) inventoryView, "The inventory view cannot be null.");
+		
+		final List<Integer> freeSlots = new ArrayList<>();
+		final List<Integer> storageSlots = getStorageSlots(inventoryView, topInventory);
+		final Inventory inventory = topInventory ? inventoryView.getTopInventory() : inventoryView.getBottomInventory();
+		
+		for (int slot : storageSlots)
+		{
+			final ItemStack currentItemStack = inventory.getItem(slot);
+			
+			if (currentItemStack == null || currentItemStack.getType() == Material.AIR ||
+			    (currentItemStack.isSimilar(itemStack) && currentItemStack.getAmount() < currentItemStack.getMaxStackSize()))
+			{
+				freeSlots.add(slot);
+			}
+		}
+		return freeSlots;
+	}
+	
+	public static List<Integer> getStorageSlots(@NotNull InventoryView inventoryView, boolean topInventory)
+	{
+		Validate.notNull((Object) inventoryView, "The inventory view cannot be null");
+		
+		final List<Integer> slots = new ArrayList<>();
+		final int startIndex = topInventory ? 0 : inventoryView.getTopInventory().getSize();
+		final int size = topInventory ? inventoryView.getTopInventory().getSize() : inventoryView.countSlots();
+		
+		for (int i = startIndex; i < size; i++)
+		{
+			if (inventoryView.getSlotType(i) == SlotType.CONTAINER || (inventoryView.getSlotType(i) == SlotType.QUICKBAR && i != SECONDARY_HAND))
+			{
+				slots.add(inventoryView.convertSlot(i));
+			}	
+		}
+		return slots;
+	}
+	
+	/**
 	 * Checks how many free inventory slots exist if the specified item stack is added to the given inventory.
 	 * 
 	 * @param   inventory   the inventory to check free slots in
 	 * @param   itemStack   the item stack with that the check is processed
-	 * @return              The free slots if the given item stack will be added. 
+	 * @return              The free slot count if the given item stack will be added. 
 	 */
-	public static int getFreeSlotsAfterAdding(@NotNull Inventory inventory, @NotNull ItemStack itemStack)
+	public static int getFreeSlotCountAfterAdding(@NotNull Inventory inventory, @NotNull ItemStack itemStack)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
 		Validate.notNull((Object) itemStack, "The item-stack cannot be null.");	
@@ -266,11 +332,62 @@ public class InventoryHelper
 			}
 		}
 		
-		if (openAmount > 0)
+		if (openAmount > 0 && freeItemStackSpace > 0)
 		{
 			freeItemStackSpace--;
 		}		
 		return freeItemStackSpace;
+	}
+	
+	public static int addToInventorySlots(@NotNull Inventory inventory, @NotNull List<Integer> slots, @Nullable ItemStack itemStack)
+	{
+		if (itemStack == null)
+		{
+			return 0;
+		}
+		int openAmount = itemStack.getAmount();
+		
+		slots.sort(new SlotItemValueComparator(inventory, itemStack));
+		
+		for (int i = 0; i < slots.size() && openAmount > 0; i++)
+		{
+			final ItemStack currentItem = inventory.getItem(slots.get(i));
+			
+			if (currentItem == null || currentItem.getType() == Material.AIR)
+			{
+				final ItemStack copyItem = itemStack.clone();
+				
+				copyItem.setAmount(openAmount);
+				inventory.setItem(slots.get(i), copyItem);
+				openAmount = 0;
+				break;
+			}
+			final int currentAmount = currentItem.getAmount();
+			final int maxStackSize = currentItem.getMaxStackSize();
+			
+			Bukkit.getConsoleSender().sendMessage("CURRENT AMOUNT : " + currentAmount);
+			Bukkit.getConsoleSender().sendMessage("MAX AMOUNT : " + maxStackSize);
+			
+			if (currentAmount < maxStackSize && currentItem.isSimilar(itemStack))
+			{
+				int possibleAmount = maxStackSize - currentAmount;
+				
+				Bukkit.getConsoleSender().sendMessage("POSSIBLE AMOUNT : " + possibleAmount);
+				
+				if (openAmount < possibleAmount)
+				{
+					currentItem.setAmount(currentAmount + openAmount);
+					openAmount = 0;
+				}
+				else
+				{
+					currentItem.setAmount(maxStackSize);
+					openAmount -= possibleAmount;
+				}
+			}
+		}
+		
+		return openAmount;
 	}
 	
 	/**

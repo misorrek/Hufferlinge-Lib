@@ -3,6 +3,7 @@ package huff.lib.helper;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -61,7 +62,7 @@ public class ItemHelper
 		final ItemStack resultItem = new ItemStack(material);
 		final ItemMeta resultMeta = resultItem.getItemMeta();
 		
-		if (StringHelper.isNotNullOrEmpty(displayName)) resultMeta.setDisplayName(displayName);	
+		if (StringUtils.isNotEmpty(displayName)) resultMeta.setDisplayName(displayName);	
 		if (lore != null) resultMeta.setLore(lore);
 		if (itemFlags != null) resultMeta.addItemFlags(itemFlags);		
 		
@@ -163,7 +164,7 @@ public class ItemHelper
 		
 		final ItemMeta itemMeta = itemStack.getItemMeta();
 		
-		if (StringHelper.isNotNullOrEmpty(displayName)) itemMeta.setDisplayName(displayName);	
+		if (StringUtils.isNotEmpty(displayName)) itemMeta.setDisplayName(displayName);	
 		if (lore != null) itemMeta.setLore(lore);
 		if (itemFlags != null) itemMeta.addItemFlags(itemFlags);
 			
