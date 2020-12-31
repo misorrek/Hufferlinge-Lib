@@ -23,7 +23,7 @@ public class MessageHelper
 
 	public static final String PREFIX_HUFF = "§8☰ §aHufferlinge §8☷§7 ";
 	public static final String PREFIX_HUFF_CONSOLE = "§7Hufferlinge ☷  ";
-	public static final String PREFIX_DELAYMESSAGE = "§8☰ §aAus der Vergangenheit §8☷§7 ";
+	public static final String PREFIX_DELAYMESSAGE = "§8☰ §bVergangenheit §8☷§7 ";
 	
 	public static final String NAME_HUFF_CONSOLE = "§lTerminal§r";
 	

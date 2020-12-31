@@ -35,10 +35,11 @@ public class InventoryHelper
 	public static final int INV_SIZE_4 = 36;
 	public static final int INV_SIZE_5 = 45;
 	public static final int INV_SIZE_6 = 54;
-
+	public static final int INV_SIZE_INTERNAL = 46;
+	
 	public static final int ROW_LENGTH = 9;
 	public static final int LAST_ROW = 6;
-	
+
 	public static final int SECONDARY_HAND = 45;
 	
 	public static final String ITEM_BACK = "§7» §cZurück";
@@ -414,8 +415,7 @@ public class InventoryHelper
 	public static boolean isPickupAction(InventoryAction inventoryAction)
 	{
 		return inventoryAction == InventoryAction.PICKUP_ALL || inventoryAction == InventoryAction.PICKUP_HALF || 
-			   inventoryAction == InventoryAction.PICKUP_ONE || inventoryAction == InventoryAction.PICKUP_SOME ||
-			   inventoryAction == InventoryAction.MOVE_TO_OTHER_INVENTORY;
+			   inventoryAction == InventoryAction.PICKUP_ONE || inventoryAction == InventoryAction.PICKUP_SOME;
 	}
 	
 	/**
@@ -429,6 +429,19 @@ public class InventoryHelper
 	{
 		return inventoryAction == InventoryAction.PLACE_ALL || inventoryAction == InventoryAction.PLACE_SOME || 
 			   inventoryAction == InventoryAction.PLACE_ONE;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param   view
+	 * @return
+	 */
+	public static boolean isInternalCraftView(InventoryView view)
+	{
+		return view.getTopInventory().getType() == InventoryType.CRAFTING &&
+			   view.getBottomInventory().getType() == InventoryType.PLAYER &&
+			   view.countSlots() == INV_SIZE_INTERNAL;
 	}
 	
 	/**

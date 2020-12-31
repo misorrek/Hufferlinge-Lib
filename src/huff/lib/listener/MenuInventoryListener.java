@@ -9,7 +9,6 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -41,7 +40,7 @@ public class MenuInventoryListener implements Listener
 	private HashMap<UUID, List<Inventory>> lastInventories = new HashMap<>();
 	private List<UUID> isExiting = new ArrayList<>();
 	
-	@EventHandler (priority = EventPriority.HIGH)
+	@EventHandler
 	public void onInventoryMenuClick(InventoryClickEvent event)
 	{		
 		if (event.getClickedInventory() == null || !(event.getView().getTopInventory().getHolder() instanceof MenuHolder))
@@ -73,7 +72,11 @@ public class MenuInventoryListener implements Listener
 				return;
 			}	
 		}
-		event.setCancelled(((MenuHolder) event.getView().getTopInventory().getHolder()).handleClick(event));
+		
+		if (((MenuHolder) event.getView().getTopInventory().getHolder()).handleClick(event))
+		{
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
@@ -81,9 +84,9 @@ public class MenuInventoryListener implements Listener
 	{	
 		final InventoryHolder inventoryHolder = event.getView().getTopInventory().getHolder();
 
-		if (inventoryHolder instanceof MenuHolder)
+		if (inventoryHolder instanceof MenuHolder && ((MenuHolder) inventoryHolder).handleDrag(event))
 		{
-			event.setCancelled(((MenuHolder) inventoryHolder).handleDrag(event));
+			event.setCancelled(true);
 		}
 	}
 	
