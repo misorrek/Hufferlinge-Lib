@@ -1,28 +1,27 @@
 package huff.lib.commands;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
-import huff.lib.various.AlphanumericComparator;
+import huff.lib.various.HuffCommand;
 
 /**
  * A command class to create a support chat which can be joined by a supporter.
@@ -30,11 +29,20 @@ import huff.lib.various.AlphanumericComparator;
  * A supporter cannot create a support chat.
  * Contains the command, tab completion and listener for the async player chat and player quit event.
  */
-public class SupportCommand implements CommandExecutor, TabCompleter, Listener
+public class SupportCommand extends HuffCommand implements Listener
 {
 	private static final String PERM_SUPPORT =  PermissionHelper.PERM_ROOT_HUFF + "support";
 	private static final String PREFIX_SUPPORT = "§8☰ §eSupport §8☷§7 ";	
-	
+
+	public SupportCommand(@NotNull JavaPlugin plugin)
+	{
+		super(plugin, "support");
+
+		this.setDescription("Öffnet einen Support-Chat");
+		this.setAliases("ticket");
+		this.registerCommand();
+	}
+
 	private final SupportMap supportMap = new SupportMap();
 	
 	// C O M M A N D
@@ -173,12 +181,8 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 		
 		if (currentSupportChat != null)
 		{
-			try
-			{
-				player.sendMessage(PREFIX_SUPPORT + "Du bist noch im Support-Chat von §9" + Bukkit.getPlayer(currentSupportChat).getName());
-				return false;
-			}
-			catch (Exception e) { }
+			player.sendMessage(PREFIX_SUPPORT + "Du bist noch im Support-Chat von §9" + Bukkit.getOfflinePlayer(currentSupportChat).getName());
+			return false;
 		}
 		Validate.notNull((Object) targetName, "The player-target-name cannot be null.");
 		
@@ -218,57 +222,30 @@ public class SupportCommand implements CommandExecutor, TabCompleter, Listener
 	
 	// T A B C O M P L E T I O N
 	
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) 
-	{
-		final List<String> paramSuggestions = new ArrayList<>();
-		
-		if (!(sender instanceof Player)) 
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) 
+    {
+    	final boolean isPlayerInSupport = sender instanceof Player && supportMap.containsKey(((Player) sender).getUniqueId());
+    	
+    	if (PermissionHelper.hasPlayerPermission(sender, PERM_SUPPORT))
 		{
-			return paramSuggestions;
-		}	
-		final Player player = (Player) sender;
-	
-		if (args.length == 0)
-		{
-			fillFirstSuggestion(player, paramSuggestions);
-		}
-		else if (args.length == 2 && (args[0].equalsIgnoreCase("enter") || args[0].equalsIgnoreCase("delete")) && PermissionHelper.hasPlayerPermissionFeedbacked(player, PERM_SUPPORT))
-		{
-			fillAvailableChatsSuggestion(paramSuggestions);
-		}
-		paramSuggestions.sort(new AlphanumericComparator());
-		return paramSuggestions;
-	}
-	
-	private void fillFirstSuggestion(@NotNull Player player, @NotNull List<String> paramSuggestions)
-	{		
-		final boolean isPlayerInSupport = supportMap.containsKey(player.getUniqueId());
-		
-		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
-		{
-			paramSuggestions.add("list");
-			paramSuggestions.add("delete");
+			this.addTabCompletion(0, "list", "delete");
 			
 			if (!isPlayerInSupport)
 			{
-				paramSuggestions.add("enter");
+				this.addTabCompletion(0, "enter");
+				this.addTabCompletion(1, PERM_SUPPORT, Stream.of("enter", "delete").toArray(String[]::new), supportMap.keySet().stream()
+						.map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
+						.toArray(String[]::new));
 			}
 		}
 		
 		if (isPlayerInSupport)
 		{
-			paramSuggestions.add("leave");
-		}
-	}
-	
-	private void fillAvailableChatsSuggestion(@NotNull List<String> paramSuggestions)
-	{	
-		for (UUID availableChat : supportMap.keySet())
-		{
-			paramSuggestions.add(availableChat.toString());
-		}
-	}
+			this.addTabCompletion(0, "leave");
+		}	
+		return super.tabComplete(sender, alias, args);
+    }
 	
 	// L I S T E N E R
 	

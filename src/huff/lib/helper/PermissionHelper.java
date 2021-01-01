@@ -1,7 +1,9 @@
 package huff.lib.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
@@ -30,12 +32,11 @@ public class PermissionHelper
 	 * @param   permission   the to checking permission
 	 * @return             	 A boolean that gives the check result.
 	 */
-	public static boolean hasPlayerPermission(@NotNull Player player, @NotNull String permission) 
+	public static boolean hasPlayerPermission(@NotNull CommandSender sender, @Nullable String permission) 
 	{			
-		Validate.notNull((Object) player, "The player cannot be null.");
-		Validate.notNull((Object) permission, "The permission cannot be null.");
+		Validate.notNull((Object) sender, "The command sender cannot be null.");
 		
-		return player.isPermissionSet(permission) || player.isPermissionSet(PERM_ALL);
+		return StringUtils.isBlank(permission) || (sender.hasPermission(permission) || sender.hasPermission(PERM_ALL));
 	}
 	
 	/**
@@ -46,11 +47,11 @@ public class PermissionHelper
 	 * @param   permission   the to checking permission
 	 * @return             	 A boolean that gives the check result.
 	 */
-	public static boolean hasPlayerPermissionFeedbacked(@NotNull Player player, @NotNull String permission) 
+	public static boolean hasPlayerPermissionFeedbacked(@NotNull CommandSender sender, @Nullable String permission) 
 	{	
-		if(!hasPlayerPermission(player, permission)) 
+		if(!hasPlayerPermission(sender, permission)) 
 		{
-			player.sendMessage(MessageHelper.getNoPermission());			
+			sender.sendMessage(MessageHelper.getNoPermission());			
 			return false;
 		}		
 		return true;

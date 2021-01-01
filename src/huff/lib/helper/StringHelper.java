@@ -29,7 +29,7 @@ public class StringHelper
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Checks if the string is contained in a string from the list.
 	 * 

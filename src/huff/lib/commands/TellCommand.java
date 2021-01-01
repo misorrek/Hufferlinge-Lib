@@ -1,49 +1,47 @@
 package huff.lib.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
-import huff.lib.various.AlphanumericComparator;
+import huff.lib.various.HuffCommand;
 
 /**
  * A command class to send messages from the console or a player to another player.
  * Contains the command and tab completion.
  */
-public class TellCommand implements CommandExecutor, TabCompleter
+public class TellCommand extends HuffCommand
 {
-	private static final String PERM_TELL =  PermissionHelper.PERM_ROOT_HUFF + "tell";
-	
-	public TellCommand(@Nullable String consolePrefix)
+	public TellCommand(@NotNull JavaPlugin plugin, @Nullable String consolePrefix)
 	{
-		if (StringUtils.isNotEmpty(consolePrefix))
+		super(plugin, "tell");
+		
+		if (StringUtils.isNotBlank(consolePrefix))
 		{
 			this.consolePrefix = consolePrefix;
 		}
+		this.setDescription("Sendet eine Nachricht.");
+		this.setUsage("/tell <Name> <Nachricht>");
+		this.setAliases("message", "msg", "pm", "dm");
+		this.setPermission(PermissionHelper.PERM_ROOT_HUFF + "tell");
+		addTabCompletion();
+		this.registerCommand();
 	}
-	
+
 	private String consolePrefix = MessageHelper.NAME_HUFF_CONSOLE;
 	
 	// C O M M A N D
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		if (sender instanceof Player && !PermissionHelper.hasPlayerPermissionFeedbacked((Player) sender, PERM_TELL))		
-		{
-			return false;
-		}
-		
+	{		
 		if (args.length >= 2)
 		{
 			final Player target = Bukkit.getPlayer(args[0]);
@@ -63,8 +61,8 @@ public class TellCommand implements CommandExecutor, TabCompleter
 			{
 				sender.sendMessage(MessageHelper.getPlayerNotFound(args[0]));
 			} 
+			return true;
 		}
-		sender.sendMessage(MessageHelper.getWrongInput("/" + label + " <Name> <Nachricht>"));
 		return false;
 	}
 	
@@ -74,25 +72,12 @@ public class TellCommand implements CommandExecutor, TabCompleter
 	}
 	
 	// T A B C O M P L E T I O N
-	
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) 
+
+	private void addTabCompletion()
 	{
-		final List<String> paramSuggestions = new ArrayList<>();
-		
-		if (sender instanceof Player && !PermissionHelper.hasPlayerPermissionFeedbacked((Player) sender, PERM_TELL))		
-		{
-			return paramSuggestions;
-		}
-		
-		if (args.length == 1)
-		{
-			for (Player publicPlayer : Bukkit.getOnlinePlayers())
-			{
-				paramSuggestions.add(publicPlayer.getName());
-			}
-		}		
-		paramSuggestions.sort(new AlphanumericComparator());
-		return paramSuggestions;
+		this.addTabCompletion(0, Bukkit.getOnlinePlayers().stream()
+				.map(Player::getName)
+				.toArray(String[]::new));
+		this.addTabCompletion(1, "<Nachricht>");
 	}
 }

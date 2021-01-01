@@ -1,16 +1,11 @@
 package huff.lib.commands;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,23 +15,27 @@ import org.jetbrains.annotations.NotNull;
 
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
-import huff.lib.various.AlphanumericComparator;
+import huff.lib.various.HuffCommand;
 
 /**
  * A command class to vanish its own or another player.
  * Contains the command, tab completion and a listener for the player join event.
  */
-public class VanishCommand implements CommandExecutor, TabCompleter, Listener
+public class VanishCommand extends HuffCommand implements Listener
 {
-	private static final String PERM_VANISH =  PermissionHelper.PERM_ROOT_HUFF + "vanish";
-	
 	public VanishCommand(@NotNull JavaPlugin plugin)
 	{
-		Validate.notNull((Object) plugin, "The plugin-instance cannot be null.");
+		super(plugin, "vanish");
 		
 		this.plugin = plugin;
+		this.setDescription("Versteck einen Spieler");
+		this.setUsage("/vanish (<Spieler>)");
+		this.setPermission(PermissionHelper.PERM_ROOT_HUFF + "vanish");
+		this.setAliases("hide", "v");
+		addTabCompletion();
+		this.registerCommand();
 	}
-	
+
 	private final JavaPlugin plugin;
 	private final HashSet<UUID> vanishedPlayer = new HashSet<>();
 	
@@ -45,53 +44,42 @@ public class VanishCommand implements CommandExecutor, TabCompleter, Listener
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{ 
-		if (!(sender instanceof Player)) 
-		{
-			MessageHelper.sendConsoleMessage(MessageHelper.NORUNINCONSOLE);
-			return false;
-		}	
 		Player player = (Player) sender;
 		
-		if (PermissionHelper.hasPlayerPermissionFeedbacked(player, PERM_VANISH)) 
+		if (args.length == 1)
 		{
-			if (args.length == 1)
+			final Player targetPlayer = Bukkit.getPlayer(args[0]); 
+			
+			if (targetPlayer == null || !targetPlayer.isOnline())
 			{
-				final Player targetPlayer = Bukkit.getPlayer(args[0]); 
+				MessageHelper.getPlayerNotFound(args[0]);
+				return true;
+			}
+			
+			if (vanishedPlayer.contains(player.getUniqueId()))
+			{
+				removeVanish(targetPlayer);
+				player.sendMessage(MessageHelper.PREFIX_HUFF + "Du hast den Spieler" + MessageHelper.getQuoted(args[0]) + "wieder sichtbar gemacht.");
 				
-				if (targetPlayer == null || !targetPlayer.isOnline())
-				{
-					MessageHelper.getPlayerNotFound(args[0]);
-					return false;
-				}
-				
-				if (vanishedPlayer.contains(player.getUniqueId()))
-				{
-					removeVanish(targetPlayer);
-					player.sendMessage(MessageHelper.PREFIX_HUFF + "Du hast den Spieler" + MessageHelper.getQuoted(args[0]) + "wieder sichtbar gemacht.");
-					return true;
-				}
-				else
-				{
-					addVanish(targetPlayer);
-					player.sendMessage(MessageHelper.PREFIX_HUFF + "Du hast den Spieler" + MessageHelper.getQuoted(args[0]) + "verschollen.");
-					return true;
-				}
 			}
 			else
 			{
-				if (vanishedPlayer.contains(player.getUniqueId()))
-				{
-					removeVanish(player);
-					return true;
-				}
-				else
-				{
-					addVanish(player);
-					return true;
-				}
+				addVanish(targetPlayer);
+				player.sendMessage(MessageHelper.PREFIX_HUFF + "Du hast den Spieler" + MessageHelper.getQuoted(args[0]) + "verschollen.");
 			}
-		}	
-		return false;
+		}
+		else
+		{
+			if (vanishedPlayer.contains(player.getUniqueId()))
+			{
+				removeVanish(player);
+			}
+			else
+			{
+				addVanish(player);
+			}
+		}
+		return true;
 	}
 	
 	private void removeVanish(Player player)
@@ -117,26 +105,12 @@ public class VanishCommand implements CommandExecutor, TabCompleter, Listener
 	}
 	
 	// T A B C O M P L E T I O N
-	
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) 
-	{
-		final List<String> paramSuggestions = new ArrayList<>();
-		
-		if (!(sender instanceof Player) || !PermissionHelper.hasPlayerPermission((Player) sender, PERM_VANISH)) 
-		{
-			return paramSuggestions;
-		}	
 
-		if (args.length == 1)
-		{
-			for (Player publicPlayer : Bukkit.getOnlinePlayers())
-			{
-				paramSuggestions.add(publicPlayer.getName());
-			}
-		}		
-		paramSuggestions.sort(new AlphanumericComparator());
-		return paramSuggestions;
+	private void addTabCompletion()
+	{
+		this.addTabCompletion(0, Bukkit.getOnlinePlayers().stream()
+				.map(Player::getName)
+				.toArray(String[]::new));
 	}
 	
 	// L I S T E N E R
