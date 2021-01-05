@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jetbrains.annotations.NotNull;
 
 import huff.lib.helper.PermissionHelper;
 import net.luckperms.api.LuckPerms;
@@ -33,22 +34,23 @@ public class ChatListener implements Listener
 		final StringBuilder formatBuilder = new StringBuilder();
 		
 		formatBuilder.append("§8☰§7 ");
-		
-		if (withWorldDisplay)
-		{
-			formatBuilder.append(player.getWorld().getName() + " §8×§7 ");
-		}
-		
+		formatBuilder.append(withWorldDisplay ? player.getWorld().getName() + " §8×§7 " : "");
+		formatBuilder.append(addPrefix(player));
+		formatBuilder.append("%1$s §8»§7 %2$s");
+		event.setFormat(formatBuilder.toString());
+	}
+	
+	private @NotNull String addPrefix(Player player)
+	{
 		if (luckPerms != null) 
 		{
 		    final String primaryPlayerPrefix = PermissionHelper.getPrimaryPlayerPrefix(luckPerms, player);
 		    
 		    if (primaryPlayerPrefix != null && !primaryPlayerPrefix.isEmpty())
 		    {
-		    	formatBuilder.append(ChatColor.translateAlternateColorCodes('&', primaryPlayerPrefix));
+		    	return ChatColor.translateAlternateColorCodes('&', primaryPlayerPrefix);
 		    }
 		}
-		formatBuilder.append("%1$s §8»§7 %2$s");
-		event.setFormat(formatBuilder.toString());
+		return "";
 	}
 }

@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+import huff.lib.helper.JavaHelper;
 import huff.lib.manager.HikariManager;
 
 public class MojangApiStorage 
@@ -92,13 +93,13 @@ public class MojangApiStorage
 	{		
 		if (crs.size() == 1 && crs.next())
 		{		
-			return Long.parseLong(crs.getString("time")) < (System.currentTimeMillis() / 1000);
+			return Long.parseLong(crs.getString("time")) < (System.currentTimeMillis() / JavaHelper.SECOND_IN_MILLIS);
 		}
 		return true;
 	}
 	
 	private static @NotNull String getExpireTime(int expire)
 	{
-		 return Long.toString((System.currentTimeMillis() / 1000) + expire);
+		 return Long.toString((System.currentTimeMillis() / JavaHelper.SECOND_IN_MILLIS) + expire);
 	}
 }

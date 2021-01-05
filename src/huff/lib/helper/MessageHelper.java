@@ -98,7 +98,7 @@ public class MessageHelper
 		
 		final int hourValue = ((int) (time * 0.001)) + hourAddition;
 		final int hour = hourValue >= maxTime ? hourValue - maxTime : hourValue;
-		final int minute = (time / 1000) * minuteMultiplier;
+		final int minute = (time / JavaHelper.SECOND_IN_MILLIS) * minuteMultiplier;
 		
 		if (StringUtils.isNotEmpty(pattern) && StringHelper.contains(false, pattern, PLACEHOLDER_HOUR, PLACEHOLDER_MINUTE))
 		{
