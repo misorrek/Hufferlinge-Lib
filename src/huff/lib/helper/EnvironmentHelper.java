@@ -18,6 +18,9 @@ import huff.lib.interfaces.Action;
  */
 public class EnvironmentHelper
 {
+	public static final int WORLDTIME_MIN = 0;
+	public static final int WORLDTIME_MAX = 24000;
+	
 	private EnvironmentHelper() { }
 	
 	/**
@@ -28,35 +31,42 @@ public class EnvironmentHelper
 	 * @param   world    the target world
 	 * @param   action   a optional action to run custom functionality
 	 */
-	public static void initDaylightCycle(@NotNull JavaPlugin plugin, @Nullable World world, @Nullable Action action)
+	public static void initDaylightCycle(@NotNull JavaPlugin plugin, @Nullable World world, int stepSize, int tickPeriod, @Nullable Action action)
 	{
 		Validate.notNull((Object) plugin, "The plugin-instance cannot be null.");
 		
 		if (world == null)
 		{
-			Bukkit.getLogger().log(Level.SEVERE, "Cannot initialize daylight circle in a null world.");
+			Bukkit.getLogger().log(Level.WARNING, "Cannot initialize daylight circle in a null world.");
 			return;
 		}
+		final long currentTime = world.getTime();
+		
+		world.setTime(currentTime - (currentTime % stepSize)); 
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-		world.setTime(0);
+		
+		if (action != null)
+		{
+			action.execute(world);
+		}	
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () ->
 		{
 			final long worldTime = world.getTime();
 			
-			if (worldTime < 24000) 
+			if (worldTime < WORLDTIME_MAX) 
 			{
-				world.setTime(worldTime + 10);
+				world.setTime(worldTime + stepSize);
 			}
 			else
 			{
-				world.setTime(0);
+				world.setTime(WORLDTIME_MIN);
 			}				
 			
 			if (action != null)
 			{
 				action.execute(world);
 			}	
-		}, 20, 5);
+		}, 0, tickPeriod);
 	}
 }

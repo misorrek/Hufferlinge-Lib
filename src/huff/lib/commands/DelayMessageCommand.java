@@ -1,5 +1,6 @@
 package huff.lib.commands;
 
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang.Validate;
@@ -7,13 +8,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.helper.StringHelper;
+import huff.lib.helper.UserHelper;
 import huff.lib.manager.delaymessage.DelayMessageManager;
 import huff.lib.manager.delaymessage.DelayType;
 import huff.lib.various.HuffCommand;
@@ -40,23 +41,29 @@ public class DelayMessageCommand extends HuffCommand
 	
 	private final DelayMessageManager delayMessageManager;
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) 
 	{	
 		if (args.length >= 3)
 		{
+			final UUID targetPlayer = UserHelper.getUniqueId(args[1]);
+			
+			if (targetPlayer == null)
+			{
+				sender.sendMessage(MessageHelper.getPlayerNotFound(args[1]));
+				return true;
+			}
+			
 			try
 			{
-				DelayType delayType = DelayType.valueOf(args[0]);	
-				OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[1]);
-				StringBuilder builder = new StringBuilder();
-				
+				final DelayType delayType = DelayType.valueOf(args[0]);					
+				final StringBuilder builder = new StringBuilder();
+
 				for (int i = 2; i < args.length; i++)
 				{
 					builder.append(args[i] + " ");
 				}
-				delayMessageManager.addDelayMessage(targetPlayer.getUniqueId(), delayType, builder.toString().trim());
+				delayMessageManager.addDelayMessage(targetPlayer, delayType, builder.toString().trim());
 				sender.sendMessage(MessageHelper.PREFIX_HUFF + "Nachricht zum Versand gespeichert.");
 				return true;
 			}
@@ -76,8 +83,8 @@ public class DelayMessageCommand extends HuffCommand
 		this.addTabCompletion(0, Stream.of(DelayType.values())
 				.map(DelayType::toString)
 				.toArray(String[]::new));
-		this.addTabCompletion(1, Bukkit.getOnlinePlayers().stream()
-				.map(Player::getName)
+		this.addTabCompletion(1, Stream.of(Bukkit.getOfflinePlayers())
+				.map(OfflinePlayer::getName)
 				.toArray(String[]::new));
 		this.addTabCompletion(2, "<Nachricht>");
 	}
