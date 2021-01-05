@@ -45,11 +45,6 @@ public class EnvironmentHelper
 		world.setTime(currentTime - (currentTime % stepSize)); 
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		
-		if (action != null)
-		{
-			action.execute(world);
-		}	
-		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () ->
 		{
 			final long worldTime = world.getTime();
