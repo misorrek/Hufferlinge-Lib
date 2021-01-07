@@ -16,7 +16,7 @@ import huff.lib.helper.InventoryHelper;
 
 /**
  * A abstract class that contains the base structure for menu inventories.
- * To the base strcutre belongs the inventory creation, the exit behavior and a identification.
+ * To the base structure belongs the inventory creation, the exit behavior and a identification.
  */
 public abstract class MenuHolder implements InventoryHolder 
 {
@@ -31,7 +31,7 @@ public abstract class MenuHolder implements InventoryHolder
 	 * @param   title          the title of the inventory
 	 * @param   menuExitType   the wanted exit behavior
 	 */
-	public MenuHolder(@NotNull String identifier, int size, @Nullable String title, MenuExitType menuExitType)
+	protected MenuHolder(@NotNull String identifier, int size, @Nullable String title, MenuExitType menuExitType)
 	{
 		this.menuExitType = menuExitType;
 		this.identifier = MENU_IDENT_PREFIX + identifier;
@@ -49,7 +49,7 @@ public abstract class MenuHolder implements InventoryHolder
 	 * @param   title          the title of the inventory
 	 * @param   menuExitType   the wanted exit behavior
 	 */
-	public MenuHolder(@NotNull String identifier, InventoryType type, @Nullable String title, MenuExitType menuExitType)
+	protected MenuHolder(@NotNull String identifier, InventoryType type, @Nullable String title, MenuExitType menuExitType)
 	{
 		this.menuExitType = menuExitType;
 		this.identifier = MENU_IDENT_PREFIX + identifier;
@@ -259,18 +259,18 @@ public abstract class MenuHolder implements InventoryHolder
 		switch(getMenuExitType())
 		{
 		case CLOSE:
-			InventoryHelper.setItem(this.getInventory(), 
-					                InventoryHelper.getLastLine(this.getInventory().getSize()), 5, 
+			InventoryHelper.setItem(getInventory(), 
+					                InventoryHelper.getLastLine(getInventory().getSize()), 5, 
 					                InventoryHelper.getCloseItem());
 			break;
 		case BACK:
-			InventoryHelper.setItem(this.getInventory(), 
-	                InventoryHelper.getLastLine(this.getInventory().getSize()), 9, 
+			InventoryHelper.setItem(getInventory(), 
+	                InventoryHelper.getLastLine(getInventory().getSize()), 9, 
 	                InventoryHelper.getBackItem());
             break;
 		case ABORT:
-			InventoryHelper.setItem(this.getInventory(), 
-	                InventoryHelper.getLastLine(this.getInventory().getSize()), 9, 
+			InventoryHelper.setItem(getInventory(), 
+	                InventoryHelper.getLastLine(getInventory().getSize()), 9, 
 	                InventoryHelper.getAbortItem());
             break;
 		default:

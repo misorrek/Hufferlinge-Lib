@@ -38,9 +38,9 @@ public class SupportCommand extends HuffCommand implements Listener
 	{
 		super(plugin, "support");
 
-		this.setDescription("Öffnet einen Support-Chat");
-		this.setAliases("ticket");
-		this.registerCommand();
+		super.setDescription("Öffnet einen Support-Chat");
+		super.setAliases("ticket");
+		super.registerCommand();
 	}
 
 	private final SupportMap supportMap = new SupportMap();
@@ -229,12 +229,12 @@ public class SupportCommand extends HuffCommand implements Listener
     	
     	if (PermissionHelper.hasPlayerPermission(sender, PERM_SUPPORT))
 		{
-			this.addTabCompletion(0, "list", "delete");
+    		super.addTabCompletion(0, "list", "delete");
 			
 			if (!isPlayerInSupport)
 			{
-				this.addTabCompletion(0, "enter");
-				this.addTabCompletion(1, PERM_SUPPORT, Stream.of("enter", "delete").toArray(String[]::new), supportMap.keySet().stream()
+				super.addTabCompletion(0, "enter");
+				super.addTabCompletion(1, PERM_SUPPORT, Stream.of("enter", "delete").toArray(String[]::new), supportMap.keySet().stream()
 						.map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
 						.toArray(String[]::new));
 			}
@@ -242,7 +242,7 @@ public class SupportCommand extends HuffCommand implements Listener
 		
 		if (isPlayerInSupport)
 		{
-			this.addTabCompletion(0, "leave");
+			super.addTabCompletion(0, "leave");
 		}	
 		return super.tabComplete(sender, alias, args);
     }

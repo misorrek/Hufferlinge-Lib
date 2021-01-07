@@ -27,12 +27,12 @@ public class TellCommand extends HuffCommand
 		{
 			this.consolePrefix = consolePrefix;
 		}
-		this.setDescription("Sendet eine Nachricht.");
-		this.setUsage("/tell <Name> <Nachricht>");
-		this.setAliases("message", "msg", "pm", "dm");
-		this.setPermission(PermissionHelper.PERM_ROOT_HUFF + "tell");
+		super.setDescription("Sendet eine Nachricht.");
+		super.setUsage("/tell <Name> <Nachricht>");
+		super.setAliases("message", "msg", "pm", "dm");
+		super.setPermission(PermissionHelper.PERM_ROOT_HUFF + "tell");
 		addTabCompletion();
-		this.registerCommand();
+		super.registerCommand();
 	}
 
 	private String consolePrefix = MessageHelper.NAME_HUFF_CONSOLE;
@@ -75,9 +75,9 @@ public class TellCommand extends HuffCommand
 
 	private void addTabCompletion()
 	{
-		this.addTabCompletion(0, Bukkit.getOnlinePlayers().stream()
+		super.addTabCompletion(0, Bukkit.getOnlinePlayers().stream()
 				.map(Player::getName)
 				.toArray(String[]::new));
-		this.addTabCompletion(1, "<Nachricht>");
+		super.addTabCompletion(1, "<Nachricht>");
 	}
 }

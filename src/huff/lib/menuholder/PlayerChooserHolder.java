@@ -50,7 +50,7 @@ public class PlayerChooserHolder extends MenuHolder
 		this.plugin = plugin;
 		this.players = players;
 		this.chooseAction = chooseAction;
-		this.entriesPerPage = ((this.getInventory().getSize() / InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
+		this.entriesPerPage = ((super.getInventory().getSize() / InventoryHelper.ROW_LENGTH) - 2) * InventoryHelper.ROW_LENGTH - 2;
 		this.lastPage = (int) Math.ceil((double) players.size() / entriesPerPage);
 		
 		initInventory();
@@ -72,7 +72,7 @@ public class PlayerChooserHolder extends MenuHolder
 		Validate.notNull((Object) event, "The inventory click event cannot be null.");
 		
 		final ItemStack currentItem = event.getCurrentItem();
-		final int inventorySize = this.getInventory().getSize();
+		final int inventorySize = super.getInventory().getSize();
 		
 		if (ItemHelper.hasMeta(currentItem))
 		{
@@ -113,35 +113,35 @@ public class PlayerChooserHolder extends MenuHolder
 
 	private void initInventory()
 	{				
-		InventoryHelper.setBorder(this.getInventory(), InventoryHelper.getBorderItem());
-		this.setMenuExitItem();
+		InventoryHelper.setBorder(super.getInventory(), InventoryHelper.getBorderItem());
+		super.setMenuExitItem();
 	}
 	
 	private void setPageFunctions()
 	{
 		final ItemStack borderItem = InventoryHelper.getBorderItem();	
 		
-		InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, 
+		InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, 
 				                                                                                             StringHelper.build("§7» Seite", MessageHelper.getHighlighted(Integer.toString(page)), "«")));
 		
 		if (page > START_PAGE)
 		{
-			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 4, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7« §9Vorherige Seite"));
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 4, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7« §9Vorherige Seite"));
 		}
 		else
 		{
-			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 4, borderItem);
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 4, borderItem);
 		}
 		
 		if (page < lastPage)
 		{
-			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 6, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7» §9Nächste Seite"));
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 6, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7» §9Nächste Seite"));
 		}
 		else
 		{
-			InventoryHelper.setItem(this.getInventory(), InventoryHelper.LAST_ROW, 6, borderItem);
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 6, borderItem);
 		}
-		final ItemStack pageItem = InventoryHelper.getItem(this.getInventory(), InventoryHelper.LAST_ROW, 5);
+		final ItemStack pageItem = InventoryHelper.getItem(super.getInventory(), InventoryHelper.LAST_ROW, 5);
 		
 		if (pageItem != null)
 		{
@@ -160,14 +160,14 @@ public class PlayerChooserHolder extends MenuHolder
 			{			
 				final OfflinePlayer player = Bukkit.getOfflinePlayer(players.get(i));
 
-				this.getInventory().addItem(ItemHelper.getSkullWithMeta(player, MessageHelper.getHighlighted(player.getName(), false, false)));
+				super.getInventory().addItem(ItemHelper.getSkullWithMeta(player, MessageHelper.getHighlighted(player.getName(), false, false)));
 			}
 		});
 	}
 
 	private void clearPlayers()
 	{
-		InventoryHelper.setFill(this.getInventory(), null, false);
+		InventoryHelper.setFill(super.getInventory(), null, false);
 	}
 	
 	private void changePage(boolean increase)

@@ -32,11 +32,11 @@ public class DelayMessageCommand extends HuffCommand
 		Validate.notNull((Object) delayMessageManager, "The delay message manager cannot be null.");
 		
 		this.delayMessageManager = delayMessageManager;
-		this.setDescription("Sendet verzögerte Nachricht");
-		this.setUsage("/delaymessage <Benachrichtigungs-Art> <Spieler> <Nachricht>");
-		this.setPermission(PermissionHelper.PERM_ROOT_HUFF + "delaymessage");
+		super.setDescription("Sendet verzögerte Nachricht");
+		super.setUsage("/delaymessage <Benachrichtigungs-Art> <Spieler> <Nachricht>");
+		super.setPermission(PermissionHelper.PERM_ROOT_HUFF + "delaymessage");
 		addTabCompletion();
-		this.registerCommand();
+		super.registerCommand();
 	}
 	
 	private final DelayMessageManager delayMessageManager;
@@ -80,12 +80,12 @@ public class DelayMessageCommand extends HuffCommand
 	
 	private void addTabCompletion()
 	{
-		this.addTabCompletion(0, Stream.of(DelayType.values())
+		super.addTabCompletion(0, Stream.of(DelayType.values())
 				.map(DelayType::toString)
 				.toArray(String[]::new));
-		this.addTabCompletion(1, Stream.of(Bukkit.getOfflinePlayers())
+		super.addTabCompletion(1, Stream.of(Bukkit.getOfflinePlayers())
 				.map(OfflinePlayer::getName)
 				.toArray(String[]::new));
-		this.addTabCompletion(2, "<Nachricht>");
+		super.addTabCompletion(2, "<Nachricht>");
 	}
 }

@@ -28,12 +28,12 @@ public class VanishCommand extends HuffCommand implements Listener
 		super(plugin, "vanish");
 		
 		this.plugin = plugin;
-		this.setDescription("Versteck einen Spieler");
-		this.setUsage("/vanish (<Spieler>)");
-		this.setPermission(PermissionHelper.PERM_ROOT_HUFF + "vanish");
-		this.setAliases("hide", "v");
+		super.setDescription("Versteck einen Spieler");
+		super.setUsage("/vanish (<Spieler>)");
+		super.setPermission(PermissionHelper.PERM_ROOT_HUFF + "vanish");
+		super.setAliases("hide", "v");
 		addTabCompletion();
-		this.registerCommand();
+		super.registerCommand();
 	}
 
 	private final JavaPlugin plugin;
@@ -108,7 +108,7 @@ public class VanishCommand extends HuffCommand implements Listener
 
 	private void addTabCompletion()
 	{
-		this.addTabCompletion(0, Bukkit.getOnlinePlayers().stream()
+		super.addTabCompletion(0, Bukkit.getOnlinePlayers().stream()
 				.map(Player::getName)
 				.toArray(String[]::new));
 	}
