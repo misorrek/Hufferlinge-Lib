@@ -1,4 +1,4 @@
-package huff.lib.various;
+package huff.lib.various.comparator;
 
 import java.util.Comparator;
 

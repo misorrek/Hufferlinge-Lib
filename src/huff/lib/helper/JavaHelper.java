@@ -1,5 +1,7 @@
 package huff.lib.helper;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * A helper class containing additional static java methods and constants.
  */
@@ -17,7 +19,7 @@ public class JavaHelper
 	 * @param   defaultValue   the default value in case of null
 	 * @return                 The value if its not null otherwise the default value.
 	 */
-	public static <T> T getValueOrDefault(T value, T defaultValue) 
+	public static @NotNull <T> T getValueOrDefault(T value, T defaultValue) 
 	{
 	    return value == null ? defaultValue : value;
 	}

@@ -18,7 +18,8 @@ import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.StringHelper;
-import huff.lib.interfaces.Action;
+import huff.lib.various.Action;
+import huff.lib.various.LibMessage;
 
 /**
  * A menu holder class that contains a menu to choose a entry from a given list of UUID's.
@@ -41,7 +42,7 @@ public class PlayerChooserHolder extends MenuHolder
 	 */
 	public PlayerChooserHolder(@NotNull JavaPlugin plugin, @NotNull List<UUID> players, int size, @Nullable String title, MenuExitType menuExitType, Action chooseAction)
 	{
-		super("playerchooser", checkSize(size), title != null ? title : "§7» §9Personenauswahl", menuExitType);
+		super("playerchooser", checkSize(size), title != null ? title : LibMessage.TITLE_PLAYERCHOOSER.getMessage(), menuExitType);
 		
 		Validate.notNull((Object) plugin, "The plugin instance cannot be null.");
 		Validate.notNull((Object) players, "The player list cannot be null.");

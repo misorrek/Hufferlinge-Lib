@@ -20,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.menuholder.MenuHolder;
-import huff.lib.various.Pair;
-import huff.lib.various.SlotItemValueComparator;
+import huff.lib.various.comparator.SlotItemValueComparator;
+import huff.lib.various.structures.Pair;
 
 /**
  * A helper class containing static inventory methods.

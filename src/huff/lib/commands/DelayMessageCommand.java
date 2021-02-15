@@ -18,6 +18,8 @@ import huff.lib.helper.UserHelper;
 import huff.lib.manager.delaymessage.DelayMessageManager;
 import huff.lib.manager.delaymessage.DelayType;
 import huff.lib.various.HuffCommand;
+import huff.lib.various.LibMessage;
+import huff.lib.various.structures.StringPair;
 
 /**
  * A command class for sending a delayed message to a player via DelayMessageManager.
@@ -64,12 +66,12 @@ public class DelayMessageCommand extends HuffCommand
 					builder.append(args[i] + " ");
 				}
 				delayMessageManager.addDelayMessage(targetPlayer, delayType, builder.toString().trim());
-				sender.sendMessage(MessageHelper.PREFIX_HUFF + "Nachricht zum Versand gespeichert.");
+				sender.sendMessage(LibMessage.DELAYMESSAGE_SAVED.getMessage());
 				return true;
 			}
 			catch (IllegalArgumentException exception)
 			{
-				sender.sendMessage(MessageHelper.PREFIX_HUFF + "Die Benachrichtigungs-Art ist ungültig. Mögliche Werte §9\"" + StringHelper.toValueList(DelayType.class) + "\"§7.");
+				sender.sendMessage(LibMessage.DELAYMESSAGE_INVALIDTYPE.getMessage(new StringPair("types", StringHelper.toValueList(DelayType.class))));
 				return true;
 			}
 		}

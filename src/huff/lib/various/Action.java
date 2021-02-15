@@ -1,4 +1,4 @@
-package huff.lib.interfaces;
+package huff.lib.various;
 
 import org.jetbrains.annotations.Nullable;
 

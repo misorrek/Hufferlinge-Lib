@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import huff.lib.various.HuffConfiguration;
+
 /**
  * A helper class containing static file IO methods.
  * Covers general files, yaml and json.
@@ -48,7 +50,7 @@ public class FileHelper
 		{
 			return null;
 		}		
-		final YamlConfiguration configuration = YamlConfiguration.loadConfiguration(configFile);
+		final HuffConfiguration configuration = HuffConfiguration.loadConfiguration(configFile);
 		
 		if (configuration.options().header() == null || configuration.options().header().isEmpty())
 		{

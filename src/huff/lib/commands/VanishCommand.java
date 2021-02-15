@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.various.HuffCommand;
+import huff.lib.various.LibMessage;
+import huff.lib.various.structures.StringPair;
 
 /**
  * A command class to vanish its own or another player.
@@ -59,13 +61,14 @@ public class VanishCommand extends HuffCommand implements Listener
 			if (vanishedPlayer.contains(player.getUniqueId()))
 			{
 				removeVanish(targetPlayer);
-				player.sendMessage(MessageHelper.PREFIX_HUFF + "Du hast den Spieler" + MessageHelper.getQuoted(args[0]) + "wieder sichtbar gemacht.");
+				
+				player.sendMessage(LibMessage.VANISH_OTHER_OFF.getMessage(new StringPair("user", args[0])));
 				
 			}
 			else
 			{
 				addVanish(targetPlayer);
-				player.sendMessage(MessageHelper.PREFIX_HUFF + "Du hast den Spieler" + MessageHelper.getQuoted(args[0]) + "verschollen.");
+				player.sendMessage(LibMessage.VANISH_OTHER_ON.getMessage(new StringPair("user", args[0])));
 			}
 		}
 		else
@@ -90,7 +93,7 @@ public class VanishCommand extends HuffCommand implements Listener
 		{
 			publicPlayer.showPlayer(plugin, player);
 		}
-		player.sendMessage(MessageHelper.PREFIX_HUFF + "Du bist nun wieder sichtbar.");
+		player.sendMessage(LibMessage.VANISH_SELF_OFF.getMessage());
 	}
 	
 	private void addVanish(Player player)
@@ -101,7 +104,7 @@ public class VanishCommand extends HuffCommand implements Listener
 		{
 			publicPlayer.hidePlayer(plugin, player);
 		}
-		player.sendMessage(MessageHelper.PREFIX_HUFF + "Du bist nun verschollen.");
+		player.sendMessage(LibMessage.VANISH_SELF_ON.getMessage());
 	}
 	
 	// T A B C O M P L E T I O N
@@ -128,7 +131,7 @@ public class VanishCommand extends HuffCommand implements Listener
 				{
 					publicPlayer.hidePlayer(plugin, player);
 				}
-				player.sendMessage(MessageHelper.PREFIX_HUFF + "§cDu bist noch verschollen.");
+				player.sendMessage(LibMessage.VANISH_SELF_ONREMINDER.getMessage());
 			} 
 			else 
 			{

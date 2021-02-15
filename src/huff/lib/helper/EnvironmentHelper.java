@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import huff.lib.interfaces.Action;
+import huff.lib.various.Action;
 
 /**
  * A helper class containing static game environment methods.

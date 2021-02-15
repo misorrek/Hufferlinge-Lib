@@ -18,8 +18,8 @@ public class MessageHelper
 
 	public static final String PLACEHOLDER_PLAYER = "%player%";
 	public static final String PLACEHOLDER_TEXT = "%text%";
-	public static final String PLACEHOLDER_HOUR = "%text%";
-	public static final String PLACEHOLDER_MINUTE = "%text%";
+	public static final String PLACEHOLDER_HOUR = "%hour%";
+	public static final String PLACEHOLDER_MINUTE = "%minute%";
 
 	public static final String PREFIX_HUFF = "§8☰ §aHufferlinge §8☷§7 ";
 	public static final String PREFIX_HUFF_CONSOLE = "§7Hufferlinge ☷  ";

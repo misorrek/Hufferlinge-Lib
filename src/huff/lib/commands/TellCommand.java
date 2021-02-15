@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.various.HuffCommand;
+import huff.lib.various.LibMessage;
+import huff.lib.various.structures.StringPair;
 
 /**
  * A command class to send messages from the console or a player to another player.
@@ -54,8 +56,9 @@ public class TellCommand extends HuffCommand
 				{
 					builder.append(args[i] + " ");
 				}
-				sender.sendMessage("§8☰ §dTell §8| §7An §9" + target.getName() + " §8» §7" + builder.toString());
-				target.sendMessage("§8☰ §dTell §8| §7Von §9" + getSenderName(sender) + " §8» §7" + builder.toString());
+				
+				sender.sendMessage(LibMessage.TELL_TOPREFIX.getMessage(new StringPair("user", target.getName()), new StringPair("text", builder.toString())));
+				target.sendMessage(LibMessage.TELL_FROMPREFIX.getMessage(new StringPair("user", getSenderName(sender)), new StringPair("text", builder.toString())));
 			} 
 			else
 			{

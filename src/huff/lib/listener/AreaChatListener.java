@@ -18,8 +18,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.JavaHelper;
-import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
+import huff.lib.various.LibConfig;
+import huff.lib.various.LibMessage;
+import huff.lib.various.structures.StringPair;
 import net.luckperms.api.LuckPerms;
 
 /**
@@ -34,17 +36,29 @@ public class AreaChatListener implements Listener
 	 * @param    globalChatCooldown   defines the cooldown for the global chat in milliseconds
 	 * @param    areaChatRange        a bounding box that defines the chat range in all directions
 	 */
-	public AreaChatListener(@NotNull JavaPlugin plugin, boolean withLuckPerms, @Nullable Integer globalChatCooldown, @Nullable BoundingBox areaChatRange)
+	public AreaChatListener(@NotNull JavaPlugin plugin, boolean displayLuckPerms, int globalChatCooldown, @NotNull BoundingBox areaChatRange)
 	{
 		Validate.notNull((Object) plugin, "The plugin instance cannot be null.");
+		Validate.notNull((Object) areaChatRange, "The area chat bounding box cannot be null.");
 		
-		if (withLuckPerms)
+		if (displayLuckPerms)
 		{
 			luckPerms = PermissionHelper.getLuckPerms();
 		}	
 		this.plugin = plugin;
-		this.globalChatCooldown = globalChatCooldown != null ? globalChatCooldown.intValue() : JavaHelper.getSecondsInMillis(3);
-		this.areaChatRange = areaChatRange != null ? areaChatRange : new BoundingBox(20, 10, 20, -20, -10, -20);
+		this.globalChatCooldown = globalChatCooldown;
+		this.areaChatRange = areaChatRange;
+	}
+	
+	/**
+	 * Chat configurations will be loaded from the lib config.
+	 * 
+	 * @param    plugin               the java plugin instance
+	 * @param    withLuckPerms        determines whether a prefix is shown in chat
+	 */
+	public AreaChatListener(@NotNull JavaPlugin plugin)
+	{
+		this(plugin, LibConfig.CHAT_DISPLAYLUCKPERMS.getValue(), LibConfig.AREACHAT_COOLDOWN.getValue(), LibConfig.AREACHAT_RANGE.getValue());
 	}
 	
 	private final Map<UUID, Long> cooldownPlayer = new HashMap<>();
@@ -65,17 +79,18 @@ public class AreaChatListener implements Listener
 		
 		if (isGlobalMessgae && currentCooldown > 0)
 		{
-			player.sendMessage(MessageHelper.PREFIX_HUFF + "Du musst noch " + (int) Math.ceil((double) currentCooldown / JavaHelper.SECOND_IN_MILLIS) + " Sekunde(n) warten.");
+			player.sendMessage(LibMessage.AREACHAT_COOLDOWN.getMessage(new StringPair("time", Integer.toString((int) Math.ceil((double) currentCooldown / JavaHelper.SECOND_IN_MILLIS)))));
 			event.setCancelled(true);
 			return;
 		}
 		final StringBuilder formatBuilder = new StringBuilder();
 		
 		cooldownPlayer.remove(uuid);
-		formatBuilder.append("§8☰ "); 		
-		formatBuilder.append(isGlobalMessgae ? "§3Botschaft §8×§7 " : "§9Umgebung §8×§7 ");
-		formatBuilder.append(addPrefix(player));
-		formatBuilder.append("%1$s §8»§7 %2$s");
+		formatBuilder.append(LibMessage.AREACHAT_MESSAGE.getMessage(
+				new StringPair("chatprefix", isGlobalMessgae ? LibMessage.AREACHAT_GLOBALPREFIX.getMessage() : LibMessage.AREACHAT_AREAPREFIX.getMessage()),
+				new StringPair("userprefix", addPrefix(player)),
+				new StringPair("user", "%1$s"),
+				new StringPair("text", "%2$s")));
 		
 		if (isGlobalMessgae)
 		{

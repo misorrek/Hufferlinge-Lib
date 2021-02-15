@@ -8,6 +8,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jetbrains.annotations.NotNull;
 
 import huff.lib.helper.PermissionHelper;
+import huff.lib.various.LibConfig;
+import huff.lib.various.LibMessage;
+import huff.lib.various.structures.StringPair;
 import net.luckperms.api.LuckPerms;
 
 /**
@@ -15,17 +18,29 @@ import net.luckperms.api.LuckPerms;
  */
 public class ChatListener implements Listener 
 {
-	public ChatListener(boolean withLuckPerms, boolean withWorldDisplay)
+	/**
+	 * @param    displayLuckPerms   determines whether a prefix is shown in chat
+	 * @param    displayWorld       determines whether the current world is shown in chat
+	 */
+	public ChatListener(boolean displayLuckPerms, boolean displayWorld)
 	{
-		if (withLuckPerms)
+		if (displayLuckPerms)
 		{
 			luckPerms = PermissionHelper.getLuckPerms();
 		}
-		this.withWorldDisplay = withWorldDisplay;
+		this.displayWorld = displayWorld;
+	}
+	
+	/**
+	 * Chat configurations will be loaded from the lib config.
+	 */
+	public ChatListener()
+	{
+		this( LibConfig.CHAT_DISPLAYLUCKPERMS.getValue(), LibConfig.CHAT_DISPLAYWORLD.getValue());
 	}
 	
 	private LuckPerms luckPerms;
-	private boolean withWorldDisplay = false;
+	private boolean displayWorld;
 	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent event)
@@ -33,10 +48,12 @@ public class ChatListener implements Listener
 		final Player player = event.getPlayer();
 		final StringBuilder formatBuilder = new StringBuilder();
 		
-		formatBuilder.append("§8☰§7 ");
-		formatBuilder.append(withWorldDisplay ? player.getWorld().getName() + " §8×§7 " : "");
-		formatBuilder.append(addPrefix(player));
-		formatBuilder.append("%1$s §8»§7 %2$s");
+		formatBuilder.append(LibMessage.CHAT_MESSAGE.getMessage(
+				new StringPair("world", displayWorld ? player.getWorld().getName() + " §8×§7" : ""),
+				new StringPair("userprefix", addPrefix(player)),
+				new StringPair("user", "%1$s"),
+				new StringPair("text", "%2$s")));
+		
 		event.setFormat(formatBuilder.toString());
 	}
 	

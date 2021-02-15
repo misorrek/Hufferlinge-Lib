@@ -6,37 +6,44 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.MessageHelper;
-import huff.lib.interfaces.DatabaseProperties;
+import huff.lib.various.LibConfig;
 
 public class DatabaseManager 
 {
-	public DatabaseManager(DatabaseProperties databaseProperties)
-	{
-		this.host = databaseProperties.getHost();
-		this.port = databaseProperties.getPort();
-		this.databasename = databaseProperties.getDatabasename();
-		this.username = databaseProperties.getUsername();
-		this.password = databaseProperties.getPassword();
-	}
-	
-	public DatabaseManager(@NotNull String host, @NotNull String port, @NotNull String databasename, 
+	public DatabaseManager(@NotNull String host, @NotNull String port, @NotNull String name, 
 			               @NotNull String username, @NotNull String password)
 	{
+		Validate.notNull((Object) host, "The database host cannot be null.");
+		Validate.notNull((Object) port, "The database port cannot be null.");
+		Validate.notNull((Object) name, "The database name cannot be null.");
+		Validate.notNull((Object) username, "The database username cannot be null.");
+		Validate.notNull((Object) password, "The database password cannot be null.");
+		
 		this.host = host;
 		this.port = port;
-		this.databasename = databasename;
+		this.name = name;
 		this.username = username;
 		this.password = password;
 	}
 	
+	public DatabaseManager()
+	{
+		this(LibConfig.DATABASE_HOST.getValue(),
+			 LibConfig.DATABASE_PORT.getValue(),
+			 LibConfig.DATABASE_NAME.getValue(),
+			 LibConfig.DATABASE_USERNAME.getValue(),
+			 LibConfig.DATABASE_PASSWORD.getValue());
+	}
+	
 	private final String host;
 	private final String port;
-	private final String databasename;
+	private final String name;
 	private final String username;
 	private final String password;
 	
@@ -58,7 +65,7 @@ public class DatabaseManager
 		{
 			try 
 			{
-				connection = DriverManager.getConnection(String.format("jdbc:mysql://%s:%s/%s", host, port, databasename), 
+				connection = DriverManager.getConnection(String.format("jdbc:mysql://%s:%s/%s", host, port, name), 
 						                                 username, password);
 				MessageHelper.sendConsoleMessage("SQL-Verbindung erfolgreich hergestellt.");
 			} 

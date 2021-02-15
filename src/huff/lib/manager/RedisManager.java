@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import huff.lib.interfaces.RedisProperties;
+import huff.lib.various.LibConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -23,9 +23,10 @@ public class RedisManager
 		this.jedisPool = new JedisPool(buildPoolConfig(), host, port);
 	}
 
-	public RedisManager(@NotNull RedisProperties redisProperties)
+	public RedisManager()
 	{
-		this(redisProperties.getHost(), redisProperties.getPort());
+		this(LibConfig.REDIS_HOST.getValue(), 
+			 LibConfig.REDIS_PORT.getValue());
 	}
 	
 	private final JedisPool jedisPool;

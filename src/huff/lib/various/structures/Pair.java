@@ -1,4 +1,4 @@
-package huff.lib.various;
+package huff.lib.various.structures;
 
 /**
  * A data class to store two values in.

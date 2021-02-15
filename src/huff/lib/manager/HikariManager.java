@@ -17,7 +17,7 @@ import huff.lib.helper.FileHelper;
 
 public class HikariManager
 {
-	private static HikariConfig config = new HikariConfig();
+	private static final HikariConfig config = new HikariConfig();
     private static HikariDataSource hikari;
     
     private HikariManager() { }
@@ -36,8 +36,8 @@ public class HikariManager
     	checkSqlFile(sqlFilePath);
     	
         config.setJdbcUrl("jdbc:sqlite:" + sqlFilePath);
-        config.setUsername("james090500");
-        config.setPassword("SecretPassword47");
+        config.setUsername("hikarimanager");
+        config.setPassword("hikaripassword");
         config.addDataSourceProperty("cachePrepStmts" , "true");
         config.addDataSourceProperty("prepStmtCacheSize" , "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit" , "2048");

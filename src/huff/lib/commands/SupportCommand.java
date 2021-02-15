@@ -22,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.various.HuffCommand;
+import huff.lib.various.LibMessage;
+import huff.lib.various.structures.StringPair;
 
 /**
  * A command class to create a support chat which can be joined by a supporter.
@@ -86,11 +88,11 @@ public class SupportCommand extends HuffCommand implements Listener
 		
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
-			player.sendMessage(MessageHelper.getWrongInput("/support [list|leave|enter <Name>|delete <Name>]"));
+			player.sendMessage(LibMessage.SUPPORT_TEAM_HELP.getMessage());
 		}
 		else
 		{ 
-			player.sendMessage(MessageHelper.getWrongInput("/support [leave] -" + MessageHelper.getQuoted("support") + "ohne Zusatz öffnet einen neuen Support-Kanal."));
+			player.sendMessage(LibMessage.SUPPORT_USER_HELP.getMessage());
 		}
 		return false;
 	}
@@ -99,20 +101,19 @@ public class SupportCommand extends HuffCommand implements Listener
 	{
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
-			player.sendMessage(PREFIX_SUPPORT + "Du kannst als Teammitglied keinen Support-Kanal öffnen. Nutze" + MessageHelper.getQuoted("/tell <Name>") + "zur Teamkommunikation.");
+			player.sendMessage(LibMessage.SUPPORT_TEAM_CREATE.getMessage());
 			return false;
 		}
 		
 		if (supportMap.containsKey(player.getUniqueId()))
 		{
-			player.sendMessage(PREFIX_SUPPORT + "Du hast schon einen Support-Kanal geöffnet. Um den Support-Kanal zu schließen nutze" + MessageHelper.getQuoted("/support leave", true, false) + ".");
+			player.sendMessage(LibMessage.SUPPORT_USER_ALREADYOPEN.getMessage());
 			return false;
 		}
 		
 		supportMap.add(player.getUniqueId());
-		MessageHelper.sendPermssionMessage(PERM_SUPPORT, PREFIX_SUPPORT + MessageHelper.getHighlighted(player.getName())  + "hat einen Support-Kanal geöffnet.");
-		player.sendMessage(PREFIX_SUPPORT + "Du hast einen Support-Kanal geöffnet. Alle Nachrichten werden, ohne erneute Befehlseingabe, hierher geschickt.");
-		player.sendMessage(PREFIX_SUPPORT + "Um den Support-Kanal zu verlassen nutze" + MessageHelper.getQuoted("/support leave", true, false) + ".");
+		MessageHelper.sendPermssionMessage(PERM_SUPPORT, LibMessage.SUPPORT_TEAM_USERCREATE.getMessage());
+		player.sendMessage(LibMessage.SUPPORT_USER_CREATE.getMessage());
 		return true;
 	}
 	
@@ -147,13 +148,13 @@ public class SupportCommand extends HuffCommand implements Listener
 			
 			if (supportChat == null)
 			{
-				player.sendMessage(PREFIX_SUPPORT + "Du bist in keinem Support-Kanal. Um dir die Vorhandenen anzuschauen nutze" + MessageHelper.getQuoted("/support list", true, false) + ".");
+				player.sendMessage(LibMessage.SUPPORT_TEAM_CANTLEAVE.getMessage());
 				return false;
 			}
 			else
 			{
-				sendChannelMessage(supportChat, PREFIX_SUPPORT + "Das Teammitglied" +  MessageHelper.getHighlighted(player.getName()) + "hat den Support-Kanal verlassen.", true);
-				player.sendMessage(PREFIX_SUPPORT + "Du hast den Support-Kanal von" + MessageHelper.getHighlighted(Bukkit.getPlayer(supportChat).getName()) + "verlassen.");
+				sendChannelMessage(supportChat, LibMessage.SUPPORT_CHANNEL_TEAMLEAVE.getMessage(new StringPair("team", player.getName())), true);
+				player.sendMessage(LibMessage.SUPPORT_TEAM_LEAVE.getMessage(new StringPair("user", Bukkit.getPlayer(supportChat).getName())));
 				supportMap.get(supportChat).remove(player.getUniqueId());
 				return true;
 			}							
@@ -162,13 +163,13 @@ public class SupportCommand extends HuffCommand implements Listener
 		{
 			if (!supportMap.containsKey(player.getUniqueId()))
 			{
-				player.sendMessage(PREFIX_SUPPORT + "Du bist in keinem Support-Kanal. Um dir einen zu eröffnen nutze" + MessageHelper.getQuoted("/support", true, false) + ".");
+				player.sendMessage(LibMessage.SUPPORT_USER_CANTLEAVE.getMessage());
 				return false;
 			}
 			else
 			{
-				sendChannelMessage(player.getUniqueId(), PREFIX_SUPPORT + MessageHelper.getHighlighted(player.getName()) + "hat den Support-Kanal geschlossen.", false);			
-				player.sendMessage(PREFIX_SUPPORT + "Du hast den Support-Kanal geschlossen.");				
+				sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERDELETE.getMessage(new StringPair("user", player.getName())), false);			
+				player.sendMessage(LibMessage.SUPPORT_USER_USERDELETE.getMessage());				
 				supportMap.remove(player.getUniqueId());
 				return true;
 			}
@@ -181,7 +182,8 @@ public class SupportCommand extends HuffCommand implements Listener
 		
 		if (currentSupportChat != null)
 		{
-			player.sendMessage(PREFIX_SUPPORT + "Du bist noch im Support-Chat von §9" + Bukkit.getOfflinePlayer(currentSupportChat).getName());
+			
+			player.sendMessage(LibMessage.SUPPORT_TEAM_ALREADYENTERED.getMessage(new StringPair("user", Bukkit.getOfflinePlayer(currentSupportChat).getName())));
 			return false;
 		}
 		Validate.notNull((Object) targetName, "The player-target-name cannot be null.");
@@ -190,14 +192,16 @@ public class SupportCommand extends HuffCommand implements Listener
 		
 		if (targetPlayer == null || !supportMap.containsKey(targetPlayer.getUniqueId()))
 		{
-			player.sendMessage(PREFIX_SUPPORT + "Support-Kanal nicht gefunden. Um dir die Vorhandenen anzuschauen nutze" + MessageHelper.getQuoted("/support list", true, false) + ".");
+			player.sendMessage(LibMessage.SUPPORT_TEAM_NOTFOUND.getMessage());
 			return false;
 		}
 		supportMap.get(targetPlayer.getUniqueId()).add(player.getUniqueId());
 		
-		MessageHelper.sendPermssionMessage(PERM_SUPPORT, PREFIX_SUPPORT + "Das Teammitglied" + MessageHelper.getHighlighted(player.getName()) + "hat den Support-Kanal von" + MessageHelper.getHighlighted(targetName) + "betreten.", player.getName());
-		targetPlayer.sendMessage(PREFIX_SUPPORT+ "Das Teammitglied" +  MessageHelper.getHighlighted(player.getName()) + "hat den Support-Kanal betreten.");		
-		player.sendMessage(PREFIX_SUPPORT + "Du hast den Support-Kanal von" +  MessageHelper.getHighlighted(targetPlayer.getName()) + "betreten.");
+		MessageHelper.sendPermssionMessage(PERM_SUPPORT, 
+				LibMessage.SUPPORT_TEAM_ENTEROTHER.getMessage(new StringPair("team", player.getName()), new StringPair("user",targetName)), 
+				player.getName());
+		sendChannelMessage(targetPlayer.getUniqueId(), LibMessage.SUPPORT_CHANNEL_TEAMENTER.getMessage(new StringPair("team", player.getName())), true);
+		player.sendMessage(LibMessage.SUPPORT_TEAM_ENTER.getMessage(new StringPair("user", targetName)));
 		return true;	
 	}
 	
@@ -209,14 +213,16 @@ public class SupportCommand extends HuffCommand implements Listener
 		
 		if (targetPlayer == null || !supportMap.containsKey(targetPlayer.getUniqueId()))
 		{
-			player.sendMessage(PREFIX_SUPPORT + "Support-Kanal nicht gefunden. Um dir die Vorhandenen anzuschauen nutze" + MessageHelper.getQuoted("/support list", true, false) + ".");
+			player.sendMessage(LibMessage.SUPPORT_TEAM_NOTFOUND.getMessage());
 			return false;
 		}
 		supportMap.remove(targetPlayer.getUniqueId());	
 		
-		MessageHelper.sendPermssionMessage(PERM_SUPPORT, PREFIX_SUPPORT + "Das Teammitglied" + MessageHelper.getHighlighted(player.getName()) + "hat den Support-Kanal von" + MessageHelper.getHighlighted(targetName) + "entfernt.", player.getName());
-		targetPlayer.sendMessage(PREFIX_SUPPORT + "Dein Support-Kanal wurde entfernt. Bei Rückfragen wende dich bitte über unseren Teamspeak" + MessageHelper.getHighlighted("hufferlinge.de") + "an ein Teammitglied.");				
-		player.sendMessage(PREFIX_SUPPORT + "Du hast den Support-Kanal von" + MessageHelper.getHighlighted(targetPlayer.getName()) + "entfernt.");
+		MessageHelper.sendPermssionMessage(PERM_SUPPORT, 
+				LibMessage.SUPPORT_CHANNEL_TEAMDELETE.getMessage(new StringPair("team", player.getName()), new StringPair("user", targetName)),
+				player.getName());
+		targetPlayer.sendMessage(LibMessage.SUPPORT_USER_TEAMDELETE.getMessage());
+		player.sendMessage(LibMessage.SUPPORT_TEAM_TEAMDELETE.getMessage(new StringPair("user", targetName)));
 		return true;
 	}
 	
@@ -261,12 +267,12 @@ public class SupportCommand extends HuffCommand implements Listener
 			
 			if (targetChat != null)
 			{
-				sendChannelMessage(targetChat, PREFIX_SUPPORT + "§9" + player.getName() + " §8» §7" + msg, true);
+				sendChannelMessage(targetChat, LibMessage.SUPPORT_CHANNEL_TEAMPREFIX.getMessage(new StringPair("team", player.getName()), new StringPair("text", msg)), true);
 			}
 		}
 		else if (supportMap.containsKey(player.getUniqueId()))
 		{
-			sendChannelMessage(player.getUniqueId(), PREFIX_SUPPORT + "§7" + player.getName() + " §8» §7" + msg, true);	
+			sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERPREFIX.getMessage(new StringPair("user", player.getName()), new StringPair("text", msg)), true);
 		}
 		event.setCancelled(true);
 	}
@@ -282,13 +288,13 @@ public class SupportCommand extends HuffCommand implements Listener
 			
 			if (targetChat != null)
 			{
-				sendChannelMessage(targetChat, PREFIX_SUPPORT + "Das Teammitglied" +  MessageHelper.getHighlighted(player.getName()) + "hat den Support-Kanal verlassen.", true);
+				sendChannelMessage(targetChat, LibMessage.SUPPORT_CHANNEL_TEAMLEAVE.getMessage(new StringPair("team", player.getName())), true);
 				supportMap.get(targetChat).remove(player.getUniqueId());
 			}
 		}
 		else if (supportMap.containsKey(player.getUniqueId()))
 		{
-			sendChannelMessage(player.getUniqueId(), PREFIX_SUPPORT + MessageHelper.getHighlighted(player.getName()) + "hat den Server verlassen. Support-Kanal wurde geschlossen.", false);
+			sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERDISCONNECT.getMessage(new StringPair("user", player.getName())), false);
 			supportMap.remove(player.getUniqueId());
 		}
 	}

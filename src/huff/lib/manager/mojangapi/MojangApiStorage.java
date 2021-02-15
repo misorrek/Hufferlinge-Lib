@@ -19,11 +19,12 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import huff.lib.helper.JavaHelper;
 import huff.lib.manager.HikariManager;
+import huff.lib.various.Constants;
 
 public class MojangApiStorage 
 {
 	private static final HikariDataSource hikari = HikariManager.getHikari(
-			Paths.get("plugins", "Hufferlinge-Lib", "user_cache.db").toString(),
+			Paths.get(Constants.LIB_FOLDER, "user_cache.db").toString(),
 			Stream.of("CREATE TABLE IF NOT EXISTS users(UUID varchar(32), username VARCHAR(17), time varchar(11))")
 			      .collect(Collectors.toList()));
 	
