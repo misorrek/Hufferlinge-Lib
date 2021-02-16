@@ -24,7 +24,7 @@ public class LibConfig
 	public static final ConfigPair<Integer> AREACHAT_COOLDOWN = new ConfigPair<>("lib.areachat.global_cooldown", 5, Integer.class);
 	public static final ConfigPair<BoundingBox> AREACHAT_RANGE = new ConfigPair<>("lib.areachat.range", new BoundingBox(20, 10, 20, -20, -10, -20), BoundingBox.class);
 	
-	static
+	public static void init()
 	{
 		final HuffConfiguration config = new HuffConfiguration();
 		
@@ -49,6 +49,6 @@ public class LibConfig
 		config.set(AREACHAT_COOLDOWN);
 		config.set(AREACHAT_RANGE);
 		
-		ConfigManager.CONFIG.addDefaults(config);
+		ConfigManager.addDefaults(config);
 	}
 }

@@ -54,7 +54,7 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
 		}
 		return config;
 	}
-	
+
     @Override
     public @NotNull String saveToString() 
     {
@@ -154,11 +154,20 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     	}
     }
     
-    public void addDefaults(@NotNull HuffConfiguration defaults) 
+    public void addDefaults(@NotNull HuffConfiguration defaults, @NotNull String path) 
     {
         super.addDefaults(defaults);
         
         this.customLines.putAll(defaults.customLines);
+        
+        try
+		{
+			super.save(path);
+		} 
+        catch (IOException exception)
+		{
+        	Bukkit.getLogger().log(Level.SEVERE, exception, () -> "Cannot save config to path \"" + path + "\".");
+		}
     }
     
     /**

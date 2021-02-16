@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import huff.lib.manager.ConfigManager;
-import huff.lib.various.HuffConfiguration;
 
 public class ConfigPair<T> implements KeyDefaultValuePair<T>
 {
@@ -47,26 +46,16 @@ public class ConfigPair<T> implements KeyDefaultValuePair<T>
 	@NotNull
 	public T getValue()
 	{
-		final Object configValue = ConfigManager.CONFIG.get(key);
+		Object configValue;
 		
-		if (configValue != null)
+		if (valueClass == String.class)
 		{
-			try
-			{
-				return valueClass.cast(configValue);
-			} 
-			catch (ClassCastException exception)
-			{
-				Bukkit.getLogger().log(Level.WARNING, exception, () -> "Cannot cast config value to " + valueClass.getName() + ".");
-			}
-		}		
-		return defaultValue;
-	}
-	
-	@NotNull
-	public T getValue(HuffConfiguration config)
-	{
-		final Object configValue = config.get(key);
+			configValue = ConfigManager.CONFIG.getString(key);
+		}
+		else
+		{
+			configValue = ConfigManager.CONFIG.get(key);
+		}
 		
 		if (configValue != null)
 		{

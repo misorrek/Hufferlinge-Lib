@@ -66,7 +66,7 @@ public class LibMessage
 	public static final MessagePair AREACHAT_MESSAGE = new MessagePair("lib.areachat.message", "%chatprefix% %userprefix%%user%§8 » §7%text%");
 	public static final MessagePair AREACHAT_COOLDOWN = new MessagePair("lib.areachat.cooldown", "Du musst noch $9%time% Sekunde(n)§7 warten.");
 	
-	static
+	public static void init()
 	{
 		final HuffConfiguration config = new HuffConfiguration();
 		
@@ -159,6 +159,6 @@ public class LibMessage
 		config.addContextLine(AREACHAT_COOLDOWN.getKey(), "time");
 		config.set(AREACHAT_COOLDOWN);
 		
-		MessageManager.MESSAGE.addDefaults(config);
+		MessageManager.addDefaults(config);
 	}
 }

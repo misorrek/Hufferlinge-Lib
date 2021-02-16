@@ -4,7 +4,6 @@ import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import huff.lib.manager.ConfigManager;
-import huff.lib.various.HuffConfiguration;
 
 public class ConfigEnumPair<T extends Enum<T>> implements KeyDefaultValuePair<T>
 {
@@ -45,18 +44,6 @@ public class ConfigEnumPair<T extends Enum<T>> implements KeyDefaultValuePair<T>
 	public T getValue()
 	{
 		final Object configValue = ConfigManager.CONFIG.get(key);
-		
-		if (configValue instanceof String)
-		{		
-			return Enum.valueOf(valueClass, (String) configValue);
-		}		
-		return defaultValue;
-	}
-	
-	@NotNull
-	public T getValue(HuffConfiguration config)
-	{
-		final Object configValue = config.get(key);
 		
 		if (configValue instanceof String)
 		{		
