@@ -37,8 +37,8 @@ public class MojangApiStorage
 			try (final PreparedStatement update = connection.prepareStatement(statement))
 			{
 				update.setString(1, first);
-		     	update.setString(2, second);
-		     	update.setString(3, getExpireTime(expire));
+				update.setString(2, getExpireTime(expire));
+		     	update.setString(3, second);
 		     	update.execute();  
 			}
 		} 

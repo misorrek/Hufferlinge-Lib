@@ -4,6 +4,7 @@ import org.bukkit.util.BoundingBox;
 
 import huff.lib.manager.ConfigManager;
 import huff.lib.various.structures.ConfigPair;
+import huff.lib.various.structures.Point;
 
 public class LibConfig
 {
@@ -23,6 +24,8 @@ public class LibConfig
 	
 	public static final ConfigPair<Integer> AREACHAT_COOLDOWN = new ConfigPair<>("lib.areachat.global_cooldown", 5, Integer.class);
 	public static final ConfigPair<BoundingBox> AREACHAT_RANGE = new ConfigPair<>("lib.areachat.range", new BoundingBox(20, 10, 20, -20, -10, -20), BoundingBox.class);
+	
+	public static final ConfigPair<Point> ENTITY_FOLLOWLOOKRADIUS = new ConfigPair<>("lib.entity.follow_look_radius", new Point(5, 2.5, 5), Point.class);
 	
 	public static void init()
 	{
@@ -46,8 +49,11 @@ public class LibConfig
 		config.set(CHAT_DISPLAYLUCKPERMS);
 		config.set(CHAT_DISPLAYWORLD);
 		
+		config.addCommentLine(AREACHAT_COOLDOWN.getKey(), "Cooldown in seconds", true);
 		config.set(AREACHAT_COOLDOWN);
 		config.set(AREACHAT_RANGE);
+		
+		config.set(ENTITY_FOLLOWLOOKRADIUS);
 		
 		ConfigManager.addDefaults(config);
 	}

@@ -301,6 +301,19 @@ public class IndependencyHelper
 	}
 	
 	/**
+	 * Retrieves a message from NBT json text.
+	 *
+	 * @param   message   the json to retrieve from
+	 * @return            The retrieved message.
+	 */
+	public static @NotNull String fromJsonText(@NotNull String json)
+	{
+		Validate.notNull((Object) json, "The json string cannot be null.");
+		
+		return json.replace("{\"text\":\"", "").replace("\"}", "");
+	}
+	
+	/**
 	 * Converts a location to a Vec3D object from the NMS dependency.
 	 *
 	 * @param   location   the location to convert

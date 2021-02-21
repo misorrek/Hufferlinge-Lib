@@ -54,7 +54,7 @@ public class SupportCommand extends HuffCommand implements Listener
 	{ 
 		if (!(sender instanceof Player)) 
 		{
-			MessageHelper.sendConsoleMessage(MessageHelper.NORUNINCONSOLE);
+			sender.sendMessage(LibMessage.NOTINCONSOLE.getMessage());
 			return false;
 		}	
 		final Player player = (Player) sender;

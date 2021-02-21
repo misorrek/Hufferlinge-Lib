@@ -123,7 +123,7 @@ public class PlayerChooserHolder extends MenuHolder
 		final ItemStack borderItem = InventoryHelper.getBorderItem();	
 		
 		InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, 
-				                                                                                             StringHelper.build("§7» Seite", MessageHelper.getHighlighted(Integer.toString(page)), "«")));
+				                                                                                             StringHelper.build("§7» Seite §9", Integer.toString(page), "§7 «")));
 		
 		if (page > START_PAGE)
 		{

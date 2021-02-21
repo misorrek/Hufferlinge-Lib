@@ -1,15 +1,12 @@
 package huff.lib.commands;
 
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.various.HuffCommand;
 import huff.lib.various.LibMessage;
@@ -21,14 +18,10 @@ import huff.lib.various.structures.StringPair;
  */
 public class TellCommand extends HuffCommand
 {
-	public TellCommand(@NotNull JavaPlugin plugin, @Nullable String consolePrefix)
+	public TellCommand(@NotNull JavaPlugin plugin)
 	{
 		super(plugin, "tell");
 		
-		if (StringUtils.isNotBlank(consolePrefix))
-		{
-			this.consolePrefix = consolePrefix;
-		}
 		super.setDescription("Sendet eine Nachricht.");
 		super.setUsage("/tell <Name> <Nachricht>");
 		super.setAliases("message", "msg", "pm", "dm");
@@ -36,8 +29,6 @@ public class TellCommand extends HuffCommand
 		addTabCompletion();
 		super.registerCommand();
 	}
-
-	private String consolePrefix = MessageHelper.NAME_HUFF_CONSOLE;
 	
 	// C O M M A N D
 	
@@ -62,7 +53,7 @@ public class TellCommand extends HuffCommand
 			} 
 			else
 			{
-				sender.sendMessage(MessageHelper.getPlayerNotFound(args[0]));
+				sender.sendMessage(LibMessage.NOTFOUND.getMessage(new StringPair("user", args[0])));
 			} 
 			return true;
 		}
@@ -71,7 +62,7 @@ public class TellCommand extends HuffCommand
 	
 	private String getSenderName(CommandSender sender)
 	{
-		return (sender instanceof Player) ? sender.getName() : consolePrefix;
+		return (sender instanceof Player) ? sender.getName() : LibMessage.TITLE_CONSOLE.getMessage();
 	}
 	
 	// T A B C O M P L E T I O N

@@ -23,8 +23,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
+import huff.lib.various.structures.StringPair;
 
 public abstract class HuffCommand extends Command implements CommandExecutor, PluginIdentifiableCommand 
 {
@@ -64,7 +64,7 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
     		
     		if (StringUtils.isNotBlank(usage))
     		{
-    			sender.sendMessage(MessageHelper.getWrongInput(usage));
+    			sender.sendMessage(LibMessage.WRONGINPUT.getMessage(new StringPair("text", usage)));
     		}
     		return false;
     	}

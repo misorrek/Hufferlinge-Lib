@@ -12,33 +12,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import huff.lib.various.LibMessage;
+
 public class MessageHelper 
 {
 	private MessageHelper() { }
 
-	public static final String PLACEHOLDER_PLAYER = "%player%";
-	public static final String PLACEHOLDER_TEXT = "%text%";
 	public static final String PLACEHOLDER_HOUR = "%hour%";
 	public static final String PLACEHOLDER_MINUTE = "%minute%";
-
-	public static final String PREFIX_HUFF = "§8☰ §aHufferlinge §8☷§7 ";
-	public static final String PREFIX_HUFF_CONSOLE = "§7Hufferlinge ☷  ";
-	public static final String PREFIX_DELAYMESSAGE = "§8☰ §bVergangenheit §8☷§7 ";
-	
-	public static final String NAME_HUFF_CONSOLE = "§lTerminal§r";
-	
-    public static final String NOPERMISSION = "Du hast keine Berechtigung für diesen Befehl.";
-    public static final String PLAYERNOTFOUND = "Der Spieler" + PLACEHOLDER_PLAYER + "konnte nicht zugeordnet werden.";
-    public static final String WRONGINPUT = "Die Eingabe ist ungültig." + PLACEHOLDER_TEXT;
-    public static final String NORUNINCONSOLE = "Der Befehl kann nicht in der Konsole ausgeführt werden";
-    
-    public static String getNoPermission() { return PREFIX_HUFF + NOPERMISSION; }
-    
-    public static String getPlayerNotFound() { return PREFIX_HUFF + PLAYERNOTFOUND.replace(PLACEHOLDER_PLAYER, " "); }
-    public static String getPlayerNotFound(String player) { return PREFIX_HUFF + PLAYERNOTFOUND.replace(PLACEHOLDER_PLAYER, getHighlighted(player)); }
-    
-    public static String getWrongInput() { return PREFIX_HUFF + WRONGINPUT.replace(PLACEHOLDER_TEXT, ""); }
-    public static String getWrongInput(String text) { return PREFIX_HUFF + WRONGINPUT.replace(PLACEHOLDER_TEXT, " " + text); }
       
     public static @NotNull String getHighlighted(@NotNull String content)
     {
@@ -68,7 +49,7 @@ public class MessageHelper
     {
     	Validate.notNull((Object) message, "The message cannot be null.");
     	
-    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('§', PREFIX_HUFF_CONSOLE + message));
+    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('§', LibMessage.PREFIX_CONSOLE.getMessage() + message));
     }
     
     public static void sendPermssionMessage(@NotNull String permission, @NotNull String message) 

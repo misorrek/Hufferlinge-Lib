@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.helper.StringHelper;
 import huff.lib.helper.UserHelper;
@@ -52,7 +51,7 @@ public class DelayMessageCommand extends HuffCommand
 			
 			if (targetPlayer == null)
 			{
-				sender.sendMessage(MessageHelper.getPlayerNotFound(args[1]));
+				sender.sendMessage(LibMessage.NOTFOUND.getMessage(new StringPair("user", args[1])));
 				return true;
 			}
 			

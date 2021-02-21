@@ -22,9 +22,9 @@ public class MojangApiManager
 {	
 	private static final String INSERT = "INSERT INTO users VALUES (?, ?, ?)";	
 	private static final String SELECT_UUID = "SELECT * FROM users WHERE username=?";
-	private static final String UPDATE_UUID = "UPDATE users SET uuid=? WHERE username=?";
+	private static final String UPDATE_UUID = "UPDATE users SET uuid=?, time=? WHERE username=?";
 	private static final String SELECT_USERNAME = "SELECT * FROM users WHERE uuid=?";
-	private static final String UPDATE_USERNAME = "UPDATE users SET username=? WHERE uuid=?";
+	private static final String UPDATE_USERNAME = "UPDATE users SET username=?, time=? WHERE uuid=?";
 
 	private MojangApiManager() { }
 	

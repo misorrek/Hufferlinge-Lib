@@ -9,6 +9,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import huff.lib.various.LibMessage;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.query.QueryOptions;
 
@@ -51,7 +52,7 @@ public class PermissionHelper
 	{	
 		if(!hasPlayerPermission(sender, permission)) 
 		{
-			sender.sendMessage(MessageHelper.getNoPermission());			
+			sender.sendMessage(LibMessage.NOPERMISSION.getMessage());			
 			return false;
 		}		
 		return true;

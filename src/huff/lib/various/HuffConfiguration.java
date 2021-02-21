@@ -50,7 +50,8 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
 		} 
 		catch (IOException | InvalidConfigurationException exception)
 		{
-			Bukkit.getLogger().log(Level.SEVERE, exception, () -> "Cannot load configuration from file \"" + file + "\".");
+			System.out.println(exception.toString());
+			//Bukkit.getLogger().log(Level.SEVERE, exception, () -> "Cannot load configuration from file \"" + file + "\".");
 		}
 		return config;
 	}

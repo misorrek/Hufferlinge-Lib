@@ -17,17 +17,18 @@ import huff.lib.helper.MessageHelper;
 import huff.lib.manager.delaymessage.json.JsonDelayMessages;
 import huff.lib.manager.delaymessage.json.JsonPlayer;
 import huff.lib.manager.delaymessage.json.JsonPlayerMessage;
+import huff.lib.various.Constants;
+import huff.lib.various.LibMessage;
 import huff.lib.helper.IndependencyHelper;
 
 public class DelayMessageManager
 {	
-	public DelayMessageManager(@NotNull JavaPlugin plugin, @NotNull String pluginFolderPath)
+	public DelayMessageManager(@NotNull JavaPlugin plugin)
 	{
 		Validate.notNull((Object) plugin, "The plugin-instance cannot be null.");
-		Validate.notNull((Object) pluginFolderPath, "The plugin-folder-path cannot be null.");
 		
 		this.plugin = plugin;
-		this.jsonFilePath = Paths.get(pluginFolderPath, "delaymessages.json").toString();
+		this.jsonFilePath = Paths.get(Constants.LIB_FOLDER, "delaymessage.json").toString();
 				
 		final Object jsonObject = FileHelper.loadJsonObjectFromFile(jsonFilePath, JsonDelayMessages.class);
 		
@@ -99,7 +100,7 @@ public class DelayMessageManager
 				}
 				else
 				{
-					resultMessages.add(MessageHelper.PREFIX_DELAYMESSAGE + playerMessage.message);
+					resultMessages.add(LibMessage.PREFIX_DELAYMESSAGE.getMessage() + playerMessage.message);
 				}
 			}
 			

@@ -18,7 +18,7 @@ public class LibMessage
 	public static final MessagePair NOPERMISSION = new MessagePair("lib.general.no_permission", PREFIX_GENERAL.getKeyLink() + "Du hast keine Berechtigung für diesen Befehl.");
 	public static final MessagePair NOTFOUND = new MessagePair("lib.general.not_found", PREFIX_GENERAL.getKeyLink() + "Der Spieler §9%user% §7konnte nicht zugeordnet werden.");
 	public static final MessagePair WRONGINPUT = new MessagePair("lib.general.wrong_input", PREFIX_GENERAL.getKeyLink() + "Die Eingabe ist ungültig. %text%");
-	public static final MessagePair NOTINCONSOLE = new MessagePair("lib.general.not_in_console", PREFIX_GENERAL.getKeyLink() + "Der Befehl kann nicht in der Konsole ausgeführt werden.");
+	public static final MessagePair NOTINCONSOLE = new MessagePair("lib.general.not_in_console", PREFIX_CONSOLE.getKeyLink() + "Der Befehl kann nicht in der Konsole ausgeführt werden.");
 	
 	public static final MessagePair SUPPORT_USER_HELP = new MessagePair("lib.support.user.help", WRONGINPUT.getKeyLink() + "/support [leave] - §9\"/support\"§7 ohne Zusatz öffnet einen neuen Support-Kanal.");
 	public static final MessagePair SUPPORT_USER_CREATE = new MessagePair("lib.support.user.create", PREFIX_SUPPORT.getKeyLink() + "Du hast einen Support-Kanal geöffnet. Alle Nachrichten werden, ohne erneute Befehlseingabe, hierher geschickt.\n" +  
@@ -81,7 +81,6 @@ public class LibMessage
 		config.set(PREFIX_SUPPORT);
 		config.set(PREFIX_DELAYMESSAGE);
 		
-		config.addCommentLine("lib.title", "Titel von Inventaren, Items oder Chats", true);
 		config.set(TITLE_CONSOLE);
 		config.set(TITLE_PLAYERCHOOSER);
 		

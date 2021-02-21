@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import huff.lib.helper.MessageHelper;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.various.HuffCommand;
 import huff.lib.various.LibMessage;
@@ -54,7 +53,7 @@ public class VanishCommand extends HuffCommand implements Listener
 			
 			if (targetPlayer == null || !targetPlayer.isOnline())
 			{
-				MessageHelper.getPlayerNotFound(args[0]);
+				LibMessage.NOTFOUND.getMessage(new StringPair("user", args[0]));
 				return true;
 			}
 			

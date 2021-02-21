@@ -3,6 +3,7 @@ package huff.lib.menuholder;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.InventoryHelper;
+import huff.lib.helper.SignHelper;
 
 /**
  * A abstract class that contains the base structure for menu inventories.
@@ -75,7 +77,7 @@ public abstract class MenuHolder implements InventoryHolder
 	 */
 	public static void open(@NotNull HumanEntity human, @NotNull MenuHolder menuHolder)
 	{
-		open(human, menuHolder, false);
+		open(human, menuHolder, true);
 	}
 	
 	/**
@@ -85,17 +87,23 @@ public abstract class MenuHolder implements InventoryHolder
 	 * @param   menuHolder     the menu holder that holds the inventory to be opened 
 	 * @param   withoutClose   whether the current inventory has to be closed
 	 */
-	public static void open(@NotNull HumanEntity human, @NotNull MenuHolder menuHolder, boolean withoutClose)
+	public static void open(@NotNull HumanEntity human, @NotNull MenuHolder menuHolder, boolean withClose)
 	{
 		Validate.notNull((Object) menuHolder, "The menu holder cannot be null.");
 
-		if (!withoutClose)
+		if (withClose)
 		{
 			closeInventory(human, false, true);
 		}
 		menuHolder.resetReturnable();
 		menuHolder.resetForwarding();
 		human.openInventory(menuHolder.getInventory());
+	}
+	
+	public static void openSign(@NotNull HumanEntity human, @NotNull String[] lines)
+	{
+		closeInventory(human, false, true);
+		SignHelper.openSignInput((Player) human, lines);
 	}
 	
 	/**

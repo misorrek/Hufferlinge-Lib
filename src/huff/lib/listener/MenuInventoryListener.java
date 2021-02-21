@@ -18,6 +18,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import huff.lib.events.PlayerSignMenuClose;
 import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
 import huff.lib.menuholder.MenuHolder;
@@ -137,6 +138,12 @@ public class MenuInventoryListener implements Listener
 		}
 	}
 	
+	@EventHandler
+	public void onSignMenuClose(PlayerSignMenuClose event)
+	{
+		openLastInventory(event.getPlayer());
+	}
+	
 	private void openLastInventory(@NotNull HumanEntity human)
 	{			
 		final List<Inventory> inventories = lastInventories.get(human.getUniqueId());
@@ -147,7 +154,7 @@ public class MenuInventoryListener implements Listener
 			
 			Bukkit.getScheduler().runTaskLater(plugin, () ->
 			{				
-				MenuHolder.open(human, (MenuHolder) inventories.get(lastIndex).getHolder(), true);
+				MenuHolder.open(human, (MenuHolder) inventories.get(lastIndex).getHolder(), false);
 				inventories.remove(lastIndex);
 			}, 1);			
 		}			
