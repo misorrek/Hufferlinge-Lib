@@ -35,6 +35,7 @@ public class WrapperPlayServerOpenSignEditor extends AbstractPacket
 	 * 
 	 * @return The current location as block position.
 	 */
+	@NotNull
 	public BlockPosition getLocation() 
 	{
 		return handle.getBlockPositionModifier().read(0);

@@ -37,6 +37,7 @@ public class WrapperPlayServerTileEntityData extends AbstractPacket
 	 * 
 	 * @return The current Location
 	 */
+	@NotNull
 	public BlockPosition getLocation() 
 	{
 		return handle.getBlockPositionModifier().read(0);
@@ -81,6 +82,7 @@ public class WrapperPlayServerTileEntityData extends AbstractPacket
 	 * 
 	 * @return The current NBT Data
 	 */
+	@NotNull
 	public NbtBase<?> getNbtData() 
 	{
 		return handle.getNbtModifier().read(0);

@@ -166,7 +166,7 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
         private final String permission;
         private final Map<Integer, List<String>> textBefore;
 
-        private TabCompletion(String text, String permission, Map<Integer, List<String>> textBefore) 
+        private TabCompletion(@NotNull String text, @Nullable String permission, @Nullable Map<Integer, List<String>> textBefore) 
         {
             this.text = text;
             this.permission = permission;
@@ -181,11 +181,13 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
             }
         }
 
+        @NotNull
         public String getText() 
         {
             return text;
         }
 
+        @Nullable
         public String getPermission() 
         {
             return permission;

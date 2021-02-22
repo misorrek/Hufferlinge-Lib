@@ -2,6 +2,9 @@ package huff.lib.various;
 
 import java.nio.file.Paths;
 
+/*
+ * A class containing very general constants.
+ */
 public class Constants
 {
 	private Constants() { }

@@ -69,7 +69,8 @@ public class DelayMessageManager
 		saveJsonObjectToFile();
 	}
 	
-	public @NotNull List<String> getDelayMessages(@NotNull Player player, DelayType delayType)
+	@NotNull
+	public List<String> getDelayMessages(@NotNull Player player, DelayType delayType)
 	{
 		Validate.notNull((Object) player, "The player cannot be null.");
 		
@@ -132,7 +133,8 @@ public class DelayMessageManager
 		FileHelper.saveJsonObjectToFile(jsonFilePath, jsonDelayMessages, jsonDelayMessages.getClass());
 	}
 	
-	private @Nullable JsonPlayer getPlayer(@NotNull UUID uuid)
+	@Nullable
+	private JsonPlayer getPlayer(@NotNull UUID uuid)
 	{
 		for (JsonPlayer player : jsonDelayMessages.player)
 		{
@@ -144,7 +146,8 @@ public class DelayMessageManager
 		return null;
 	}
 	
-	private @NotNull List<JsonPlayerMessage> getPlayerMessages(@NotNull UUID uuid, boolean createNewEntry)
+	@NotNull
+	private List<JsonPlayerMessage> getPlayerMessages(@NotNull UUID uuid, boolean createNewEntry)
 	{
 		final JsonPlayer player = getPlayer(uuid);
 		

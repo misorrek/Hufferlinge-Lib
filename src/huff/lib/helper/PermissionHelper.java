@@ -65,7 +65,8 @@ public class PermissionHelper
 	 * 
 	 * @return   The LuckPerms provider.
 	 */
-	public static @Nullable LuckPerms getLuckPerms()
+	@Nullable
+	public static LuckPerms getLuckPerms()
 	{
 		RegisteredServiceProvider<LuckPerms> luckyPermsProvider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
 		 
@@ -79,7 +80,8 @@ public class PermissionHelper
 	 * @param   player	    the target player
 	 * @return              The LuckPerms QueryOptions from the given player.
 	 */
-	public static @NotNull QueryOptions getPlayerQueryOptions(@NotNull LuckPerms luckPerms, @NotNull Player player)
+	@NotNull
+	public static QueryOptions getPlayerQueryOptions(@NotNull LuckPerms luckPerms, @NotNull Player player)
 	{
 		Validate.notNull((Object) luckPerms, "The luckperms-provider cannot be null.");
 		Validate.notNull((Object) player, "The player cannot be null.");

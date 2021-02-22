@@ -31,7 +31,8 @@ public class RedisManager
 	
 	private final JedisPool jedisPool;
 	
-	public @NotNull Jedis getJedis()
+	@NotNull
+	public Jedis getJedis()
 	{
 		return jedisPool.getResource();
 	}
@@ -110,7 +111,8 @@ public class RedisManager
 		return false;
 	}
 	
-	public @Nullable String getFieldValue(@NotNull String key, @NotNull String field)
+	@Nullable
+	public String getFieldValue(@NotNull String key, @NotNull String field)
 	{
 		try (final Jedis jedis = getJedis()) 
 		{
@@ -123,7 +125,8 @@ public class RedisManager
 		return null;
 	}
 	
-	public @Nullable Map<String, String> getAllValues(@NotNull String key)
+	@Nullable
+	public Map<String, String> getAllValues(@NotNull String key)
 	{
 		try (final Jedis jedis = getJedis()) 
 		{

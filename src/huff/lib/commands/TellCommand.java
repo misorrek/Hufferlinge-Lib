@@ -60,6 +60,7 @@ public class TellCommand extends HuffCommand
 		return false;
 	}
 	
+	@NotNull
 	private String getSenderName(CommandSender sender)
 	{
 		return (sender instanceof Player) ? sender.getName() : LibMessage.TITLE_CONSOLE.getMessage();

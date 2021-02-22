@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import huff.lib.events.PlayerSignInputEvent;
 import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.SignHelper;
 
@@ -70,44 +71,7 @@ public abstract class MenuHolder implements InventoryHolder
 	// E N T E R - E X I T
 	
 	/**
-	 * Closes the current inventory of the specified human and opens the inventory held by the given menu holder.
-	 * 
-	 * @param   human        the target human
-	 * @param   menuHolder   the menu holder that holds the inventory to be opened 
-	 */
-	public static void open(@NotNull HumanEntity human, @NotNull MenuHolder menuHolder)
-	{
-		open(human, menuHolder, true);
-	}
-	
-	/**
-	 * If wanted the current inventory of the specified human will be closed and the inventory held by the given menu holder will be opened.
-	 * 
-	 * @param   human          the target human
-	 * @param   menuHolder     the menu holder that holds the inventory to be opened 
-	 * @param   withoutClose   whether the current inventory has to be closed
-	 */
-	public static void open(@NotNull HumanEntity human, @NotNull MenuHolder menuHolder, boolean withClose)
-	{
-		Validate.notNull((Object) menuHolder, "The menu holder cannot be null.");
-
-		if (withClose)
-		{
-			closeInventory(human, false, true);
-		}
-		menuHolder.resetReturnable();
-		menuHolder.resetForwarding();
-		human.openInventory(menuHolder.getInventory());
-	}
-	
-	public static void openSign(@NotNull HumanEntity human, @NotNull String[] lines)
-	{
-		closeInventory(human, false, true);
-		SignHelper.openSignInput((Player) human, lines);
-	}
-	
-	/**
-	 * Closes the current inventory of the specified human and opens the last inventory if is stored. 
+	 * Closes the current inventory of the given human and opens the last inventory if is stored. 
 	 * 
 	 * @param   human   the target human
 	 */
@@ -140,6 +104,46 @@ public abstract class MenuHolder implements InventoryHolder
 		human.closeInventory();
 	}
 	
+	/**
+	 * Closes the current inventory of the given human and opens the inventory held by this menu holder.
+	 * 
+	 * @param   human        the target human
+	 */
+	public void open(@NotNull HumanEntity human)
+	{
+		open(human, true);
+	}
+	
+	/**
+	 * If wanted the current inventory of the given human will be closed and the inventory held by this menu holder will be opened.
+	 * 
+	 * @param   human          the target human
+	 * @param   withoutClose   whether the current inventory has to be closed
+	 */
+	public void open(@NotNull HumanEntity human, boolean withClose)
+	{
+		if (withClose)
+		{
+			closeInventory(human, false, true);
+		}
+		resetReturnable();
+		resetForwarding();
+		human.openInventory(getInventory());
+	}
+	
+	/**
+	 * Closes the current menu of the specified human and opens a new sign input.
+	 * If the sign input gets closed the menu gets opened again.
+	 * 
+	 * @param   human   the target human
+	 * @param   lines   the lines displayed on the sign
+	 */
+	public void openSign(@NotNull HumanEntity human, @NotNull String[] lines)
+	{
+		closeInventory(human, false, true);
+		SignHelper.openSignInput((Player) human, lines, this);
+	}
+	
 	// E V E N T H A N D L I N G
 	
 	/**
@@ -163,6 +167,13 @@ public abstract class MenuHolder implements InventoryHolder
 	 */
 	public void handleClose(@NotNull InventoryCloseEvent event) { }
 	
+	/**
+	 * Handling of the sign input event for the menu holder the method is implemented in.
+	 * 
+	 * @param   event   the inventory close event from the listener
+	 */
+	public void handleSignInput(@NotNull PlayerSignInputEvent event) { }
+	
 	// P R O P E R T I E S
 	
 	/**
@@ -171,6 +182,7 @@ public abstract class MenuHolder implements InventoryHolder
 	 * @return   The inventory.
 	 */
 	@Override
+	@NotNull
 	public Inventory getInventory()
 	{
 		return inventory;
@@ -181,6 +193,7 @@ public abstract class MenuHolder implements InventoryHolder
 	 * 
 	 * @return   The identifier.
 	 */
+	@NotNull
 	public String getIdentifier()
 	{
 		return identifier;

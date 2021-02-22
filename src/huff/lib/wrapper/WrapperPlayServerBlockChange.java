@@ -39,6 +39,7 @@ public class WrapperPlayServerBlockChange extends AbstractPacket
 	 * 
 	 * @return The current location as block position.
 	 */
+	@NotNull
 	public BlockPosition getLocation() 
 	{
 		return handle.getBlockPositionModifier().read(0);
@@ -62,6 +63,7 @@ public class WrapperPlayServerBlockChange extends AbstractPacket
 	 * @param   world    World for the location
 	 * @return           The bukkit location.
 	 */
+	@NotNull
 	public Location getBukkitLocation(@NotNull World world) 
 	{
 		Validate.notNull((Object) world, "The world cannot be null.");
@@ -74,6 +76,7 @@ public class WrapperPlayServerBlockChange extends AbstractPacket
 	 * 
 	 * @return The current Block Data
 	 */
+	@NotNull
 	public WrappedBlockData getBlockData() 
 	{
 		return handle.getBlockData().read(0);

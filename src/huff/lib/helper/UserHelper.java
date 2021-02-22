@@ -21,7 +21,8 @@ public class UserHelper
 	 * @param   username   the username
 	 * @return             The uuid linked to the username.
 	 */
-	public static @Nullable UUID getUniqueId(@Nullable String username)
+	@Nullable
+	public static UUID getUniqueId(@Nullable String username)
 	{
 		if (StringUtils.isEmpty(username))
 		{	
@@ -45,7 +46,8 @@ public class UserHelper
 	 * @param   uuid   the uuid as string
 	 * @return         The username linked to the uuid.
 	 */
-	public static @Nullable String getUsername(@Nullable String uuid)
+	@Nullable
+	public static String getUsername(@Nullable String uuid)
 	{
 		if (StringUtils.isEmpty(uuid))
 		{	
@@ -70,7 +72,8 @@ public class UserHelper
 	 * @param   uuid   the uuid
 	 * @return         The username linked to the uuid.
 	 */
-	public static @Nullable String getUsername(@Nullable UUID uuid)
+	@Nullable
+	public static String getUsername(@Nullable UUID uuid)
 	{
 		if (uuid == null)
 		{	

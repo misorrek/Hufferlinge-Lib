@@ -21,24 +21,28 @@ public class MessageHelper
 	public static final String PLACEHOLDER_HOUR = "%hour%";
 	public static final String PLACEHOLDER_MINUTE = "%minute%";
       
-    public static @NotNull String getHighlighted(@NotNull String content)
+	@NotNull
+    public static String getHighlighted(@NotNull String content)
     {
     	return getHighlighted(content, true, true);
     }
     
-    public static @NotNull String getHighlighted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
+	@NotNull
+    public static String getHighlighted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
     	Validate.notNull((Object) content, "The content cannot be null.");
     	
     	return (spaceLeft ? " §9" : "§9") + content + (spaceRight ? " §7" : "§7");
     }
     
-    public static @NotNull String getQuoted(@NotNull String content)
+	@NotNull
+    public static String getQuoted(@NotNull String content)
     {
     	return getQuoted(content, true, true);
     }
     
-    public static @NotNull String getQuoted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
+	@NotNull
+    public static String getQuoted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
     	Validate.notNull((Object) content, "The content cannot be null.");
     	
@@ -71,7 +75,8 @@ public class MessageHelper
 		}
 	}
     
-    public static @NotNull String getTimeFormatted(int time, @Nullable String pattern)
+    @NotNull
+    public static String getTimeFormatted(int time, @Nullable String pattern)
     {
 		final int maxTime = 24;
 		final int hourAddition = 6;
@@ -91,7 +96,8 @@ public class MessageHelper
 		}    	
     }
     
-    public static @NotNull String getTimeLabel(int time)
+    @NotNull
+    public static String getTimeLabel(int time)
     {
     	if (time <= 1000) // 6 - 7
     	{

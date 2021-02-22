@@ -36,7 +36,8 @@ public class IndependencyHelper
 	 * @param   enumValue        the name of the target enum value
 	 * @return                   An enum instance representing the specified value.
 	 */
-	public static <T extends Enum<T>> @Nullable T getEnumValueByName(DependencyKind dependencyKind, @NotNull String enumName, @NotNull String enumValue)
+	@Nullable
+	public static <T extends Enum<T>> T getEnumValueByName(DependencyKind dependencyKind, @NotNull String enumName, @NotNull String enumValue)
 	{
 		final Class<T> enumClass = getDependencyEnumClass(dependencyKind, enumName);
 		
@@ -53,7 +54,8 @@ public class IndependencyHelper
 	 * @param   params           additional parameters for the constructor
 	 * @return                   An instance of the specified class.
 	 */
-	public static @Nullable Object createInstance(DependencyKind dependencyKind, @NotNull String className, @Nullable Object... params)
+	@Nullable
+	public static Object createInstance(DependencyKind dependencyKind, @NotNull String className, @Nullable Object... params)
 	{
 		final Class<?> dependencyClass = getDependencyClass(dependencyKind, className);
 				
@@ -73,7 +75,8 @@ public class IndependencyHelper
 	 * @param   params            additional parameters for the constructor
 	 * @return                    An instance of the given class.
 	 */
-	public static @Nullable Object createInstance(@Nullable Class<?> dependencyClass, @Nullable Object... params)
+	@Nullable
+	public static Object createInstance(@Nullable Class<?> dependencyClass, @Nullable Object... params)
 	{
 		if (dependencyClass == null)
 		{
@@ -107,7 +110,8 @@ public class IndependencyHelper
 	 * @param   params       additional parameters for the method
 	 * @return               The retun value of the invoked method.
 	 */	
-	public static @Nullable Object invokeMethod(@Nullable Object object, @NotNull String methodName, @Nullable Object... params)
+	@Nullable
+	public static Object invokeMethod(@Nullable Object object, @NotNull String methodName, @Nullable Object... params)
 	{
 		if (object == null)
 		{
@@ -142,7 +146,8 @@ public class IndependencyHelper
 	 * @param   params           additional parameters for the method
 	 * @return                   The retun value of the invoked method.
 	 */	
-	public static @Nullable Object invokeStaticMethod(DependencyKind dependencyKind, @NotNull String className, @NotNull String methodName, @Nullable Object... params)
+	@Nullable
+	public static Object invokeStaticMethod(DependencyKind dependencyKind, @NotNull String className, @NotNull String methodName, @Nullable Object... params)
 	{
 		final Class<?> dependencyClass = getDependencyClass(dependencyKind, className);
 			
@@ -157,9 +162,10 @@ public class IndependencyHelper
 	 * @param   dependencyClass   the target class
 	 * @param   methodName        the name of the target method
 	 * @param   params            additional parameters for the method
-	 * @return                    The retun value of the invoked method.
+	 * @return                    The return value of the invoked method.
 	 */	
-	public static @Nullable Object invokeStaticMethod(@Nullable Class<?> dependencyClass, @NotNull String methodName, @Nullable Object... params)
+	@Nullable
+	public static Object invokeStaticMethod(@Nullable Class<?> dependencyClass, @NotNull String methodName, @Nullable Object... params)
 	{
 		if (dependencyClass == null)
 		{
@@ -183,7 +189,8 @@ public class IndependencyHelper
 		}
 	}
 	
-	private static @Nullable Class<?> getDependencyClass(DependencyKind dependencyKind, @NotNull String className) 
+	@Nullable
+	private static Class<?> getDependencyClass(DependencyKind dependencyKind, @NotNull String className) 
 	{
 		Validate.notNull((Object) className, "The class-name cannot be null.");
 		
@@ -202,7 +209,8 @@ public class IndependencyHelper
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static @Nullable <T extends Enum<T>> Class<T> getDependencyEnumClass(DependencyKind dependencyKind, @NotNull String enumName)
+	@Nullable
+	private static <T extends Enum<T>> Class<T> getDependencyEnumClass(DependencyKind dependencyKind, @NotNull String enumName)
 	{
 		final Class<?> enumClass = getDependencyClass(dependencyKind, enumName);
 		
@@ -293,7 +301,8 @@ public class IndependencyHelper
 	 * @param   message   the message to pack
 	 * @return            The packed message.
 	 */
-	public static @NotNull String getJsonText(@NotNull String message)
+	@NotNull
+	public static String getJsonText(@NotNull String message)
 	{
 		Validate.notNull((Object) message, "The message cannot be null.");
 		
@@ -306,7 +315,8 @@ public class IndependencyHelper
 	 * @param   message   the json to retrieve from
 	 * @return            The retrieved message.
 	 */
-	public static @NotNull String fromJsonText(@NotNull String json)
+	@NotNull
+	public static String fromJsonText(@NotNull String json)
 	{
 		Validate.notNull((Object) json, "The json string cannot be null.");
 		
@@ -319,7 +329,8 @@ public class IndependencyHelper
 	 * @param   location   the location to convert
 	 * @return             The Vec3D object.
 	 */
-	public static @NotNull Object getLocationToVec3D(@NotNull Location location)
+	@NotNull
+	public static Object getLocationToVec3D(@NotNull Location location)
 	{
 		Validate.notNull((Object) location, "The location cannot be null.");
 		
@@ -449,7 +460,8 @@ public class IndependencyHelper
 	 * @param   value       the value to be stored
 	 * @return              The item stack with the added NBT tag.
 	 */
-	public static @NotNull ItemStack getTaggedItemStack(@NotNull ItemStack itemStack, @NotNull String key, @NotNull String value) 
+	@NotNull
+	public static ItemStack getTaggedItemStack(@NotNull ItemStack itemStack, @NotNull String key, @NotNull String value) 
 	{
 		final Class<?> craftItemStackClass = getDependencyClass(DependencyKind.CRAFTBUKKIT, "inventory.CraftItemStack");
 		final Object nmsItemStack = invokeStaticMethod(craftItemStackClass, "asNMSCopy", itemStack);
@@ -478,7 +490,8 @@ public class IndependencyHelper
 	 * @param   key         the key associated with the wanted value
 	 * @return              The obtained value associated with the key.
 	 */
-	public static @Nullable String getTagFromItemStack(@NotNull ItemStack itemStack, @NotNull String key)
+	@Nullable
+	public static String getTagFromItemStack(@NotNull ItemStack itemStack, @NotNull String key)
 	{
 		final Class<?> craftItemStackClass = getDependencyClass(DependencyKind.CRAFTBUKKIT, "inventory.CraftItemStack");
 		final Object nmsItemStack;

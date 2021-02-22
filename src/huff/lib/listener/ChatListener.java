@@ -57,7 +57,8 @@ public class ChatListener implements Listener
 		event.setFormat(formatBuilder.toString());
 	}
 	
-	private @NotNull String addPrefix(Player player)
+	@NotNull
+	private String addPrefix(Player player)
 	{
 		if (luckPerms != null) 
 		{

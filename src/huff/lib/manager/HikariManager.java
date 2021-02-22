@@ -22,6 +22,7 @@ public class HikariManager
     
     private HikariManager() { }
     
+    @NotNull
     public static HikariDataSource getHikari(@NotNull String sqlFilePath, @NotNull List<String> initStatements)
     {
     	if (hikari == null) 

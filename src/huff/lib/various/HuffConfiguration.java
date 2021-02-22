@@ -38,7 +38,8 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
 
 	// I O
 	
-	public static @NotNull HuffConfiguration loadConfiguration(@NotNull File file)
+	@NotNull
+	public static HuffConfiguration loadConfiguration(@NotNull File file)
 	{
 		Validate.notNull((Object) file, "The file cannot be null.");
 		
@@ -57,7 +58,8 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
 	}
 
     @Override
-    public @NotNull String saveToString() 
+    @NotNull
+    public String saveToString() 
     {
         final List<String> contents = Stream.of(super.saveToString().split("\n")).collect(Collectors.toList());
         final StringBuilder currentPathBuilder = new StringBuilder();
@@ -183,7 +185,8 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     	return getString(path, new StringPair[0]);
     }
     
-    public @Nullable String getString(@NotNull String path, @NotNull StringPair... contextParameters) //TODO Caching
+    @Nullable
+    public String getString(@NotNull String path, @NotNull StringPair... contextParameters) //TODO Caching
     {
     	Validate.notNull((Object) path, "The path cannot be null.");
     	
@@ -295,7 +298,8 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     // U T I L
     
     @Override
-    protected @NotNull String parseHeader(@NotNull String input) 
+    @NotNull
+    protected String parseHeader(@NotNull String input) 
     {
         final String[] lines = input.split("\r?\n", -1);
         final StringBuilder result = new StringBuilder();
@@ -329,7 +333,8 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
         return result.toString();
     }
     
-    private @Nullable String getKeyFromLine(String line) 
+    @Nullable
+    private String getKeyFromLine(String line) 
     {
         String key = null;
 
@@ -486,14 +491,16 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     	private final String content;
     	private final boolean alignedWithKey;
     	
-    	public @NotNull String getLine(int currentLayer)
+    	@NotNull
+    	public String getLine(int currentLayer)
     	{
     		final String spaces = alignedWithKey ? getSpacesFromLayer(currentLayer) : "";
     		
     		return (type == CustomLineType.EMPTY_LINE ? "" : spaces +  prefix + content) + "\n";
     	}
     	
-        private @NotNull String getSpacesFromLayer(int layer)
+    	@NotNull
+        private String getSpacesFromLayer(int layer)
         {
         	final StringBuilder spaceBuilder = new StringBuilder();
         	int runs = (int) (layer / LAYER_PER_WHITESPACE); 

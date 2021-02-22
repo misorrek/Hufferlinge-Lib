@@ -36,6 +36,7 @@ public abstract class AbstractPacket
 	 * 
 	 * @return Raw packet data.
 	 */
+	@NotNull
 	public PacketContainer getHandle() 
 	{
 		return handle;

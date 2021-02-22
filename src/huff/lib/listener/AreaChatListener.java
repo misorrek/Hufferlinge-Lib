@@ -117,7 +117,8 @@ public class AreaChatListener implements Listener
 		}
 	}
 	
-	private @NotNull String addPrefix(@NotNull Player player)
+	@NotNull
+	private String addPrefix(@NotNull Player player)
 	{
 		if (luckPerms != null) 
 		{
@@ -131,7 +132,8 @@ public class AreaChatListener implements Listener
 		return "";
 	}
 	
-	private @Nullable String removeGlobalFlag(@NotNull String message)
+	@Nullable
+	private String removeGlobalFlag(@NotNull String message)
 	{
 		final String trimmedMessage = message.trim();
 		

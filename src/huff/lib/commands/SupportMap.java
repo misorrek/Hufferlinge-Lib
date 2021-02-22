@@ -36,7 +36,8 @@ class SupportMap extends HashMap<UUID, HashSet<UUID>>
 		super.get(user).remove(supporter);
 	}	
 	
-	public @Nullable UUID getCurrentSupportChat(@NotNull UUID supporter)
+	@Nullable
+	public UUID getCurrentSupportChat(@NotNull UUID supporter)
 	{
 		Validate.notNull((Object) supporter, "The supporter cannot be null.");
 		

@@ -41,6 +41,7 @@ public class WrapperPlayClientUpdateSign extends AbstractPacket
 	 * 
 	 * @return The current location as block position.
 	 */
+	@NotNull
 	public BlockPosition getLocation() 
 	{
 		return handle.getBlockPositionModifier().read(0);
@@ -63,6 +64,7 @@ public class WrapperPlayClientUpdateSign extends AbstractPacket
 	 * 
 	 * @return The current lines
 	 */
+	@NotNull
 	public String[] getLines() 
 	{
 		return handle.getStringArrays().read(0);

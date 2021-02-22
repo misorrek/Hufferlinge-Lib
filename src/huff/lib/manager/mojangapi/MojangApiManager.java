@@ -29,7 +29,8 @@ public class MojangApiManager
 	private MojangApiManager() { }
 	
 	@SuppressWarnings("deprecation")
-	public static @Nullable UUID getUUID(@NotNull String username) 
+	@Nullable
+	public static UUID getUUID(@NotNull String username) 
 	{
 		Validate.notNull((Object) username, "The username cannot be null.");
 		
@@ -39,7 +40,7 @@ public class MojangApiManager
 			
 			if(MojangApiStorage.needsUpdating(crs)) 
 			{			
-				final String response = WebHelper.sendGet(MojangApiDetails.formatApi(MojangApiDetails.UUID_GETTER, username));
+				final String response = WebHelper.sendGet(String.format(MojangApiDetails.UUID_GETTER, username));
 				
 				if(response.isEmpty()) 
 				{
@@ -74,7 +75,8 @@ public class MojangApiManager
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static @Nullable String getUsername(@NotNull UUID uuid) 
+	@Nullable
+	public static String getUsername(@NotNull UUID uuid) 
 	{   
 		Validate.notNull((Object) uuid, "The uuid cannot be null.");
 		
@@ -86,7 +88,7 @@ public class MojangApiManager
 			
 			if(MojangApiStorage.needsUpdating(crs)) 
 			{
-				final String response = WebHelper.sendGet(MojangApiDetails.formatApi(MojangApiDetails.USERNAME_GETTER, shrinkedUUID));
+				final String response = WebHelper.sendGet(String.format(MojangApiDetails.USERNAME_GETTER, shrinkedUUID));
 				
 				if(response.isEmpty()) 
 				{
@@ -149,12 +151,14 @@ public class MojangApiManager
 		}
 	}
 	
-	private static @NotNull String shrinkUUID(@NotNull UUID uuid)
+	@NotNull
+	private static String shrinkUUID(@NotNull UUID uuid)
 	{
 		return uuid.toString().replace("-", "");
 	}
 	
-	private static @Nullable String parseUUID(@Nullable String uuid) 
+	@Nullable
+	private static String parseUUID(@Nullable String uuid) 
 	{
 		if (uuid == null || uuid.length() < 32)
 		{

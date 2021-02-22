@@ -30,7 +30,8 @@ public class DataHelper
 	 * @param   location   a not null "org.bukkit.Location"
 	 * @return             the location as string with the pattern described
 	 */
-	public static @NotNull String convertLocationToString(@NotNull Location location)
+	@NotNull
+	public static String convertLocationToString(@NotNull Location location)
 	{
 		Validate.notNull((Object) location, "The location cannot be null.");
 		Validate.notNull((Object) location.getWorld(), "The location-world cannot be null.");
@@ -46,7 +47,8 @@ public class DataHelper
 	 * @param   locationString   a string with the pattern described
 	 * @return                   the "org.bukkit.Location" contained in the string - returns null if cannot be parsed
 	 */
-	public static @Nullable Location convertStringtoLocation(@NotNull String locationString)
+	@Nullable
+	public static Location convertStringtoLocation(@NotNull String locationString)
 	{
 		Validate.notNull((Object) locationString, "The location-string cannot be null.");
 		

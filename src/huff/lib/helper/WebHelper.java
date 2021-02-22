@@ -9,11 +9,13 @@ import java.net.URL;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Nullable;
 
 public class WebHelper 
 {
 	private WebHelper() { }
 	
+	@Nullable
 	public static String sendGet(String url) 
 	{	
 		try 
@@ -42,6 +44,7 @@ public class WebHelper
 		}
 	}
 	
+	@Nullable
 	public static String sendPost(String url, String data) 
 	{	
 		try 

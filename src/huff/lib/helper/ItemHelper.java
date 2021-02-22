@@ -30,7 +30,8 @@ public class ItemHelper
 	 * @param   displayName   a string that is displayed as name on the returned item
 	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
 	 */
-	public static @NotNull ItemStack getItemWithMeta(Material material, @Nullable String displayName)
+	@NotNull
+	public static ItemStack getItemWithMeta(Material material, @Nullable String displayName)
 	{
 		return getItemWithMeta(material, displayName, null);
 	}
@@ -43,7 +44,8 @@ public class ItemHelper
 	 * @param   lore          a list of strings that is displayed as description on the returned item
 	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
 	 */
-	public static @NotNull ItemStack getItemWithMeta(Material material, @Nullable String displayName, @Nullable List<String> lore)
+	@NotNull
+	public static ItemStack getItemWithMeta(Material material, @Nullable String displayName, @Nullable List<String> lore)
 	{
 		return getItemWithMeta(material, displayName, lore, new ItemFlag[0]);
 	}
@@ -57,7 +59,8 @@ public class ItemHelper
 	 * @param   itemFlags     a optional list of flags that set specific options for the returned item
 	 * @return                A "org.bukkit.inventory.ItemStack" with the given meta details.
 	 */
-	public static @NotNull ItemStack getItemWithMeta(Material material, @Nullable String displayName, @Nullable List<String> lore, ItemFlag... itemFlags)
+	@NotNull
+	public static ItemStack getItemWithMeta(Material material, @Nullable String displayName, @Nullable List<String> lore, ItemFlag... itemFlags)
 	{
 		final ItemStack resultItem = new ItemStack(material);
 		final ItemMeta resultMeta = resultItem.getItemMeta();
@@ -77,7 +80,8 @@ public class ItemHelper
 	 * @param   displayName   a string that is displayed as name on the returned skull item
 	 * @return                A "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" with the given meta details.
 	 */
-	public static @NotNull ItemStack getSkullWithMeta(@NotNull OfflinePlayer owner, @Nullable String displayName)
+	@NotNull
+	public static  ItemStack getSkullWithMeta(@NotNull OfflinePlayer owner, @Nullable String displayName)
 	{
 		return getSkullWithMeta(owner, displayName, null);
 	}
@@ -90,7 +94,8 @@ public class ItemHelper
 	 * @param   lore          a list of strings that is displayed as description on the returned skull item 
 	 * @return                A "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" with the given meta details.
 	 */
-	public static @NotNull ItemStack getSkullWithMeta(@NotNull OfflinePlayer owner, @Nullable String displayName, @Nullable List<String> lore)
+	@NotNull
+	public static ItemStack getSkullWithMeta(@NotNull OfflinePlayer owner, @Nullable String displayName, @Nullable List<String> lore)
 	{
 		Validate.notNull((Object) owner, "The skull-owner cannot be null.");
 		
@@ -109,7 +114,8 @@ public class ItemHelper
 	 * @param   displayName   a string that is displayed as name on the returned skull item
 	 * @return                A "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" with the given meta details.
 	 */
-	public static @NotNull ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName)
+	@NotNull
+	public static ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName)
 	{
 		return getSkullWithMeta(Bukkit.getOfflinePlayer(ownerUUID), displayName, null);
 	}
@@ -122,7 +128,8 @@ public class ItemHelper
 	 * @param   lore          a list of strings that is displayed as description on the returned skull item 
 	 * @return                A "org.bukkit.inventory.ItemStack" from type "PLAYER_HEAD" with the given meta details.
 	 */
-	public static @NotNull ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName, @Nullable List<String> lore)
+	@NotNull
+	public static ItemStack getSkullWithMeta(@NotNull UUID ownerUUID, @Nullable String displayName, @Nullable List<String> lore)
 	{
 		return getSkullWithMeta(Bukkit.getOfflinePlayer(ownerUUID), displayName, lore);
 	}

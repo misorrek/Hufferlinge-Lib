@@ -54,7 +54,8 @@ public class DatabaseManager
 		return connection != null;
 	}
 	
-	public @Nullable Connection getConnection()
+	@Nullable
+	public Connection getConnection()
 	{
 		return connection;
 	}

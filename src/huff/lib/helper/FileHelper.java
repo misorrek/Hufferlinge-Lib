@@ -40,7 +40,8 @@ public class FileHelper
 	 * @param   defaults   the optional default values for the case of an empty file
 	 * @returns            The loaded YamlConfiguration.
 	 */
-	public static @Nullable YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
+	@Nullable
+	public static YamlConfiguration loadYamlConfigurationFromFile(@NotNull String path, @Nullable String header, @Nullable Map<String, Object> defaults)
 	{
 		Validate.notNull((Object) path, "The yaml-file-path cannot be null.");
 		
@@ -82,7 +83,8 @@ public class FileHelper
 	 * @param   path     the path of the target value
 	 * @returns          The read value.
 	 */
-	public static @NotNull Object readConfigValue(@NotNull YamlConfiguration config, @NotNull String path)
+	@NotNull
+	public static Object readConfigValue(@NotNull YamlConfiguration config, @NotNull String path)
 	{
 		Validate.notNull((Object) config, "The yaml-configuration cannot be null.");
 		Validate.notNull((Object) path, "The config-value-path cannot be null.");
@@ -106,7 +108,8 @@ public class FileHelper
 	 * @param   jsonClass   the class of json object to be loaded
 	 * @returns            	The loaded object representing a json structure.
 	 */
-	public static @Nullable Object loadJsonObjectFromFile(@NotNull String path, @NotNull Class<?> jsonClass)
+	@Nullable
+	public static Object loadJsonObjectFromFile(@NotNull String path, @NotNull Class<?> jsonClass)
 	{
 		Validate.notNull((Object) path, "The json-file-path cannot be null.");
 		
@@ -202,7 +205,8 @@ public class FileHelper
 	 * @param   path   the path to the target file
 	 * @returns        The loaded file object.
 	 */
-	public static @Nullable File loadFile(@NotNull String path)
+	@Nullable
+	public static File loadFile(@NotNull String path)
 	{
 		Validate.notNull((Object) path, "The file-path cannot be null.");
 		
@@ -223,7 +227,8 @@ public class FileHelper
 	 * @param   file   the file object to read from
 	 * @returns        The read contents as a string.
 	 */
-	public static @NotNull String readFileContents(@NotNull File file)
+	@NotNull
+	public static String readFileContents(@NotNull File file)
 	{
 		Validate.notNull((Object) file, "The file cannot be null.");
 		

@@ -14,6 +14,7 @@ import javax.sql.rowset.RowSetProvider;
 
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -67,6 +68,7 @@ public class MojangApiStorage
 		} 		
 	}
 	
+	@Nullable
 	public static CachedRowSet getSQL(String statement, String value) throws SQLException 
 	{
 		try (Connection connection = hikari.getConnection()) 
@@ -99,7 +101,8 @@ public class MojangApiStorage
 		return true;
 	}
 	
-	private static @NotNull String getExpireTime(int expire)
+	@NotNull
+	private static String getExpireTime(int expire)
 	{
 		 return Long.toString((System.currentTimeMillis() / JavaHelper.SECOND_IN_MILLIS) + expire);
 	}

@@ -19,7 +19,8 @@ public class JavaHelper
 	 * @param   defaultValue   the default value in case of null
 	 * @return                 The value if its not null otherwise the default value.
 	 */
-	public static @NotNull <T> T getValueOrDefault(T value, T defaultValue) 
+	@NotNull
+	public static <T> T getValueOrDefault(T value, T defaultValue) 
 	{
 	    return value == null ? defaultValue : value;
 	}

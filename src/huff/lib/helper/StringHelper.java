@@ -56,7 +56,8 @@ public class StringHelper
 	 * @param   objects   a list of object to build
 	 * @return            The string built out of the objects
 	 */
-	public static @NotNull String build(@NotNull Object... objects)
+	@NotNull
+	public static String build(@NotNull Object... objects)
 	{
 		Validate.notNull(objects, "The build-part-objects cannot be null.");
 		
@@ -69,7 +70,8 @@ public class StringHelper
 		return builder.toString();
 	}
 	
-	public static @NotNull String toValueList(Class<? extends Enum<?>> enumClass)
+	@NotNull
+	public static String toValueList(Class<? extends Enum<?>> enumClass)
 	{
 		final StringBuilder builder = new StringBuilder();
 		final Enum<?>[] enumValues = enumClass.getEnumConstants();

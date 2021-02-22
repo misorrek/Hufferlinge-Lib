@@ -57,7 +57,8 @@ public class InventoryHelper
 	 * 
 	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
 	 */
-	public static @NotNull ItemStack getBorderItem()
+	@NotNull
+	public static  ItemStack getBorderItem()
 	{
 		return ItemHelper.getItemWithMeta(MATERIAL_BORDER, " ");
 	}
@@ -67,7 +68,8 @@ public class InventoryHelper
 	 * 
 	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
 	 */
-	public static @NotNull ItemStack getFillItem()
+	@NotNull
+	public static ItemStack getFillItem()
 	{
 		return ItemHelper.getItemWithMeta(MATERIAL_FILL, " ");
 	}
@@ -77,7 +79,8 @@ public class InventoryHelper
 	 * 
 	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
 	 */
-	public static @NotNull ItemStack getBackItem()
+	@NotNull
+	public static ItemStack getBackItem()
 	{		
 		return ItemHelper.getItemWithMeta(MATERIAL_RETURN, ITEM_BACK);
 	}
@@ -87,7 +90,8 @@ public class InventoryHelper
 	 * 
 	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
 	 */
-	public static @NotNull ItemStack getAbortItem()
+	@NotNull
+	public static ItemStack getAbortItem()
 	{
 		return ItemHelper.getItemWithMeta(MATERIAL_RETURN, ITEM_ABORT);
 	}
@@ -97,7 +101,8 @@ public class InventoryHelper
 	 * 
 	 * @return   The menu inventory item as "org.bukkit.inventory.ItemStack".
 	 */
-	public static @NotNull ItemStack getCloseItem()
+	@NotNull
+	public static ItemStack getCloseItem()
 	{
 		return ItemHelper.getItemWithMeta(MATERIAL_RETURN, ITEM_CLOSE);
 	}
@@ -173,7 +178,8 @@ public class InventoryHelper
 	 * @param   column      the column to the target slot
 	 * @return              The item stack at the target slot.
 	 */
-	public static @Nullable ItemStack getItem(@NotNull Inventory inventory, int row, int column)
+	@Nullable
+	public static ItemStack getItem(@NotNull Inventory inventory, int row, int column)
 	{
 		Validate.notNull((Object) inventory, "The inventory cannot be null.");	
 		
@@ -253,6 +259,7 @@ public class InventoryHelper
 	 * @param   topInventory    determines which inventory from the inventory view will be used 
 	 * @return                  The free slots. 
 	 */
+	@NotNull
 	public static List<Integer> getFreeSlots(@NotNull InventoryView inventoryView, boolean topInventory)
 	{
 		return getFreeSlots(inventoryView, topInventory, null);
@@ -266,6 +273,7 @@ public class InventoryHelper
 	 * @param   itemStack       the item with which the compatibility is checked
 	 * @return                  The free and compatible slots.
 	 */
+	@NotNull
 	public static List<Integer> getFreeSlots(@NotNull InventoryView inventoryView, boolean topInventory, @Nullable ItemStack itemStack)
 	{
 		Validate.notNull((Object) inventoryView, "The inventory view cannot be null.");
@@ -287,6 +295,7 @@ public class InventoryHelper
 		return freeSlots;
 	}
 	
+	@NotNull
 	public static List<Integer> getStorageSlots(@NotNull InventoryView inventoryView, boolean topInventory)
 	{
 		Validate.notNull((Object) inventoryView, "The inventory view cannot be null");
@@ -455,7 +464,8 @@ public class InventoryHelper
 	 * @return                The menu holder as specified type.
 	 */
 	@SuppressWarnings("unchecked")
-	public static @Nullable <T extends MenuHolder> T getMenuHolder(@Nullable Inventory inventory, Class<T> holderClass)
+	@Nullable
+	public static <T extends MenuHolder> T getMenuHolder(@Nullable Inventory inventory, Class<T> holderClass)
 	{
 		if (inventory == null)
 		{
@@ -477,7 +487,8 @@ public class InventoryHelper
 	 * @param   inventory     the inventory to get the holder from
 	 * @return                The holder of the given inventory.
 	 */
-	public static @Nullable InventoryHolder getHolder(@Nullable Inventory inventory)
+	@Nullable
+	public static InventoryHolder getHolder(@Nullable Inventory inventory)
 	{
 		return inventory != null ? inventory.getHolder() : null;
 	}
@@ -523,6 +534,7 @@ public class InventoryHelper
 	 * @param   slot   the slot to calculate the row and column from
 	 * @return         The calculated row and column as pair.
 	 */
+	@NotNull
 	public static Pair<Integer, Integer> getRowColumnFromSlot(int slot)
 	{
 		int row = slot / ROW_LENGTH;
