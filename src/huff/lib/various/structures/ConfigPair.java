@@ -50,7 +50,7 @@ public class ConfigPair<T> implements KeyDefaultValuePair<T>
 		
 		if (valueClass == String.class)
 		{
-			configValue = ConfigManager.CONFIG.getString(key);
+			configValue = ConfigManager.CONFIG.getString(key, (String) defaultValue);
 		}
 		else
 		{

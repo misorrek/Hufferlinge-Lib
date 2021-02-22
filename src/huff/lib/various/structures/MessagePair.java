@@ -46,7 +46,7 @@ public class MessagePair implements KeyDefaultValuePair<String>
 	@NotNull
 	public String getMessage(StringPair... contextParameters)
 	{
-		final String message = MessageManager.MESSAGE.getString(key, contextParameters);
+		final String message = MessageManager.MESSAGE.getString(key, defaultMessage, contextParameters);
 		
 		if (message != null)
 		{

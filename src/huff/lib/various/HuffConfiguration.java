@@ -185,16 +185,32 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     	return getString(path, new StringPair[0]);
     }
     
+    @Override
+    public String getString(@NotNull String path, @Nullable String defaultValue)
+    {
+    	return getString(path, defaultValue, new StringPair[0]);
+    }
+    
     @Nullable
-    public String getString(@NotNull String path, @NotNull StringPair... contextParameters) //TODO Caching
+    public String getString(@NotNull String path, @NotNull StringPair... contextParameters)
+    {
+    	return getString(path, null, contextParameters);
+    }
+    
+    @Nullable
+    public String getString(@NotNull String path, @Nullable String defaultValue, @NotNull StringPair... contextParameters) //TODO Caching
     {
     	Validate.notNull((Object) path, "The path cannot be null.");
     	
-    	final String content = super.getString(path);
-    	
+    	String content = super.getString(path);
+    		
     	if (content == null)
     	{
-    		return null;
+    		if (defaultValue == null)
+        	{
+    			return null;
+        	}
+    		content = defaultValue;
     	}
     	final StringBuffer contentBuffer = new StringBuffer(content);
     	
