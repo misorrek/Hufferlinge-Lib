@@ -349,6 +349,15 @@ public class InventoryHelper
 		return freeItemStackSpace;
 	}
 	
+	/**
+	 * Adds or merges the given item stack to the specified slots in the inventory if possible.
+	 * Imitates the default minecraft handling by merging before adding.
+	 * 
+	 * @param   inventory   the target inventory
+	 * @param   slots       the target slots in the inventory (local slot ID)
+	 * @param   itemStack   the item stack to add
+	 * @return              The amount of the item stack that can't be added.
+	 */
 	public static int addToInventorySlots(@NotNull Inventory inventory, @NotNull List<Integer> slots, @Nullable ItemStack itemStack)
 	{
 		if (itemStack == null)
@@ -441,10 +450,10 @@ public class InventoryHelper
 	}
 	
 	/**
+	 * Checks if the given inventory view is the internal crafting view of a player.
 	 * 
-	 * 
-	 * @param   view
-	 * @return
+	 * @param   view   the target inventory view.
+	 * @return         The check result.
 	 */
 	public static boolean isInternalCraftView(InventoryView view)
 	{

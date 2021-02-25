@@ -11,6 +11,9 @@ public class WrapperPlayServerOpenSignEditor extends AbstractPacket
 {
 	public static final PacketType TYPE = PacketType.Play.Server.OPEN_SIGN_EDITOR;
 
+	/**
+	 * @param   blockPosition   the position of the sign block to open the editor for
+	 */
 	public WrapperPlayServerOpenSignEditor(@NotNull BlockPosition blockPosition) 
 	{
 		this();
@@ -25,6 +28,9 @@ public class WrapperPlayServerOpenSignEditor extends AbstractPacket
 		handle.getModifier().writeDefaults();
 	}
 
+	/**
+	 * @param   packet   packet from the type "Play.Server.OPEN_SIGN_EDITOR"
+	 */
 	public WrapperPlayServerOpenSignEditor(PacketContainer packet) 
 	{
 		super(packet, TYPE);

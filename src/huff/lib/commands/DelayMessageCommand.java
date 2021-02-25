@@ -51,7 +51,7 @@ public class DelayMessageCommand extends HuffCommand
 			
 			if (targetPlayer == null)
 			{
-				sender.sendMessage(LibMessage.NOTFOUND.getMessage(new StringPair("user", args[1])));
+				sender.sendMessage(LibMessage.NOTFOUND.getValue(new StringPair("user", args[1])));
 				return true;
 			}
 			
@@ -65,12 +65,12 @@ public class DelayMessageCommand extends HuffCommand
 					builder.append(args[i] + " ");
 				}
 				delayMessageManager.addDelayMessage(targetPlayer, delayType, builder.toString().trim());
-				sender.sendMessage(LibMessage.DELAYMESSAGE_SAVED.getMessage());
+				sender.sendMessage(LibMessage.DELAYMESSAGE_SAVED.getValue());
 				return true;
 			}
 			catch (IllegalArgumentException exception)
 			{
-				sender.sendMessage(LibMessage.DELAYMESSAGE_INVALIDTYPE.getMessage(new StringPair("types", StringHelper.toValueList(DelayType.class))));
+				sender.sendMessage(LibMessage.DELAYMESSAGE_INVALIDTYPE.getValue(new StringPair("types", StringHelper.toValueList(DelayType.class))));
 				return true;
 			}
 		}

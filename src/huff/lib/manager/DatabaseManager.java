@@ -14,8 +14,18 @@ import org.jetbrains.annotations.Nullable;
 import huff.lib.helper.MessageHelper;
 import huff.lib.various.LibConfig;
 
+/**
+ * A manager class that creates and holds a connection to a sql database.
+ */
 public class DatabaseManager 
 {
+	/**
+	 * @param   host       the sql users host address
+	 * @param   port       the sql users port
+	 * @param   name       the sql database name
+	 * @param   username   the sql username
+	 * @param   password   the sql users password
+	 */
 	public DatabaseManager(@NotNull String host, @NotNull String port, @NotNull String name, 
 			               @NotNull String username, @NotNull String password)
 	{
@@ -32,6 +42,9 @@ public class DatabaseManager
 		this.password = password;
 	}
 	
+	/**
+	 * Uses the connection details from the configuration.
+	 */
 	public DatabaseManager()
 	{
 		this(LibConfig.DATABASE_HOST.getValue(),
@@ -49,17 +62,31 @@ public class DatabaseManager
 	
 	private Connection connection;
 	
+	/**
+	 * Checks if a connection to the sql database exists.
+	 * 
+	 * @return   The check result.
+	 */
 	public boolean isConnected()
 	{	
 		return connection != null;
 	}
 	
+	/**
+	 * Gets the connection to the sql database.
+	 * If no connection exists null will be returned.
+	 * 
+	 * @return   The sql connection.
+	 */
 	@Nullable
 	public Connection getConnection()
 	{
 		return connection;
 	}
 	
+	/**
+	 * Tries to connect to the sql database with the specified details.
+	 */
 	public void connect()
 	{		
 		if(!isConnected()) 
@@ -77,6 +104,9 @@ public class DatabaseManager
 		}
 	}
 	
+	/**
+	 * Disconnects the connection to the sql database if one exists.
+	 */
 	public void disconnect() 
 	{
 		if(isConnected()) 
@@ -93,6 +123,15 @@ public class DatabaseManager
 		}
 	}
 	
+	/**
+	 * Gets a prepared sql statement in which the given objects are inserted.
+	 * 
+	 * @param   statement      the sql statement. 
+	 * @param   objects        the objects to insert in the statement
+	 * @return                 The prepared sql statement.
+	 * 
+	 * @throws  SQLException   if no connection exists
+	 */
 	@NotNull
 	public PreparedStatement prepareStatement(String statement, Object... objects) throws SQLException
 	{

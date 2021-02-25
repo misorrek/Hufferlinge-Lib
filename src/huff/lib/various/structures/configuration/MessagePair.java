@@ -1,11 +1,15 @@
-package huff.lib.various.structures;
+package huff.lib.various.structures.configuration;
 
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import huff.lib.manager.MessageManager;
+import huff.lib.various.structures.StringPair;
 
-public class MessagePair implements KeyDefaultValuePair<String>
+/**
+ * A configuration key string value store to retrieve a value or a default value from the message manager.
+ */
+public class MessagePair implements ConfigKeyValue<String>
 {
 	public MessagePair(@NotNull String key, @NotNull String defaultMessage)
 	{
@@ -19,32 +23,32 @@ public class MessagePair implements KeyDefaultValuePair<String>
 	private final String key;
 	private final String defaultMessage;
 	
-	@NotNull
+	@Override
 	public String getKey()
 	{
 		return key;
 	}
 	
-	@NotNull
+	@Override
 	public String getKeyLink()
 	{
 		return "{" + key + "}";
 	}
 	
-	@NotNull
+	@Override
 	public String getDefaultValue()
 	{
 		return defaultMessage;
 	}
 	
-	@NotNull
-	public String getMessage()
+	@Override
+	public String getValue()
 	{
-		return getMessage(new StringPair[0]);
+		return getValue(new StringPair[0]);
 	}
 	
-	@NotNull
-	public String getMessage(StringPair... contextParameters)
+	@Override
+	public String getValue(StringPair... contextParameters)
 	{
 		final String message = MessageManager.MESSAGE.getString(key, defaultMessage, contextParameters);
 		

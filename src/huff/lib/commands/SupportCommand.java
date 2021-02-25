@@ -54,7 +54,7 @@ public class SupportCommand extends HuffCommand implements Listener
 	{ 
 		if (!(sender instanceof Player)) 
 		{
-			sender.sendMessage(LibMessage.NOTINCONSOLE.getMessage());
+			sender.sendMessage(LibMessage.NOTINCONSOLE.getValue());
 			return false;
 		}	
 		final Player player = (Player) sender;
@@ -88,11 +88,11 @@ public class SupportCommand extends HuffCommand implements Listener
 		
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
-			player.sendMessage(LibMessage.SUPPORT_TEAM_HELP.getMessage());
+			player.sendMessage(LibMessage.SUPPORT_TEAM_HELP.getValue());
 		}
 		else
 		{ 
-			player.sendMessage(LibMessage.SUPPORT_USER_HELP.getMessage());
+			player.sendMessage(LibMessage.SUPPORT_USER_HELP.getValue());
 		}
 		return false;
 	}
@@ -101,19 +101,19 @@ public class SupportCommand extends HuffCommand implements Listener
 	{
 		if (PermissionHelper.hasPlayerPermission(player, PERM_SUPPORT))
 		{
-			player.sendMessage(LibMessage.SUPPORT_TEAM_CREATE.getMessage());
+			player.sendMessage(LibMessage.SUPPORT_TEAM_CREATE.getValue());
 			return false;
 		}
 		
 		if (supportMap.containsKey(player.getUniqueId()))
 		{
-			player.sendMessage(LibMessage.SUPPORT_USER_ALREADYOPEN.getMessage());
+			player.sendMessage(LibMessage.SUPPORT_USER_ALREADYOPEN.getValue());
 			return false;
 		}
 		
 		supportMap.add(player.getUniqueId());
-		MessageHelper.sendPermssionMessage(PERM_SUPPORT, LibMessage.SUPPORT_TEAM_USERCREATE.getMessage());
-		player.sendMessage(LibMessage.SUPPORT_USER_CREATE.getMessage());
+		MessageHelper.sendPermssionMessage(PERM_SUPPORT, LibMessage.SUPPORT_TEAM_USERCREATE.getValue());
+		player.sendMessage(LibMessage.SUPPORT_USER_CREATE.getValue());
 		return true;
 	}
 	
@@ -148,13 +148,13 @@ public class SupportCommand extends HuffCommand implements Listener
 			
 			if (supportChat == null)
 			{
-				player.sendMessage(LibMessage.SUPPORT_TEAM_CANTLEAVE.getMessage());
+				player.sendMessage(LibMessage.SUPPORT_TEAM_CANTLEAVE.getValue());
 				return false;
 			}
 			else
 			{
-				sendChannelMessage(supportChat, LibMessage.SUPPORT_CHANNEL_TEAMLEAVE.getMessage(new StringPair("team", player.getName())), true);
-				player.sendMessage(LibMessage.SUPPORT_TEAM_LEAVE.getMessage(new StringPair("user", Bukkit.getPlayer(supportChat).getName())));
+				sendChannelMessage(supportChat, LibMessage.SUPPORT_CHANNEL_TEAMLEAVE.getValue(new StringPair("team", player.getName())), true);
+				player.sendMessage(LibMessage.SUPPORT_TEAM_LEAVE.getValue(new StringPair("user", Bukkit.getPlayer(supportChat).getName())));
 				supportMap.get(supportChat).remove(player.getUniqueId());
 				return true;
 			}							
@@ -163,13 +163,13 @@ public class SupportCommand extends HuffCommand implements Listener
 		{
 			if (!supportMap.containsKey(player.getUniqueId()))
 			{
-				player.sendMessage(LibMessage.SUPPORT_USER_CANTLEAVE.getMessage());
+				player.sendMessage(LibMessage.SUPPORT_USER_CANTLEAVE.getValue());
 				return false;
 			}
 			else
 			{
-				sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERDELETE.getMessage(new StringPair("user", player.getName())), false);			
-				player.sendMessage(LibMessage.SUPPORT_USER_USERDELETE.getMessage());				
+				sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERDELETE.getValue(new StringPair("user", player.getName())), false);			
+				player.sendMessage(LibMessage.SUPPORT_USER_USERDELETE.getValue());				
 				supportMap.remove(player.getUniqueId());
 				return true;
 			}
@@ -183,7 +183,7 @@ public class SupportCommand extends HuffCommand implements Listener
 		if (currentSupportChat != null)
 		{
 			
-			player.sendMessage(LibMessage.SUPPORT_TEAM_ALREADYENTERED.getMessage(new StringPair("user", Bukkit.getOfflinePlayer(currentSupportChat).getName())));
+			player.sendMessage(LibMessage.SUPPORT_TEAM_ALREADYENTERED.getValue(new StringPair("user", Bukkit.getOfflinePlayer(currentSupportChat).getName())));
 			return false;
 		}
 		Validate.notNull((Object) targetName, "The player-target-name cannot be null.");
@@ -192,16 +192,16 @@ public class SupportCommand extends HuffCommand implements Listener
 		
 		if (targetPlayer == null || !supportMap.containsKey(targetPlayer.getUniqueId()))
 		{
-			player.sendMessage(LibMessage.SUPPORT_TEAM_NOTFOUND.getMessage());
+			player.sendMessage(LibMessage.SUPPORT_TEAM_NOTFOUND.getValue());
 			return false;
 		}
 		supportMap.get(targetPlayer.getUniqueId()).add(player.getUniqueId());
 		
 		MessageHelper.sendPermssionMessage(PERM_SUPPORT, 
-				LibMessage.SUPPORT_TEAM_ENTEROTHER.getMessage(new StringPair("team", player.getName()), new StringPair("user",targetName)), 
+				LibMessage.SUPPORT_TEAM_ENTEROTHER.getValue(new StringPair("team", player.getName()), new StringPair("user",targetName)), 
 				player.getName());
-		sendChannelMessage(targetPlayer.getUniqueId(), LibMessage.SUPPORT_CHANNEL_TEAMENTER.getMessage(new StringPair("team", player.getName())), true);
-		player.sendMessage(LibMessage.SUPPORT_TEAM_ENTER.getMessage(new StringPair("user", targetName)));
+		sendChannelMessage(targetPlayer.getUniqueId(), LibMessage.SUPPORT_CHANNEL_TEAMENTER.getValue(new StringPair("team", player.getName())), true);
+		player.sendMessage(LibMessage.SUPPORT_TEAM_ENTER.getValue(new StringPair("user", targetName)));
 		return true;	
 	}
 	
@@ -213,16 +213,16 @@ public class SupportCommand extends HuffCommand implements Listener
 		
 		if (targetPlayer == null || !supportMap.containsKey(targetPlayer.getUniqueId()))
 		{
-			player.sendMessage(LibMessage.SUPPORT_TEAM_NOTFOUND.getMessage());
+			player.sendMessage(LibMessage.SUPPORT_TEAM_NOTFOUND.getValue());
 			return false;
 		}
 		supportMap.remove(targetPlayer.getUniqueId());	
 		
 		MessageHelper.sendPermssionMessage(PERM_SUPPORT, 
-				LibMessage.SUPPORT_CHANNEL_TEAMDELETE.getMessage(new StringPair("team", player.getName()), new StringPair("user", targetName)),
+				LibMessage.SUPPORT_CHANNEL_TEAMDELETE.getValue(new StringPair("team", player.getName()), new StringPair("user", targetName)),
 				player.getName());
-		targetPlayer.sendMessage(LibMessage.SUPPORT_USER_TEAMDELETE.getMessage());
-		player.sendMessage(LibMessage.SUPPORT_TEAM_TEAMDELETE.getMessage(new StringPair("user", targetName)));
+		targetPlayer.sendMessage(LibMessage.SUPPORT_USER_TEAMDELETE.getValue());
+		player.sendMessage(LibMessage.SUPPORT_TEAM_TEAMDELETE.getValue(new StringPair("user", targetName)));
 		return true;
 	}
 	
@@ -267,12 +267,12 @@ public class SupportCommand extends HuffCommand implements Listener
 			
 			if (targetChat != null)
 			{
-				sendChannelMessage(targetChat, LibMessage.SUPPORT_CHANNEL_TEAMPREFIX.getMessage(new StringPair("team", player.getName()), new StringPair("text", msg)), true);
+				sendChannelMessage(targetChat, LibMessage.SUPPORT_CHANNEL_TEAMPREFIX.getValue(new StringPair("team", player.getName()), new StringPair("text", msg)), true);
 			}
 		}
 		else if (supportMap.containsKey(player.getUniqueId()))
 		{
-			sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERPREFIX.getMessage(new StringPair("user", player.getName()), new StringPair("text", msg)), true);
+			sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERPREFIX.getValue(new StringPair("user", player.getName()), new StringPair("text", msg)), true);
 		}
 		event.setCancelled(true);
 	}
@@ -288,13 +288,13 @@ public class SupportCommand extends HuffCommand implements Listener
 			
 			if (targetChat != null)
 			{
-				sendChannelMessage(targetChat, LibMessage.SUPPORT_CHANNEL_TEAMLEAVE.getMessage(new StringPair("team", player.getName())), true);
+				sendChannelMessage(targetChat, LibMessage.SUPPORT_CHANNEL_TEAMLEAVE.getValue(new StringPair("team", player.getName())), true);
 				supportMap.get(targetChat).remove(player.getUniqueId());
 			}
 		}
 		else if (supportMap.containsKey(player.getUniqueId()))
 		{
-			sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERDISCONNECT.getMessage(new StringPair("user", player.getName())), false);
+			sendChannelMessage(player.getUniqueId(), LibMessage.SUPPORT_CHANNEL_USERDISCONNECT.getValue(new StringPair("user", player.getName())), false);
 			supportMap.remove(player.getUniqueId());
 		}
 	}

@@ -26,6 +26,11 @@ import org.jetbrains.annotations.Nullable;
 import huff.lib.helper.PermissionHelper;
 import huff.lib.various.structures.StringPair;
 
+/**
+ * The base for all hufferlinge commands.
+ * Contains the command registration, the command handling and the tab completion.
+ * There is no need to register the commands manually in the plugin.yml - simply set all details like description or alias and run "registerCommand". 
+ */
 public abstract class HuffCommand extends Command implements CommandExecutor, PluginIdentifiableCommand 
 {
     protected HuffCommand(@NotNull JavaPlugin plugin, @NotNull String name) 
@@ -64,7 +69,7 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
     		
     		if (StringUtils.isNotBlank(usage))
     		{
-    			sender.sendMessage(LibMessage.WRONGINPUT.getMessage(new StringPair("text", usage)));
+    			sender.sendMessage(LibMessage.WRONGINPUT.getValue(new StringPair("text", usage)));
     		}
     		return false;
     	}
@@ -94,6 +99,12 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
         return tabCompletion;
     }
     
+    /**
+     * Registers the command at the server.
+     * Before run the registration set all details like description or alias. Details set after the registration have no effect.
+     * 
+     * @return   Whether the command were registered or not.
+     */
     protected boolean registerCommand() 
     {
         if (!register) 
@@ -116,6 +127,11 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
         return register;
     }
     
+    /**
+     * Sets all given strings as alias for the command.
+     * 
+     * @param   aliases   strings representing the aliases
+     */
     protected void setAliases(String... aliases) 
     {
         if (aliases != null && (register || aliases.length > 0))
@@ -124,32 +140,56 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
         }    
     }
     
-    protected void addTabCompletion(int index, @NotNull String... arg) 
+    /**
+     * Adds the given parameter suggestions at the specified index.
+     * 
+     * @param   index         the index of the target parameter starting at zero
+     * @param   suggestions   the suggestions for the target parameter     
+     */
+    protected void addTabCompletion(int index, @NotNull String... suggestions) 
     {
-        addTabCompletion(index, null, new String[0], arg);
+        addTabCompletion(index, null, new String[0], suggestions);
     }
 
-    protected void addTabCompletion(int index, @Nullable String permission, @Nullable String[] beforeText, @NotNull String... arg) 
+    /**
+     * Adds the given parameter suggestions at the specified index.
+     * If the suggestions will be shown depends on the given permission and before texts.
+     * 
+     * @param   index         the index of the target parameter starting at zero
+     * @param   permission    the permission that a player needs to show the parameter suggestions
+     * @param   beforeText    parameters that must be entered one index before to show the parameter suggestions
+     * @param   suggestions   the suggestions for the target parameter     
+     */
+    protected void addTabCompletion(int index, @Nullable String permission, @Nullable String[] beforeText, @NotNull String... suggestions) 
     {
-        addTabCompletion(index, permission, beforeText == null || beforeText.length == 0 ? null : Collections.singletonMap(index -1, Arrays.asList(beforeText)), arg);
+        addTabCompletion(index, permission, beforeText == null || beforeText.length == 0 ? null : Collections.singletonMap(index -1, Arrays.asList(beforeText)), suggestions);
     }
     
-    protected void addTabCompletion(int index, @Nullable String permission, @Nullable Map<Integer, List<String>> beforeText, @NotNull String... arg) 
+    /**
+     * Adds the given parameter suggestions at the specified index.
+     * If the suggestions will be shown depends on the given permission and before texts.
+     * 
+     * @param   index         the index of the target parameter starting at zero
+     * @param   permission    the permission that a player needs to show the parameter suggestions
+     * @param   beforeText    parameters of specified indexes that must be entered before to show the parameter suggestions
+     * @param   suggestions   the suggestions for the target parameter     
+     */
+    protected void addTabCompletion(int index, @Nullable String permission, @Nullable Map<Integer, List<String>> beforeText, @NotNull String... suggestions) 
     {
-    	Validate.notNull(((Object) arg), "The completion arguments cannot be null.");
+    	Validate.notNull(((Object) suggestions), "The suggestions cannot be null.");
     	
-        if (arg.length > 0 && index >= 0) 
+        if (suggestions.length > 0 && index >= 0) 
         {
             if (tabCompletion.containsKey(index))  
             {
-                tabCompletion.get(index).addAll(Arrays.stream(arg).collect(
+                tabCompletion.get(index).addAll(Arrays.stream(suggestions).collect(
                         ArrayList::new,
                         (tabCommands, s) -> tabCommands.add(new TabCompletion(s, permission, beforeText)),
                         ArrayList::addAll));
             }
             else 
             {
-                tabCompletion.put(index, Arrays.stream(arg).collect(
+                tabCompletion.put(index, Arrays.stream(suggestions).collect(
                         ArrayList::new,
                         (tabCommands, s) -> tabCommands.add(new TabCompletion(s, permission, beforeText)),
                         ArrayList::addAll)
@@ -160,6 +200,9 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
 
     // T A B C O M P L E T I O N
     
+    /**
+     * Represents one suggestion for the command.
+     */
     private static class TabCompletion 
     {
         private final String text;
@@ -181,18 +224,36 @@ public abstract class HuffCommand extends Command implements CommandExecutor, Pl
             }
         }
 
+        /**
+         * Gets the suggestion.
+         * 
+         * @return   The suggestion.
+         */
         @NotNull
         public String getText() 
         {
             return text;
         }
 
+        /**
+         * Gets the permission needed to show the suggestion.
+         * 
+         * 
+         * @return   The permission.
+         */
         @Nullable
         public String getPermission() 
         {
             return permission;
         }
         
+        /**
+         * Checks if the current argument path fits to the needed to show the suggestion.
+         * E.g. /command arg1 arg2 arg3 - Checks if arg1, arg2, arg3 fits to show the suggestion.
+         * 
+         * @param   args   the current arguments
+         * @return         The check result.
+         */
         public boolean containsTextBefore(@NotNull String[] args)
         {
         	if (textBefore != null)

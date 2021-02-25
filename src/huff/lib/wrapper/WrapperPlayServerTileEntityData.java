@@ -11,6 +11,11 @@ public class WrapperPlayServerTileEntityData extends AbstractPacket
 {
 	public static final PacketType TYPE = PacketType.Play.Server.TILE_ENTITY_DATA;
 
+	/**
+	 * @param   blockPosition   the position of the block to change the tile entity data for 
+	 * @param   action          the action type
+	 * @param   nbtBase         the updated nbt data
+	 */
 	public WrapperPlayServerTileEntityData(@NotNull BlockPosition blockPosition, int action, @NotNull NbtBase<?> nbtBase) 
 	{
 		this();
@@ -27,6 +32,9 @@ public class WrapperPlayServerTileEntityData extends AbstractPacket
 		handle.getModifier().writeDefaults();
 	}
 
+	/**
+	 * @param   packet   packet from the type "Play.Server.TILE_ENTITY_DATA"
+	 */
 	public WrapperPlayServerTileEntityData(PacketContainer packet) 
 	{
 		super(packet, TYPE);

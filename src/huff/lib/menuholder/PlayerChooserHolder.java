@@ -42,7 +42,7 @@ public class PlayerChooserHolder extends MenuHolder
 	 */
 	public PlayerChooserHolder(@NotNull JavaPlugin plugin, @NotNull List<UUID> players, int size, @Nullable String title, MenuExitType menuExitType, Action chooseAction)
 	{
-		super("playerchooser", checkSize(size), title != null ? title : LibMessage.TITLE_PLAYERCHOOSER.getMessage(), menuExitType);
+		super("playerchooser", checkSize(size), title != null ? title : LibMessage.TITLE_PLAYERCHOOSER.getValue(), menuExitType);
 		
 		Validate.notNull((Object) plugin, "The plugin instance cannot be null.");
 		Validate.notNull((Object) players, "The player list cannot be null.");

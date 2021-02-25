@@ -3,8 +3,8 @@ package huff.lib.various;
 import org.bukkit.util.BoundingBox;
 
 import huff.lib.manager.ConfigManager;
-import huff.lib.various.structures.ConfigPair;
 import huff.lib.various.structures.Point;
+import huff.lib.various.structures.configuration.ConfigPair;
 
 public class LibConfig
 {

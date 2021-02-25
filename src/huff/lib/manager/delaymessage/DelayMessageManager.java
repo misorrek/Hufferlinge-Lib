@@ -21,6 +21,9 @@ import huff.lib.various.Constants;
 import huff.lib.various.LibMessage;
 import huff.lib.helper.IndependencyHelper;
 
+/**
+ * A manager class for delayed messages e.g. for offline messages.
+ */
 public class DelayMessageManager
 {	
 	public DelayMessageManager(@NotNull JavaPlugin plugin)
@@ -48,11 +51,26 @@ public class DelayMessageManager
 	private final String jsonFilePath;
 	private final JsonDelayMessages jsonDelayMessages;
 	
+	/**
+	 * Stores a new delayed message and sends it when the delay type triggers. 
+	 * 
+	 * @param   uuid        the target players uuid
+	 * @param   delayType   the delay type that determines the trigger to send the message
+	 * @param   message     the message to send
+	 */
 	public void addDelayMessage(@NotNull UUID uuid, DelayType delayType, @NotNull String message)
 	{
 		addDelayMessage(uuid, delayType, null, message);
 	}
 	
+	/**
+	 * Stores a new delayed message with custom prefix and sends it when the delay type triggers. 
+	 * 
+	 * @param   uuid        the target players uuid
+	 * @param   delayType   the delay type that determines the trigger to send the message
+	 * @param   prefix      the custom prefix
+	 * @param   message     the message to send
+	 */
 	public void addDelayMessage(@NotNull UUID uuid, DelayType delayType, @Nullable String prefix, @NotNull String message)
 	{		
 		Validate.notNull((Object) uuid, "The uuid cannot be null.");
@@ -69,6 +87,14 @@ public class DelayMessageManager
 		saveJsonObjectToFile();
 	}
 	
+	/**
+	 * Gets all stored delayed messages from the specific type of the given player. 
+	 * If no messages can be found the list will be returned empty.
+	 * 
+	 * @param   player      the target player
+	 * @param   delayType   the target delay type
+	 * @return              The stored delayed messages.
+	 */
 	@NotNull
 	public List<String> getDelayMessages(@NotNull Player player, DelayType delayType)
 	{
@@ -101,7 +127,7 @@ public class DelayMessageManager
 				}
 				else
 				{
-					resultMessages.add(LibMessage.PREFIX_DELAYMESSAGE.getMessage() + playerMessage.message);
+					resultMessages.add(LibMessage.PREFIX_DELAYMESSAGE.getValue() + playerMessage.message);
 				}
 			}
 			
@@ -118,6 +144,13 @@ public class DelayMessageManager
 		return resultMessages;
 	}
 	
+	/**
+	 * Sends all stored delayed messages from the specific type of the given player to that player. 
+	 * If no messages can be found nothing will be send.
+	 * 
+	 * @param   player      the target player
+	 * @param   delayType   the target delay type
+	 */
 	public void sendDelayMessages(@NotNull Player player, DelayType delayType)
 	{
 		final List<String> delayMessages = getDelayMessages(player, delayType);

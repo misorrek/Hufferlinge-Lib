@@ -32,7 +32,7 @@ public class TestCommand extends HuffCommand
 	{		
 		if (!(sender instanceof Player))
 		{
-			sender.sendMessage(LibMessage.NOTINCONSOLE.getMessage());		
+			sender.sendMessage(LibMessage.NOTINCONSOLE.getValue());		
 			return false;
 		}
 		SignHelper.openSignInput((Player) sender, SignHelper.getInputLines("Deine Eingabe", "---"));

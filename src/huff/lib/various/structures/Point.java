@@ -7,6 +7,10 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A data class that stores a point from a three dimensional coordinate system.
+ * Also (de-)serializable by configuration.
+ */
 @SerializableAs(value = "Point")
 public class Point implements ConfigurationSerializable
 {

@@ -48,12 +48,12 @@ public class TellCommand extends HuffCommand
 					builder.append(args[i] + " ");
 				}
 				
-				sender.sendMessage(LibMessage.TELL_TOPREFIX.getMessage(new StringPair("user", target.getName()), new StringPair("text", builder.toString())));
-				target.sendMessage(LibMessage.TELL_FROMPREFIX.getMessage(new StringPair("user", getSenderName(sender)), new StringPair("text", builder.toString())));
+				sender.sendMessage(LibMessage.TELL_TOPREFIX.getValue(new StringPair("user", target.getName()), new StringPair("text", builder.toString())));
+				target.sendMessage(LibMessage.TELL_FROMPREFIX.getValue(new StringPair("user", getSenderName(sender)), new StringPair("text", builder.toString())));
 			} 
 			else
 			{
-				sender.sendMessage(LibMessage.NOTFOUND.getMessage(new StringPair("user", args[0])));
+				sender.sendMessage(LibMessage.NOTFOUND.getValue(new StringPair("user", args[0])));
 			} 
 			return true;
 		}
@@ -63,7 +63,7 @@ public class TellCommand extends HuffCommand
 	@NotNull
 	private String getSenderName(CommandSender sender)
 	{
-		return (sender instanceof Player) ? sender.getName() : LibMessage.TITLE_CONSOLE.getMessage();
+		return (sender instanceof Player) ? sender.getName() : LibMessage.TITLE_CONSOLE.getValue();
 	}
 	
 	// T A B C O M P L E T I O N

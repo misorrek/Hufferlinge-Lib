@@ -6,6 +6,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import huff.lib.manager.mojangapi.MojangApiManager;
 
+/**
+ * A listener class that handles player name cache at player join.
+ */
 public class CacheListener implements Listener
 {	
 	@EventHandler

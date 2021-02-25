@@ -52,7 +52,7 @@ public class PermissionHelper
 	{	
 		if(!hasPlayerPermission(sender, permission)) 
 		{
-			sender.sendMessage(LibMessage.NOPERMISSION.getMessage());			
+			sender.sendMessage(LibMessage.NOPERMISSION.getValue());			
 			return false;
 		}		
 		return true;
@@ -61,7 +61,7 @@ public class PermissionHelper
 	// L U C K P E R M S
 	
 	/**
-	 * Gets the LuckPerms provider from the bukkit ServicesManager.
+	 * Gets the LuckPerms provider from the bukkit services manager.
 	 * 
 	 * @return   The LuckPerms provider.
 	 */

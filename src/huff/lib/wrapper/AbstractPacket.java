@@ -13,6 +13,10 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.google.common.base.Objects;
 
+/*
+ * Represents a abstract minecraft client server connection packet.
+ * Contains general handling like send and receive or the packet handle.
+ */
 public abstract class AbstractPacket 
 {
 	/**

@@ -2,6 +2,9 @@ package huff.lib.various.structures;
 
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A data class to store two string values in.
+ */
 public class StringPair
 {
 	public StringPair(@Nullable String value1, @Nullable String value2)

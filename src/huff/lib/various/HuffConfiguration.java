@@ -21,12 +21,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import huff.lib.helper.JavaHelper;
-import huff.lib.various.structures.KeyDefaultValuePair;
 import huff.lib.various.structures.StringPair;
+import huff.lib.various.structures.configuration.KeyDefaultValue;
 
 /**
- * 
- * 
+ * The base for all hufferlinge configuration.
+ * Contains the loading, retrieving and saving of a configuration.
+ * Contains also the option to write commands or use content links ({link.to.another.path}) or context parameters (%given_at_runtime%).
  */
 public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
 {
@@ -38,6 +39,13 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
 
 	// I O
 	
+	/**
+	 * Tries to load a configuration from a given yaml file.
+	 * If nothing can be loaded a empty configuration will be returned.
+	 * 
+	 * @param   file   the target file
+	 * @return         The loaded or created configuration.
+	 */
 	@NotNull
 	public static HuffConfiguration loadConfiguration(@NotNull File file)
 	{
@@ -51,8 +59,7 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
 		} 
 		catch (IOException | InvalidConfigurationException exception)
 		{
-			System.out.println(exception.toString());
-			//Bukkit.getLogger().log(Level.SEVERE, exception, () -> "Cannot load configuration from file \"" + file + "\".");
+			Bukkit.getLogger().log(Level.SEVERE, exception, () -> "Cannot load configuration from file \"" + file + "\".");
 		}
 		return config;
 	}
@@ -143,7 +150,12 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
         }
     }
     
-    public void set(@NotNull KeyDefaultValuePair<?> pair)
+    /**
+     * Sets a value (default value) to the given path (key).
+     * 
+     * @param   pair   a key (path) value (default value) structure
+     */
+    public void set(@NotNull KeyDefaultValue<?> pair)
     {
     	Object defaultValue = pair.getDefaultValue();
     	
@@ -157,6 +169,13 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     	}
     }
     
+    /**
+     * Adds the paths contained by the given configuration to the defaults in this configurations.
+     * Tries to save the current configuration at the specified path.
+     * 
+     * @param   defaults   a configuration with paths to use as default values
+     * @param   path       the path of the yaml file for this configuration
+     */
     public void addDefaults(@NotNull HuffConfiguration defaults, @NotNull String path) 
     {
         super.addDefaults(defaults);
@@ -174,10 +193,11 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     }
     
     /**
+     * Tries to retrieve a string from the specified path.
+     * If no string can be retrieved null will be returned.
      * 
-     * 
-     * @param   path
-     * @return      
+     * @param   path                the path to retrieve the data from
+     * @return                      The retrieved string.
      */
     @Override
     public String getString(@NotNull String path)
@@ -185,18 +205,45 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     	return getString(path, new StringPair[0]);
     }
     
+    /**
+     * Tries to retrieve a string from the specified path.
+     * If no string can be retrieved the given default value will be used.
+     * 
+     * @param   path                the path to retrieve the data from
+     * @param   defaultValue        a default value in case nothing can be retrieved
+     * @return                      The retrieved string.
+     */
     @Override
     public String getString(@NotNull String path, @Nullable String defaultValue)
     {
     	return getString(path, defaultValue, new StringPair[0]);
     }
     
+    /**
+     * Tries to retrieve a string from the specified path.
+     * If no string can be retrieved null will be returned.
+     * After retrieving the placeholder's for context parameters will be replaced with the given ones.
+     * 
+     * @param   path                the path to retrieve the data from
+     * @param   contextParameters   the data to fill the placeholder's
+     * @return                      The retrieved and filled string.
+     */
     @Nullable
     public String getString(@NotNull String path, @NotNull StringPair... contextParameters)
     {
     	return getString(path, null, contextParameters);
     }
     
+    /**
+     * Tries to retrieve a string from the specified path.
+     * If no string can be retrieved the given default value will be used.
+     * After retrieving the placeholder's for context parameters will be replaced with the given ones.
+     * 
+     * @param   path                the path to retrieve the data from
+     * @param   defaultValue        a default value in case nothing can be retrieved
+     * @param   contextParameters   the data to fill the placeholder's
+     * @return                      The retrieved and filled string.
+     */
     @Nullable
     public String getString(@NotNull String path, @Nullable String defaultValue, @NotNull StringPair... contextParameters) //TODO Caching
     {
@@ -226,6 +273,7 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
 		final Matcher matcher = pattern.matcher(content.toString());
 		content.setLength(0);
     	
+		
     	while (matcher.find())
     	{
     		final Object linkedObject = super.get(matcher.group().replaceAll("[{}]", ""));
@@ -263,8 +311,9 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     // A D D I T A T I O N
     
     /**
+     * Create a custom line from type "EMPTY_LINE".
      * 
-     * @param path
+     * @param   path             the path to link the custom line to
      */
     public void addEmptyLine(@NotNull String path) 
     {
@@ -272,11 +321,12 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     }
     
     /**
-     * 
-     * @param path
-     * @param content
-     * @param alignedWithKey
-     */
+	 * Create a custom line from type "COMMENT_LINE".
+	 * 
+	 * @param   path             the path to link the custom line to
+	 * @param   content          the content for the custom line
+	 * @param   alignedWithKey   determines whether the custom line has the same space like the linked path or is directly at the edge
+	 */
     public void addCommentLine(@NotNull String path, @NotNull String content, boolean alignedWithKey) 
     {
     	Validate.notNull((Object) content, "The custom line content cannot be null");
@@ -285,12 +335,13 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     }
     
     /**
-     * 
-     * @param path
-     * @param prefix
-     * @param content
-     * @param alignedWithKey
-     */
+	 * Create a custom line from type "COMMENT_LINE".
+	 * 
+	 * @param   path             the path to link the custom line to
+	 * @param   prefix           a custom prefix for the custom line that matches the regex "[^# ]"
+	 * @param   content          the content for the custom line
+	 * @param   alignedWithKey   determines whether the custom line has the same space like the linked path or is directly at the edge
+	 */
     public void addCommentLine(@NotNull String path, @NotNull String prefix, @NotNull String content, boolean alignedWithKey) 
     {
     	Validate.notNull((Object) prefix, "The custom line prefix cannot be null");
@@ -300,10 +351,11 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     }
     
     /**
-     * 
-     * @param path
-     * @param contextParameters
-     */
+	 * Adds a custom line from type "CONTEXT_LINE".
+	 * 
+	 * @param   path                the path to link the custom line to
+	 * @param   contextParameters   the available context parameters at the linked path
+	 */
     public void addContextLine(@NotNull String path, @NotNull String... contextParameters)
     {
     	Validate.notNull((Object) contextParameters, "The context parameters cannot be null");
@@ -469,11 +521,17 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     	COMMENT_LINE,
     	CONTEXT_LINE;
     }
-    
+   
+    /**
+     * Represents one custom line like a empty line, a command or a context line that is linked to a path in the configuration.
+     */
     private class CustomLine
     {
     	public static final String CONTEXT_PREFIX = "#%# ";
     	
+    	/**
+    	 * Create a custom line from type "EMPTY_LINE".
+    	 */
     	public CustomLine()
     	{
     		this.type = CustomLineType.EMPTY_LINE;
@@ -482,6 +540,13 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     		this.alignedWithKey = false;
     	}
     	
+    	/**
+    	 * Create a custom line from type "COMMENT_LINE".
+    	 * 
+    	 * @param   prefix           a custom prefix for the custom line that matches the regex "[^# ]"
+    	 * @param   content          the content for the custom line
+    	 * @param   alignedWithKey   determines whether the custom line has the same space like the linked path or is directly at the edge
+    	 */
     	public CustomLine(@Nullable String prefix, @Nullable String content, boolean alignedWithKey)
     	{
     		this.type = CustomLineType.COMMENT_LINE;
@@ -490,6 +555,11 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     		this.alignedWithKey = alignedWithKey;
     	}
     	
+    	/**
+    	 * Create a custom line from type "CONTEXT_LINE".
+    	 * 
+    	 * @param   contextParameters   the available context parameters at the linked path
+    	 */
     	public CustomLine(@NotNull String... contextParameters)
     	{
     		this.type = CustomLineType.CONTEXT_LINE;
@@ -507,6 +577,12 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     	private final String content;
     	private final boolean alignedWithKey;
     	
+    	/**
+    	 * Builds and gets the custom line. 
+    	 * 
+    	 * @param   currentLayer   the hierarchical layer of the linked path
+    	 * @return                 The custom line.
+    	 */
     	@NotNull
     	public String getLine(int currentLayer)
     	{

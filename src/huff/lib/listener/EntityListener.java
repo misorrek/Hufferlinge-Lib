@@ -13,6 +13,9 @@ import huff.lib.helper.EntityHelper;
 import huff.lib.various.LibConfig;
 import huff.lib.various.structures.Point;
 
+/**
+ * A listener class that handles follow look tagged entities at player move. 
+ */
 public class EntityListener implements Listener
 {
 	public EntityListener(@NotNull JavaPlugin plugin)

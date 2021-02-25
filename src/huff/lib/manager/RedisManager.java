@@ -14,6 +14,9 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+/**
+ * A manager class that creates and holds a redis database connection in a jedis pool.
+ */
 public class RedisManager
 {	
 	public RedisManager(@NotNull String host, int port)
@@ -23,6 +26,9 @@ public class RedisManager
 		this.jedisPool = new JedisPool(buildPoolConfig(), host, port);
 	}
 
+	/**
+	 * Uses the connection details from the configuration.
+	 */
 	public RedisManager()
 	{
 		this(LibConfig.REDIS_HOST.getValue(), 
@@ -31,6 +37,11 @@ public class RedisManager
 	
 	private final JedisPool jedisPool;
 	
+	/**
+	 * Gets a jedis connection from the current jedis pool.
+	 * 
+	 * @return   The jedis connection.
+	 */
 	@NotNull
 	public Jedis getJedis()
 	{
@@ -55,6 +66,9 @@ public class RedisManager
 	    return poolConfig;
 	}
 	
+	/**
+	 * Destroys the creates jedis pool.
+	 */
 	public void destroyPool() 
 	{
 		try 
@@ -69,6 +83,12 @@ public class RedisManager
 	
 	// U T I L
 	
+	/**
+	 * Checks if the given key exists in the redis database.
+	 * 
+	 * @param   key   the key to check
+	 * @return        The check result.
+	 */
 	public boolean existKey(@NotNull String key)
 	{
 		Validate.notNull((Object) key, "The key cannot be null.");
@@ -84,7 +104,13 @@ public class RedisManager
 		return false;
 	}
 	
-	public boolean deleteKey(@NotNull String key)
+	/**
+	 * Deletes the given key in the redis database.
+	 * If the key does not exists nothing will be deleted.
+	 * 
+	 * @param   key   the key to delete
+	 */
+	public void deleteKey(@NotNull String key)
 	{
 		try (final Jedis jedis = getJedis()) 
 		{
@@ -94,15 +120,23 @@ public class RedisManager
 		{
 			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
 		}
-		return false;
 	}
 	
+	/**
+	 * Sets a field value list to the given key in the redis databse.
+	 * 
+	 * @param   key               the key to store the field value list in
+	 * @param   fieldValuePairs   the field value list to store
+	 * @return                    Determines whether the action were successful or not.
+	 */
 	public boolean addMap(@NotNull String key, Map<String, String> fieldValuePairs) 
 	{
 		try (final Jedis jedis = getJedis()) 
 		{
-			jedis.hmset(key, fieldValuePairs);
-			return true;
+			if (jedis.hmset(key, fieldValuePairs).equals("OK"))
+			{
+				return true;
+			}
 		} 
 		catch (Exception exception) 
 		{
@@ -111,6 +145,14 @@ public class RedisManager
 		return false;
 	}
 	
+	/**
+	 * Gets the value of the specified field in the field value list stored in the given key in the redis database.
+	 * If nothing can be retrieved null will be returned.
+	 * 
+	 * @param   key     the key that stores the field value list
+	 * @param   field   the field in the field value list
+	 * @return          The retrieved value.
+	 */
 	@Nullable
 	public String getFieldValue(@NotNull String key, @NotNull String field)
 	{
@@ -125,6 +167,13 @@ public class RedisManager
 		return null;
 	}
 	
+	/**
+	 * Gets the entire field value list of the given key in the redis database.
+	 * If nothing can be retrieved null will be returned.
+	 * 
+	 * @param   key   the key that stores the field value list
+	 * @return        The retrieved field value list.
+	 */
 	@Nullable
 	public Map<String, String> getAllValues(@NotNull String key)
 	{
@@ -139,7 +188,14 @@ public class RedisManager
 		return null;
 	}
 	
-	public boolean setFieldValue(@NotNull String key, @NotNull String field, @NotNull String value)
+	/**
+	 * Sets the given value to the specified field in the field value list of the given key in the redis database.
+	 * 
+	 * @param   key     the key that stores the field value list
+	 * @param   field   the field to store the value in
+	 * @param   value   the value to store
+	 */
+	public void setFieldValue(@NotNull String key, @NotNull String field, @NotNull String value)
 	{
 		try (final Jedis jedis = getJedis()) 
 		{
@@ -149,10 +205,15 @@ public class RedisManager
 		{
 			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
 		}
-		return false;
 	}
 	
-	public boolean setValue(@NotNull String key, @NotNull String value)
+	/**
+	 * Sets the given value to the given key in the redis database.
+	 *
+	 * @param   key     the key to store the value in
+	 * @param   value   the value to store
+	 */
+	public void setValue(@NotNull String key, @NotNull String value)
 	{
 		try (final Jedis jedis = getJedis()) 
 		{
@@ -162,6 +223,5 @@ public class RedisManager
 		{
 			Bukkit.getLogger().log(Level.SEVERE	, "Redis-Statement cannot be executed.", exception);
 		}
-		return false;
 	}
 }

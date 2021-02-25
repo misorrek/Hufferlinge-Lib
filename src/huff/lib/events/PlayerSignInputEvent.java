@@ -43,24 +43,45 @@ public class PlayerSignInputEvent extends Event
 		return getHandlerList();
 	}
 	
+	/**
+	 * Gets the player that has confirmed the sign input.
+	 * 
+	 * @return   The player.
+	 */
 	@NotNull
 	public Player getPlayer()
 	{
 		return player;
 	}
 	
+	/**
+	 * Gets the lines of the sign input after the player has confirmed.
+	 * 
+	 * @return   The four entry string array with the sign input lines.
+	 */
 	@NotNull
 	public String[] getLines()
 	{
 		return lines;
 	}
 	
+	/**
+	 * Gets the menu holder where is sign input were opened from.
+	 * If the sign input were called without a menu holder null will be returned.
+	 * 
+	 * @return   The menu holder if existing.
+	 */
 	@Nullable
 	public MenuHolder getMenuHolder()
 	{
 		return menuHolder;
 	}
 	
+	/**
+	 * Checks if the sign input were called from a menu holder.
+	 *
+	 * @return   The boolean.
+	 */
 	public boolean isMenuSignInput()
 	{
 		return menuHolder != null;

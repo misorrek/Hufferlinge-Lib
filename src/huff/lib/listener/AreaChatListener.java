@@ -79,15 +79,15 @@ public class AreaChatListener implements Listener
 		
 		if (isGlobalMessgae && currentCooldown > 0)
 		{
-			player.sendMessage(LibMessage.AREACHAT_COOLDOWN.getMessage(new StringPair("time", Integer.toString((int) Math.ceil((double) currentCooldown / JavaHelper.SECOND_IN_MILLIS)))));
+			player.sendMessage(LibMessage.AREACHAT_COOLDOWN.getValue(new StringPair("time", Integer.toString((int) Math.ceil((double) currentCooldown / JavaHelper.SECOND_IN_MILLIS)))));
 			event.setCancelled(true);
 			return;
 		}
 		final StringBuilder formatBuilder = new StringBuilder();
 		
 		cooldownPlayer.remove(uuid);
-		formatBuilder.append(LibMessage.AREACHAT_MESSAGE.getMessage(
-				new StringPair("chatprefix", isGlobalMessgae ? LibMessage.AREACHAT_GLOBALPREFIX.getMessage() : LibMessage.AREACHAT_AREAPREFIX.getMessage()),
+		formatBuilder.append(LibMessage.AREACHAT_MESSAGE.getValue(
+				new StringPair("chatprefix", isGlobalMessgae ? LibMessage.AREACHAT_GLOBALPREFIX.getValue() : LibMessage.AREACHAT_AREAPREFIX.getValue()),
 				new StringPair("userprefix", addPrefix(player)),
 				new StringPair("user", "%1$s"),
 				new StringPair("text", "%2$s")));

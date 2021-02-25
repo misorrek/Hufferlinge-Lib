@@ -48,7 +48,7 @@ public class ChatListener implements Listener
 		final Player player = event.getPlayer();
 		final StringBuilder formatBuilder = new StringBuilder();
 		
-		formatBuilder.append(LibMessage.CHAT_MESSAGE.getMessage(
+		formatBuilder.append(LibMessage.CHAT_MESSAGE.getValue(
 				new StringPair("world", displayWorld ? player.getWorld().getName() + " §8×§7" : ""),
 				new StringPair("userprefix", addPrefix(player)),
 				new StringPair("user", "%1$s"),

@@ -12,6 +12,10 @@ public class WrapperPlayClientUpdateSign extends AbstractPacket
 {
 	public static final PacketType TYPE = PacketType.Play.Client.UPDATE_SIGN;
 
+	/**
+	 * @param   blockPosition   the position of the updated sign block
+	 * @param   lines           the updated lines of the sign
+	 */
 	public WrapperPlayClientUpdateSign(@NotNull BlockPosition blockPosition, @Nullable String[] lines) 
 	{
 		this();
@@ -31,6 +35,9 @@ public class WrapperPlayClientUpdateSign extends AbstractPacket
 		handle.getModifier().writeDefaults();
 	}
 	
+	/**
+	 * @param   packet   packet from the type "Play.Client.UPDATE_SIGN"
+	 */
 	public WrapperPlayClientUpdateSign(PacketContainer packet) 
 	{
 		super(packet, TYPE);

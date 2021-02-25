@@ -21,12 +21,26 @@ public class MessageHelper
 	public static final String PLACEHOLDER_HOUR = "%hour%";
 	public static final String PLACEHOLDER_MINUTE = "%minute%";
       
+	/**
+	 * Makes the given string highlighted, therefore and behind a space and sets the standard text color again.
+	 * 
+	 * @param   content   the target string
+	 * @return            The highlighted string.
+	 */
 	@NotNull
     public static String getHighlighted(@NotNull String content)
     {
     	return getHighlighted(content, true, true);
     }
     
+	/**
+	 * Makes the given string highlighted, optional therefore and/or behind a space and sets the standard text color again.
+	 * 
+	 * @param   content      the target string
+	 * @param   spaceLeft    determines whether a space left will be added 
+	 * @param   spaceRight   determines whether a space right will be added 
+	 * @return               The highlighted string.
+	 */
 	@NotNull
     public static String getHighlighted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
@@ -35,12 +49,26 @@ public class MessageHelper
     	return (spaceLeft ? " §9" : "§9") + content + (spaceRight ? " §7" : "§7");
     }
     
+	/**
+	 * Sets the string in quotes, makes it highlighted, therefore and behind a space and sets the standard text color again.
+	 * 
+	 * @param   content   the target string
+	 * @return            The quoted and highlighted string.
+	 */
 	@NotNull
     public static String getQuoted(@NotNull String content)
     {
     	return getQuoted(content, true, true);
     }
     
+	/**
+	 * Sets the string in quotes, makes it highlighted, optional therefore and/or behind a space and sets the standard text color again.
+	 * 
+	 * @param   content      the target string
+	 * @param   spaceLeft    determines whether a space left will be added 
+	 * @param   spaceRight   determines whether a space right will be added 
+	 * @return               The quoted and highlighted string.
+	 */
 	@NotNull
     public static String getQuoted(@NotNull String content, boolean spaceLeft, boolean spaceRight)
     {
@@ -49,18 +77,36 @@ public class MessageHelper
     	return (spaceLeft ? " §9\"" : "§9\"") + content + (spaceRight ? "\"§7 " : "\"§7");
     }
     
+	/**
+	 * Sends the given message to the console with the in the message configuration defined prefix.
+	 * 
+	 * @param   message   the string representing the message to send
+	 */
     public static void sendConsoleMessage(@NotNull String message)
     {
     	Validate.notNull((Object) message, "The message cannot be null.");
     	
-    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('§', LibMessage.PREFIX_CONSOLE.getMessage() + message));
+    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('§', LibMessage.PREFIX_CONSOLE.getValue() + message));
     }
     
+    /**
+	 * Sends the given message to all players with the specified permission.
+	 * 
+	 * @param   permission   the permission that a player must have to receive the message
+	 * @param   message      the string representing the message to send
+	 */
     public static void sendPermssionMessage(@NotNull String permission, @NotNull String message) 
 	{
     	sendPermssionMessage(permission, message, null);
 	}
     
+    /**
+	 * Sends the given message to all players with the specified permission.
+	 * 
+	 * @param   permission       the permission that a player must have to receive the message
+	 * @param   message          the string representing the message to send
+	 * @param   excludedPlayer   a player that will be excluded whether he has the permission or not
+	 */
     public static void sendPermssionMessage(@NotNull String permission, @NotNull String message, @Nullable String excludedPlayer) 
 	{
     	Validate.notNull((Object) message, "The permission cannot be null.");
@@ -75,6 +121,14 @@ public class MessageHelper
 		}
 	}
     
+    /**
+     * Gets the given world time (0 - 24000) formatted in hour and minute.
+     * By default the time will be formatted to "%hour%:%minute%".
+     * 
+     * @param   time      the world time (0 - 24000)
+     * @param   pattern   a optional pattern to create a custom format. (Available: %hour%, %minute%)
+     * @return            The formatted time as string.
+     */
     @NotNull
     public static String getTimeFormatted(int time, @Nullable String pattern)
     {
@@ -96,6 +150,12 @@ public class MessageHelper
 		}    	
     }
     
+    /**
+     * Maps the given world time (0 - 24000) to a time label e.g. morning. 
+     * 
+     * @param   time   the world time (0 - 24000)
+     * @return         The time label as string.
+     */
     @NotNull
     public static String getTimeLabel(int time)
     {
@@ -130,6 +190,14 @@ public class MessageHelper
     	return "";
     }
     
+    /**
+     * Sends the given message delayed to a player.
+     * 
+     * @param   plugin    the java plugin instance to create a delayed task
+     * @param   player    the target player
+     * @param   message   the message to send
+     * @param   ticks     the amount of ticks the message will be delayed
+     */
     public static void sendMessageDelayed(@NotNull JavaPlugin plugin, @NotNull Player player, @NotNull String message, long ticks)
     {
     	new BukkitRunnable()
@@ -142,6 +210,14 @@ public class MessageHelper
 		}.runTaskLater(plugin, ticks);
     }
     
+    /**
+     * Sends the given messages delayed to a player.
+     * 
+     * @param   plugin     the java plugin instance to create a delayed task
+     * @param   player     the target player
+     * @param   messages   the messages to send
+     * @param   ticks      the amount of ticks the messages will be delayed
+     */
     public static void sendMessagesDelayed(@NotNull JavaPlugin plugin, @NotNull Player player,  @NotNull List<String> messages, long ticks)
     {
     	long tickCounter = ticks;

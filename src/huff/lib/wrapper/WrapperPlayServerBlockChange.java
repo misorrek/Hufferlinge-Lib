@@ -14,6 +14,10 @@ public class WrapperPlayServerBlockChange extends AbstractPacket
 {
 	public static final PacketType TYPE = PacketType.Play.Server.BLOCK_CHANGE;
 
+	/**
+	 * @param   blockPosition   the position of the updated block
+	 * @param   blockData       the updated data of the block
+	 */
 	public WrapperPlayServerBlockChange(@NotNull BlockPosition blockPosition, @NotNull WrappedBlockData blockData) 
 	{
 		this();
@@ -29,6 +33,9 @@ public class WrapperPlayServerBlockChange extends AbstractPacket
 		handle.getModifier().writeDefaults();
 	}
 	
+	/**
+	 * @param   packet   packet from the type "Play.Server.BLOCK_CHANGE"
+	 */
 	public WrapperPlayServerBlockChange(PacketContainer packet) 
 	{
 		super(packet, TYPE);

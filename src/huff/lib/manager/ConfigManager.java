@@ -8,6 +8,9 @@ import huff.lib.helper.FileHelper;
 import huff.lib.various.Constants;
 import huff.lib.various.HuffConfiguration;
 
+/**
+ * A manager class that creates, loads and hold the persistent configuration file.
+ */
 public class ConfigManager
 {
 	private static final String HEADER = 
@@ -31,6 +34,11 @@ public class ConfigManager
 	
 	private ConfigManager() { }
 	
+	/**
+	 * Adds the values from the given configuration as default values to the loaded configuration file.
+	 * 
+	 * @param   configuration   the configuration containing the default values
+	 */
 	public static void addDefaults(@NotNull HuffConfiguration configuration)
 	{
 		CONFIG.addDefaults(configuration, PATH);

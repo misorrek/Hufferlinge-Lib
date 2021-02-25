@@ -18,6 +18,9 @@ import com.google.gson.JsonParser;
 
 import huff.lib.helper.WebHelper;
 
+/**
+ * A manager class that requests and caches usernames and uuid's from players registered at mojang (minecraft). 
+ */
 public class MojangApiManager 
 {	
 	private static final String INSERT = "INSERT INTO users VALUES (?, ?, ?)";	
@@ -28,6 +31,13 @@ public class MojangApiManager
 
 	private MojangApiManager() { }
 	
+	/**
+	 * Gets the current uuid represented by the given username.
+	 * If no uuid can be retrieved null will be returned.
+	 * 
+	 * @param   username   the target username
+	 * @return             The retrieved uuid.
+	 */
 	@SuppressWarnings("deprecation")
 	@Nullable
 	public static UUID getUUID(@NotNull String username) 
@@ -74,6 +84,13 @@ public class MojangApiManager
 		}
 	}
 	
+	/**
+	 * Gets the username that is currently representing the given uuid.
+	 * If no username can be retrieved null will be returned.
+	 * 
+	 * @param   username   the target uuid
+	 * @return             The retrieved username.
+	 */
 	@SuppressWarnings("deprecation")
 	@Nullable
 	public static String getUsername(@NotNull UUID uuid) 
@@ -123,6 +140,12 @@ public class MojangApiManager
 		}
 	}
 	
+	/**
+	 * Checks whether the cache must be updated or inserts new entry.
+	 * 
+	 * @param   username   thd current username
+	 * @param   uuid       the current uuid
+	 */
 	public static void updateCache(@NotNull UUID uuid, @NotNull String username) 
 	{
 		Validate.notNull((Object) uuid, "The uuid cannot be null.");

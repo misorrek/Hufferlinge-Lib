@@ -1,4 +1,4 @@
-package huff.lib.various.structures;
+package huff.lib.various.structures.configuration;
 
 import java.util.logging.Level;
 
@@ -7,8 +7,14 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import huff.lib.manager.ConfigManager;
+import huff.lib.various.structures.StringPair;
 
-public class ConfigPair<T> implements KeyDefaultValuePair<T>
+/**
+ * A configuration key value store to retrieve a value or a default value from the config manager.
+ * 
+ * @param   <T>   the type of the stored value
+ */
+public class ConfigPair<T> implements ConfigKeyValue<T>
 {
 	public ConfigPair(@NotNull String key, @NotNull T defaultValue, @NotNull Class<T> valueClass)
 	{
@@ -25,26 +31,33 @@ public class ConfigPair<T> implements KeyDefaultValuePair<T>
 	private final T defaultValue;
 	private final Class<T> valueClass;
 	
-	@NotNull
+	@Override
 	public String getKey()
 	{
 		return key;
 	}
 	
-	@NotNull
+	@Override
 	public String getKeyLink()
 	{
 		return "{" + key + "}";
 	}
 	
-	@NotNull
+	@Override
 	public T getDefaultValue()
 	{
 		return defaultValue;
 	}
 	
-	@NotNull
+	@Override
 	public T getValue()
+	{
+		return getValue(new StringPair[0]);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public T getValue(StringPair... contextParameters) 
 	{
 		Object configValue;
 		
@@ -59,6 +72,11 @@ public class ConfigPair<T> implements KeyDefaultValuePair<T>
 		
 		if (configValue != null)
 		{
+			if (configValue instanceof String && valueClass.isEnum())
+			{
+				return (T) Enum.valueOf((Class) valueClass, (String) configValue);
+			}
+			
 			try
 			{
 				return valueClass.cast(configValue);

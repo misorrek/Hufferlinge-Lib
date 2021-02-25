@@ -1,7 +1,7 @@
 package huff.lib.various;
 
 import huff.lib.manager.MessageManager;
-import huff.lib.various.structures.MessagePair;
+import huff.lib.various.structures.configuration.MessagePair;
 
 public class LibMessage
 {

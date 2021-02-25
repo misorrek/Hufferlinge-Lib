@@ -53,7 +53,7 @@ public class VanishCommand extends HuffCommand implements Listener
 			
 			if (targetPlayer == null || !targetPlayer.isOnline())
 			{
-				LibMessage.NOTFOUND.getMessage(new StringPair("user", args[0]));
+				LibMessage.NOTFOUND.getValue(new StringPair("user", args[0]));
 				return true;
 			}
 			
@@ -61,13 +61,13 @@ public class VanishCommand extends HuffCommand implements Listener
 			{
 				removeVanish(targetPlayer);
 				
-				player.sendMessage(LibMessage.VANISH_OTHER_OFF.getMessage(new StringPair("user", args[0])));
+				player.sendMessage(LibMessage.VANISH_OTHER_OFF.getValue(new StringPair("user", args[0])));
 				
 			}
 			else
 			{
 				addVanish(targetPlayer);
-				player.sendMessage(LibMessage.VANISH_OTHER_ON.getMessage(new StringPair("user", args[0])));
+				player.sendMessage(LibMessage.VANISH_OTHER_ON.getValue(new StringPair("user", args[0])));
 			}
 		}
 		else
@@ -92,7 +92,7 @@ public class VanishCommand extends HuffCommand implements Listener
 		{
 			publicPlayer.showPlayer(plugin, player);
 		}
-		player.sendMessage(LibMessage.VANISH_SELF_OFF.getMessage());
+		player.sendMessage(LibMessage.VANISH_SELF_OFF.getValue());
 	}
 	
 	private void addVanish(Player player)
@@ -103,7 +103,7 @@ public class VanishCommand extends HuffCommand implements Listener
 		{
 			publicPlayer.hidePlayer(plugin, player);
 		}
-		player.sendMessage(LibMessage.VANISH_SELF_ON.getMessage());
+		player.sendMessage(LibMessage.VANISH_SELF_ON.getValue());
 	}
 	
 	// T A B C O M P L E T I O N
@@ -130,7 +130,7 @@ public class VanishCommand extends HuffCommand implements Listener
 				{
 					publicPlayer.hidePlayer(plugin, player);
 				}
-				player.sendMessage(LibMessage.VANISH_SELF_ONREMINDER.getMessage());
+				player.sendMessage(LibMessage.VANISH_SELF_ONREMINDER.getValue());
 			} 
 			else 
 			{

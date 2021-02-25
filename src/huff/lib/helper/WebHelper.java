@@ -15,6 +15,12 @@ public class WebHelper
 {
 	private WebHelper() { }
 	
+	/**
+	 * Sends a get request to the given url.
+	 * 
+	 * @param   url   the target url
+	 * @return        The response stream as string.
+	 */
 	@Nullable
 	public static String sendGet(String url) 
 	{	
@@ -44,6 +50,13 @@ public class WebHelper
 		}
 	}
 	
+	/**
+	 * Sends a post request with the specified data to the given url.
+	 * 
+	 * @param   url   the target url
+	 * @param   data  the data to post
+	 * @return        The response stream as string.
+	 */
 	@Nullable
 	public static String sendPost(String url, String data) 
 	{	

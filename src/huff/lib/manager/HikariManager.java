@@ -15,6 +15,9 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import huff.lib.helper.FileHelper;
 
+/**
+ * A manager class that creates and holds a connection to a hikari data source (local sql database).
+ */
 public class HikariManager
 {
 	private static final HikariConfig config = new HikariConfig();
@@ -22,6 +25,13 @@ public class HikariManager
     
     private HikariManager() { }
     
+    /**
+     * Gets whether the hikara data source or creates a new one.
+     * 
+     * @param   sqlFilePath      the path to create or load the local sql database
+     * @param   initStatements   the statement to run at connection creation   
+     * @return                   The hikari data source.
+     */
     @NotNull
     public static HikariDataSource getHikari(@NotNull String sqlFilePath, @NotNull List<String> initStatements)
     {
