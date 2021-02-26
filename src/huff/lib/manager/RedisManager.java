@@ -123,7 +123,7 @@ public class RedisManager
 	}
 	
 	/**
-	 * Sets a field value list to the given key in the redis databse.
+	 * Sets a field value list to the given key in the redis database.
 	 * 
 	 * @param   key               the key to store the field value list in
 	 * @param   fieldValuePairs   the field value list to store

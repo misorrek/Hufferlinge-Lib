@@ -1,10 +1,13 @@
 package huff.lib.helper;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +20,8 @@ public class EntityHelper
 	public static final String ENTITYKEY_FOLLOWLOOK = "follow_look";
 	
 	private EntityHelper() { }
+	
+	// T A G G I N G
 	
 	/**
 	 * Checks if an entity has a tag with the given key in the persistent data container.
@@ -85,5 +90,13 @@ public class EntityHelper
 		Validate.notNull((Object) value, "The value cannot be null.");
 		
 		entity.getPersistentDataContainer().set(new NamespacedKey(plugin, key), PersistentDataType.STRING, value);
+	}
+	
+	// H O V E R T E X T
+	
+	public static void createHovertext()
+	{
+		//final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+		//final Scoreboard board = scoreboardManager.getNewScoreboard();
 	}
 }

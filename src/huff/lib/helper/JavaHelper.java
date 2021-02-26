@@ -1,6 +1,10 @@
 package huff.lib.helper;
 
+import java.util.logging.Level;
+
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A helper class containing additional static java methods and constants.
@@ -34,5 +38,30 @@ public class JavaHelper
 	public static int getSecondsInMillis(int seconds)
 	{
 		return seconds * SECOND_IN_MILLIS;
+	}
+	
+	/**
+	 * Tries to parse a double value from the given string.
+	 * If the String is null or cannot be parsed -1 will be returned.
+	 * 
+	 * @param   doubleString   a string containing a double value
+	 * @return                 The parsed double value.
+	 */
+	public static double tryParseDouble(@Nullable String doubleString)
+	{		
+		if (doubleString == null)
+		{
+			return -1;
+		}	
+		
+		try
+		{
+			return Double.parseDouble(doubleString);
+		}
+		catch (NumberFormatException exception)
+		{
+			Bukkit.getLogger().log(Level.WARNING, "The double-value is invalid.", exception);
+		}
+		return -1;
 	}
 }
