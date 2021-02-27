@@ -7,6 +7,8 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -14,12 +16,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import huff.lib.events.PlayerSignInputEvent;
 import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
 import huff.lib.helper.MessageHelper;
+import huff.lib.helper.SignHelper;
 import huff.lib.helper.StringHelper;
+import huff.lib.helper.UserHelper;
 import huff.lib.various.Action;
+import huff.lib.various.LibConfig;
 import huff.lib.various.LibMessage;
+import huff.lib.various.structures.StringPair;
 
 /**
  * A menu holder class that contains a menu to choose a entry from a given list of UUID's.
@@ -86,6 +93,10 @@ public class PlayerChooserHolder extends MenuHolder
 	     			chooseAction.execute(currentOwningPlayer.getUniqueId());
 	     		}
 	     	}
+			else if (event.getSlot() == InventoryHelper.getSlotFromRowColumn(inventorySize, 1, 5)) 
+			{
+				super.openSign(event.getWhoClicked(), SignHelper.getInputLines("Name eingeben", "---"));
+			}
 			else if (event.getSlot() == InventoryHelper.getSlotFromRowColumn(inventorySize, InventoryHelper.getLastLine(inventorySize), 4)) 
 			{
 				changePage(false);
@@ -96,6 +107,24 @@ public class PlayerChooserHolder extends MenuHolder
 			}
 		}
      	return true;
+	}
+	
+	@Override
+	public void handleSignInput(@NotNull PlayerSignInputEvent event)
+	{
+		final Player player = event.getPlayer();
+		final String inputValue = event.getLines()[0];
+		final UUID inputUser = UserHelper.getUniqueId(inputValue);
+		
+		if (inputUser != null)
+		{
+			chooseAction.execute(inputUser);
+		}
+		else
+		{
+			player.sendMessage(LibMessage.INVALIDAMOUNT.getValue(new StringPair("text", inputValue)));
+			player.playSound(player.getLocation(), Sound.ENTITY_EGG_THROW, 1, 2);
+		}
 	}
 	
 	private static int checkSize(int size)
@@ -121,28 +150,33 @@ public class PlayerChooserHolder extends MenuHolder
 	private void setPageFunctions()
 	{
 		final ItemStack borderItem = InventoryHelper.getBorderItem();	
+		final int inventorySize = super.getInventory().getSize();
 		
+		if (LibConfig.GUI_SIGNINPUT.getValue())
+		{
+			InventoryHelper.setItem(super.getInventory(), 1, 5, ItemHelper.getItemWithMeta(Material.JUNGLE_SIGN, LibConfig.GUI_SIGNINPUTNAME.getValue()));	
+		}
 		InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, 
 				                                                                                             StringHelper.build("§7» Seite §9", Integer.toString(page), "§7 «")));
 		
 		if (page > START_PAGE)
 		{
-			InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 4, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7« §9Vorherige Seite"));
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.getLastLine(inventorySize), 4, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7« §9Vorherige Seite"));
 		}
 		else
 		{
-			InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 4, borderItem);
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.getLastLine(inventorySize), 4, borderItem);
 		}
 		
 		if (page < lastPage)
 		{
-			InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 6, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7» §9Nächste Seite"));
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.getLastLine(inventorySize), 6, ItemHelper.getItemWithMeta(Material.BLUE_STAINED_GLASS_PANE, "§7» §9Nächste Seite"));
 		}
 		else
 		{
-			InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 6, borderItem);
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.getLastLine(inventorySize), 6, borderItem);
 		}
-		final ItemStack pageItem = InventoryHelper.getItem(super.getInventory(), InventoryHelper.LAST_ROW, 5);
+		final ItemStack pageItem = InventoryHelper.getItem(super.getInventory(), InventoryHelper.getLastLine(inventorySize), 5);
 		
 		if (pageItem != null)
 		{

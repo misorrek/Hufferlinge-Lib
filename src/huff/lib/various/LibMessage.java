@@ -19,6 +19,13 @@ public class LibMessage
 	public static final MessagePair NOTFOUND = new MessagePair("lib.general.not_found", PREFIX_GENERAL.getKeyLink() + "Der Spieler §9%user% §7konnte nicht zugeordnet werden.");
 	public static final MessagePair WRONGINPUT = new MessagePair("lib.general.wrong_input", PREFIX_GENERAL.getKeyLink() + "Die Eingabe ist ungültig. %text%");
 	public static final MessagePair NOTINCONSOLE = new MessagePair("lib.general.not_in_console", PREFIX_CONSOLE.getKeyLink() + "Der Befehl kann nicht in der Konsole ausgeführt werden.");
+	public static final MessagePair NEWVALUE = new MessagePair("economy.new_value", PREFIX_GENERAL.getKeyLink() + "Der neue Stand beträgt §9%amount%§7.");
+	public static final MessagePair NOSELFEXECUTE = new MessagePair("economy.no_self_execute", PREFIX_GENERAL.getKeyLink() + "Du kannst diesen Befehl nicht auf dich selbst aufrufen.");
+	public static final MessagePair INVALIDPAGE = new MessagePair("economy.invalid_page", PREFIX_GENERAL.getKeyLink() + "Ungültige Seite. Es gibt §9%maxpage% Seiten§7.");
+	public static final MessagePair INVALIDNUMBER = new MessagePair("economy.invalid_number", PREFIX_GENERAL.getKeyLink() + "§9\"%text%\"§7 ist keine gültige Nummer.");
+	public static final MessagePair INVALIDAMOUNT = new MessagePair("economy.invalid_amount", PREFIX_GENERAL.getKeyLink() + "§9\"%text%\"§7 ist kein gültiger Betrag.");
+	public static final MessagePair INVALIDNAME = new MessagePair("economy.invalid_name", PREFIX_GENERAL.getKeyLink() + "§9\"%text%\"§7 ist kein gültiger Name.");
+	public static final MessagePair INVALIDFEEDBACK = new MessagePair("economy.invalid_feedback", PREFIX_GENERAL.getKeyLink() + "Ungültiger Datenbank-Rückgabecode §9\"%text%\"§7.");
 	
 	public static final MessagePair SUPPORT_USER_HELP = new MessagePair("lib.support.user.help", WRONGINPUT.getKeyLink() + "/support [leave] - §9\"/support\"§7 ohne Zusatz öffnet einen neuen Support-Kanal.");
 	public static final MessagePair SUPPORT_USER_CREATE = new MessagePair("lib.support.user.create", PREFIX_SUPPORT.getKeyLink() + "Du hast einen Support-Kanal geöffnet. Alle Nachrichten werden, ohne erneute Befehlseingabe, hierher geschickt.\n" +  
@@ -90,6 +97,19 @@ public class LibMessage
 		config.addContextLine(WRONGINPUT.getKey(), "text");
 		config.set(WRONGINPUT);
 		config.set(NOTINCONSOLE);
+		config.addContextLine(NEWVALUE.getKey(), "amount");
+		config.set(NEWVALUE);
+		config.set(NOSELFEXECUTE);
+		config.addContextLine(INVALIDPAGE.getKey(), "maxpage");
+		config.set(INVALIDPAGE);
+		config.addContextLine(INVALIDNUMBER.getKey(), "text");
+		config.set(INVALIDNUMBER);
+		config.addContextLine(INVALIDAMOUNT.getKey(), "text");
+		config.set(INVALIDAMOUNT);
+		config.addContextLine(INVALIDNAME.getKey(), "text");
+		config.set(INVALIDNAME);
+		config.addContextLine(INVALIDFEEDBACK.getKey(), "text");
+		config.set(INVALIDFEEDBACK);
 		
 		config.set(SUPPORT_USER_HELP);
 		config.set(SUPPORT_USER_CREATE);

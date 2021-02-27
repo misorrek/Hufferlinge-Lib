@@ -27,6 +27,9 @@ public class LibConfig
 	
 	public static final ConfigPair<Point> ENTITY_FOLLOWLOOKRADIUS = new ConfigPair<>("lib.entity.follow_look_radius", new Point(5, 2.5, 5), Point.class);
 	
+	public static final ConfigPair<Boolean> GUI_SIGNINPUT = new ConfigPair<>("economy.gui.sign_input", true, Boolean.class);
+	public static final ConfigPair<String> GUI_SIGNINPUTNAME = new ConfigPair<>("economy.gui.sign_input_name", "§7» §9Alternative Eingabe", String.class);
+	
 	public static void init()
 	{
 		final HuffConfiguration config = new HuffConfiguration();
@@ -54,6 +57,9 @@ public class LibConfig
 		config.set(AREACHAT_RANGE);
 		
 		config.set(ENTITY_FOLLOWLOOKRADIUS);
+		
+		config.set(GUI_SIGNINPUT);
+		config.set(GUI_SIGNINPUTNAME);
 		
 		ConfigManager.addDefaults(config);
 	}

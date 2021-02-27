@@ -1,13 +1,13 @@
 package huff.lib.helper;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,9 +94,21 @@ public class EntityHelper
 	
 	// H O V E R T E X T
 	
-	public static void createHovertext()
+	public static Entity createHovertextEntity(@NotNull Location location, @NotNull String content, int line)
 	{
-		//final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-		//final Scoreboard board = scoreboardManager.getNewScoreboard();
+		Validate.notNull((Object) location, "The location cannot be null.");
+		
+		final double linePosition = 0.5 - (0.25 * (line - 1)); // 0,5 (First line position) - 0.25 (Height per line)
+		final ArmorStand hovertextEntity = (ArmorStand) location.getWorld().spawnEntity(location.clone().add(0, linePosition, 0), EntityType.ARMOR_STAND);
+
+		hovertextEntity.setSmall(true);
+		hovertextEntity.setVisible(false);
+		hovertextEntity.setGravity(false);
+		hovertextEntity.setInvulnerable(true);
+		hovertextEntity.setCollidable(false);
+		hovertextEntity.setCustomNameVisible(true);
+		hovertextEntity.setCustomName(content);
+		
+		return hovertextEntity;
 	}
 }
