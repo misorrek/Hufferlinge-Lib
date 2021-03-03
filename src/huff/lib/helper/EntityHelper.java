@@ -1,6 +1,7 @@
 package huff.lib.helper;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class EntityHelper
 {
-	public static final String ENTITYKEY_FOLLOWLOOK = "follow_look";
+	public static final String ENTITYKEY_FOLLOWLOOK = "follow_look"; //TODO Save default look
 	
 	private EntityHelper() { }
 	
@@ -88,6 +89,8 @@ public class EntityHelper
 		Validate.notNull((Object) plugin, "The java plugin instance cannot be null.");
 		Validate.notNull((Object) key, "The key cannot be null.");
 		Validate.notNull((Object) value, "The value cannot be null.");
+		
+		Bukkit.getConsoleSender().sendMessage("STORE :" + value);
 		
 		entity.getPersistentDataContainer().set(new NamespacedKey(plugin, key), PersistentDataType.STRING, value);
 	}

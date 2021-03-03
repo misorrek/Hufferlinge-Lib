@@ -93,7 +93,7 @@ public class PlayerChooserHolder extends MenuHolder
 	     			chooseAction.execute(currentOwningPlayer.getUniqueId());
 	     		}
 	     	}
-			else if (event.getSlot() == InventoryHelper.getSlotFromRowColumn(inventorySize, 1, 5)) 
+			else if (event.getSlot() == InventoryHelper.getSlotFromRowColumn(inventorySize, InventoryHelper.getLastLine(inventorySize), 1)) 
 			{
 				super.openSign(event.getWhoClicked(), SignHelper.getInputLines("Name eingeben", "---"));
 			}
@@ -116,7 +116,7 @@ public class PlayerChooserHolder extends MenuHolder
 		final String inputValue = event.getLines()[0];
 		final UUID inputUser = UserHelper.getUniqueId(inputValue);
 		
-		if (inputUser != null)
+		if (inputUser != null && players.contains(inputUser))
 		{
 			chooseAction.execute(inputUser);
 		}
@@ -151,13 +151,11 @@ public class PlayerChooserHolder extends MenuHolder
 	{
 		final ItemStack borderItem = InventoryHelper.getBorderItem();	
 		final int inventorySize = super.getInventory().getSize();
-		
+			
 		if (LibConfig.GUI_SIGNINPUT.getValue())
 		{
-			InventoryHelper.setItem(super.getInventory(), 1, 5, ItemHelper.getItemWithMeta(Material.JUNGLE_SIGN, LibConfig.GUI_SIGNINPUTNAME.getValue()));	
+			InventoryHelper.setItem(super.getInventory(), InventoryHelper.getLastLine(inventorySize), 1, ItemHelper.getItemWithMeta(Material.JUNGLE_SIGN, LibConfig.GUI_SIGNINPUTNAME.getValue()));	
 		}
-		InventoryHelper.setItem(super.getInventory(), InventoryHelper.LAST_ROW, 5, ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, 
-				                                                                                             StringHelper.build("§7» Seite §9", Integer.toString(page), "§7 «")));
 		
 		if (page > START_PAGE)
 		{
@@ -167,6 +165,9 @@ public class PlayerChooserHolder extends MenuHolder
 		{
 			InventoryHelper.setItem(super.getInventory(), InventoryHelper.getLastLine(inventorySize), 4, borderItem);
 		}
+		
+		InventoryHelper.setItem(super.getInventory(), InventoryHelper.getLastLine(inventorySize), 5, ItemHelper.getItemWithMeta(Material.WHITE_STAINED_GLASS_PANE, 
+                StringHelper.build("§7» Seite §9", Integer.toString(page), "§7 «")));
 		
 		if (page < lastPage)
 		{

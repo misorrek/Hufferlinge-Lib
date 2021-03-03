@@ -195,33 +195,6 @@ public class HuffConfiguration extends YamlConfiguration //TODO NEWLINE CASE
     /**
      * Tries to retrieve a string from the specified path.
      * If no string can be retrieved null will be returned.
-     * 
-     * @param   path                the path to retrieve the data from
-     * @return                      The retrieved string.
-     */
-    @Override
-    public String getString(@NotNull String path)
-    {
-    	return getString(path, new StringPair[0]);
-    }
-    
-    /**
-     * Tries to retrieve a string from the specified path.
-     * If no string can be retrieved the given default value will be used.
-     * 
-     * @param   path                the path to retrieve the data from
-     * @param   defaultValue        a default value in case nothing can be retrieved
-     * @return                      The retrieved string.
-     */
-    @Override
-    public String getString(@NotNull String path, @Nullable String defaultValue)
-    {
-    	return getString(path, defaultValue, new StringPair[0]);
-    }
-    
-    /**
-     * Tries to retrieve a string from the specified path.
-     * If no string can be retrieved null will be returned.
      * After retrieving the placeholder's for context parameters will be replaced with the given ones.
      * 
      * @param   path                the path to retrieve the data from

@@ -63,7 +63,7 @@ public class ConfigPair<T> implements ConfigKeyValue<T>
 		
 		if (valueClass == String.class)
 		{
-			configValue = ConfigManager.CONFIG.getString(key, (String) defaultValue);
+			configValue = ConfigManager.CONFIG.getString(key, (String) defaultValue, contextParameters);
 		}
 		else
 		{

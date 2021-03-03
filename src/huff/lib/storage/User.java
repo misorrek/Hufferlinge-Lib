@@ -2,6 +2,7 @@ package huff.lib.storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.Validate;
@@ -46,10 +47,19 @@ public class User extends RedisStorage
 	@NotNull
 	public List<UUID> getUsers(@Nullable UUID filteredUuid)
 	{
-		List<UUID> users = new ArrayList<>();
+		final List<UUID> users = new ArrayList<>();
+		final Set<String> keys = super.getKeys();
 		
-		getKeys().forEach(x -> users.add(UUID.fromString(x)));
-		
+		for (String key : keys)
+		{
+			final UUID currentUuid = UUID.fromString(key); 
+			
+			if (filteredUuid != null && currentUuid.equals(filteredUuid))
+			{
+				continue;
+			}
+			users.add(currentUuid);
+		}
 		return users;
 	}
 }

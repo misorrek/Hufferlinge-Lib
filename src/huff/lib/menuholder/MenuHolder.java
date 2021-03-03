@@ -98,8 +98,8 @@ public abstract class MenuHolder implements InventoryHolder
 		
 		if (inventoryHolder instanceof MenuHolder)
 		{
-			((MenuHolder) inventoryHolder).setForwarding(isForwarding);
 			((MenuHolder) inventoryHolder).setReturnable(isReturnable);
+			((MenuHolder) inventoryHolder).setForwarding(isForwarding);
 		}
 		human.closeInventory();
 	}

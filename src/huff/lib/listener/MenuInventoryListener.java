@@ -17,11 +17,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import huff.lib.events.PlayerSignInputEvent;
 import huff.lib.helper.InventoryHelper;
 import huff.lib.helper.ItemHelper;
 import huff.lib.menuholder.MenuHolder;
+import huff.lib.various.Action;
 
 /**
  * A listener class that handles the exit behavior in menu inventories.
@@ -143,12 +145,18 @@ public class MenuInventoryListener implements Listener
 	{
 		if (event.isMenuSignInput())
 		{
-			event.getMenuHolder().handleSignInput(event);
-			openLastInventory(event.getPlayer());
+			Bukkit.getConsoleSender().sendMessage("SIGN EVENT");
+			
+			openLastInventory(event.getPlayer(), params -> event.getMenuHolder().handleSignInput(event));	
 		}
 	}
 	
 	private void openLastInventory(@NotNull HumanEntity human)
+	{			
+		openLastInventory(human, null);
+	}
+	
+	private void openLastInventory(@NotNull HumanEntity human, @Nullable Action afterOpen)
 	{			
 		final List<Inventory> inventories = lastInventories.get(human.getUniqueId());
 		
@@ -156,11 +164,16 @@ public class MenuInventoryListener implements Listener
 		{
 			final int lastIndex = inventories.size() - 1;
 			
-			Bukkit.getScheduler().runTaskLater(plugin, () ->
+			Bukkit.getScheduler().runTask(plugin, () ->
 			{				
 				((MenuHolder) inventories.get(lastIndex).getHolder()).open(human, false);
 				inventories.remove(lastIndex);
-			}, 1);			
+				
+				if (afterOpen != null)
+				{
+					afterOpen.execute();
+				}
+			});
 		}			
 	}
 }
